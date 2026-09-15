@@ -1,0 +1,32 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Editor and IDE state
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs and temporary output
+*.log
+*.tmp
+*.temp
+coverage/
+
+# Common build artifacts
+build/
+dist/
+out/
+.cache/
+.tmp/
+
+# Local tooling state
+.venv/
+venv/
+node_modules/

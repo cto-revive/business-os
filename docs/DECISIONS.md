@@ -18,6 +18,7 @@ This document records the durable architectural decisions that govern Business O
 | ADR-008 | Keep GitHub authoritative and preserve portability | Accepted | Source, migrations, configurations, tests, and documentation stay in the repository; Manus is not required at runtime |
 | ADR-009 | Prohibit optional-plugin dependency from core | Accepted | Plugins use documented extension points and cannot modify core source |
 | ADR-010 | Version-control all database evolution | Accepted | Schema changes require repository migrations and documented deployment procedures |
+| ADR-011 | Define a stack-neutral conceptual repository structure | Accepted | Organize future apps, platform capabilities, execution, extensions, infrastructure, shared contracts, tests, tooling, and documentation by ownership and dependency direction without selecting implementation technologies |
 
 ## Implementation gates
 
@@ -67,3 +68,4 @@ To add, amend, or supersede a decision, create a new ADR entry with the decision
 [9]: INTEGRATIONS.md "Business OS Integrations"
 [10]: SECURITY.md "Business OS Security"
 [11]: DEPLOYMENT.md "Business OS Deployment"
+[12]: REPOSITORY-STRUCTURE.md "Business OS Repository Structure"

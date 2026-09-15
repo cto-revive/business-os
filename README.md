@@ -38,6 +38,7 @@ Every tenant-owned record must be scoped to an organization. AI agents act only 
 | Path | Purpose |
 |---|---|
 | [`AGENTS.md`](AGENTS.md) | Binding contributor guidance and implementation guardrails |
+| [`docs/REPOSITORY-STRUCTURE.md`](docs/REPOSITORY-STRUCTURE.md) | Stack-neutral repository boundaries and dependency direction |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Modular-monolith boundaries and dependency rules |
 | [`docs/DATABASE.md`](docs/DATABASE.md) | Data architecture and migration principles |
 | [`docs/MULTI-TENANCY.md`](docs/MULTI-TENANCY.md) | Organization isolation model |
@@ -55,6 +56,8 @@ Every tenant-owned record must be scoped to an organization. AI agents act only 
 
 GitHub is the authoritative source of truth for source code, database migrations, configuration templates, tests, and architecture documentation. The eventual system must run from this repository, environment variables, a database, and standard infrastructure. Manus may be used for development, previews, or initial hosting, but it must never be a required runtime dependency without an explicit architecture decision.
 
+The conceptual repository boundaries, module ownership rules, and dependency direction are defined in [`docs/REPOSITORY-STRUCTURE.md`](docs/REPOSITORY-STRUCTURE.md). They are intentionally stack-neutral and do not require every future directory to exist before meaningful implementation begins.
+
 ## Implementation gate
 
 Before implementation begins, the maintainers must approve the architecture documentation and resolve the implementation gates in [`docs/DECISIONS.md`](docs/DECISIONS.md). Future code and migrations must preserve the architectural boundaries documented here.
@@ -63,3 +66,4 @@ Before implementation begins, the maintainers must approve the architecture docu
 
 [1]: docs/ARCHITECTURE.md "Business OS Architecture"
 [2]: docs/DECISIONS.md "Business OS Architecture Decisions"
+[3]: docs/REPOSITORY-STRUCTURE.md "Business OS Repository Structure"
