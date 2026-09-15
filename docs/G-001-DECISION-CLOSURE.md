@@ -180,7 +180,7 @@ G-009 deployment/CI/CD/operations ─────────────── 
 
 ## G. Maintainer approval block
 
-### G-001 Decision: APPROVE WITH CONDITIONS
+### G-001 Decision: PENDING MAINTAINER APPROVAL
 
 This is the recommended approval form. It is **not an approval by this document**. The maintainer must explicitly accept the exact proposal and all conditions below before G-001 becomes accepted.
 
