@@ -45,7 +45,7 @@ Later work includes shared tasks, files, comments, notifications, events, search
 
 ## Dependencies and sequencing
 
-The highest dependency is **G-001**, which covers the runtime stack, module layout, build system, and testing strategy. A formal proposal has been prepared in [`G-001-STACK-PROPOSAL.md`](G-001-STACK-PROPOSAL.md) recommending TypeScript, NestJS, pnpm workspaces, TypeScript project references, and Vitest. **Approval status: PENDING.** G-001 is not accepted, and implementation remains blocked on maintainer approval. G-003 must then select the database and migration approach, identifier and time conventions, and tenancy enforcement design before the first migration. G-002 must define identity and authorization semantics before security-sensitive core code.
+The highest dependency is **G-001**, which covers the runtime stack, module layout, build system, and testing strategy. A formal proposal has been prepared and has undergone final architecture review in [`G-001-STACK-PROPOSAL.md`](G-001-STACK-PROPOSAL.md). The review recommendation is **APPROVE G-001**, recommending TypeScript, NestJS, pnpm workspaces, TypeScript project references, and Vitest, with package-level boundary and framework-isolation requirements. **Approval status: PENDING maintainer approval.** G-001 is not accepted, and implementation remains blocked on maintainer approval. G-003 must then select the database and migration approach, identifier and time conventions, and tenancy enforcement design before the first migration. G-002 must define identity and authorization semantics before security-sensitive core code.
 
 Reliable events and background execution depend on G-004. Provider adapters depend on G-007. File and storage work depends on G-008. Production delivery depends on G-009. Plugins, AI agents, automation, and application activation depend on the relevant contracts and gates listed in `docs/DECISIONS.md`.
 
@@ -70,7 +70,7 @@ The shared platform boundary could become an overly broad dependency hub if cont
 
 ## Decisions required
 
-The immediate decision is G-001: runtime language/framework, package and module layout, build system, test strategy, and CI-compatible development commands. The proposal is recorded in [`G-001-STACK-PROPOSAL.md`](G-001-STACK-PROPOSAL.md), with TypeScript/NestJS/pnpm/project references/Vitest proposed and approval status **PENDING**. The next decisions are G-002 and G-003: identity/authorization semantics and database/tenancy enforcement. These choices should be recorded in `docs/DECISIONS.md` before implementation begins.
+The immediate decision is G-001: runtime language/framework, package and module layout, build system, test strategy, and CI-compatible development commands. The proposal is recorded in [`G-001-STACK-PROPOSAL.md`](G-001-STACK-PROPOSAL.md), has completed final architecture review with a recommendation to **APPROVE G-001**, and remains **PENDING maintainer approval**. The next decisions are G-002 and G-003: identity/authorization semantics and database/tenancy enforcement. These choices should be recorded in `docs/DECISIONS.md` before implementation begins.
 
 ## Recommended immediate next steps
 

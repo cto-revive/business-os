@@ -166,6 +166,100 @@ The alternatives are rejected for this proposal only, not declared technically u
 - **G-009:** production deployment topology, artifacts, CI/CD service, infrastructure as code, environment promotion, observability, and incident operations.
 - **G-010:** entitlements, application installation, configuration, templates, themes, and marketplace governance.
 
+## Final architecture review
+
+### Modular-monolith boundary model
+
+The proposed stack survives review only when **workspace packages and package export maps**, not NestJS modules alone, define the enforceable architectural boundary. A Nest module is a composition mechanism inside a package or at a delivery edge. It is not permission to import another module's private records or infrastructure.
+
+The recommended implementation model is:
+
+| Conceptual boundary | Recommended package responsibility | Allowed dependencies | Public surface |
+|---|---|---|---|
+| `platform/organizations` | Organization identity, organization context contracts, and organization-scoped actions | Shared contracts only; later persistence through owned ports | Context types, commands, queries, events, and action registrations |
+| `platform/identity` | Provider-neutral identity linkage and principal contracts | Shared contracts and organization public contracts | Principal and membership-facing contracts; no provider SDK |
+| `platform/permissions` | Authorization policies, permission evaluation contracts, and registered authorization actions | Organization and shared contracts | Permission/action contracts and decision results |
+| `platform/teams` | Team domain rules and team-facing actions | Organizations, permissions, shared contracts | Team commands, queries, events, and permissions |
+| `apps/sales` and `apps/commerce` | Domain rules, use cases, owned records, and application contracts | Platform public contracts and shared contracts; never private sibling internals | Published application commands, queries, events, permissions, and action registrations |
+| `execution/ai` | Agent/tool orchestration and provider-neutral agent contracts | Platform/application public contracts and shared contracts | Registered tool/action contracts; no model SDK in domain packages |
+| `execution/automation` | Triggers, conditions, rule execution, and action orchestration | Event/action contracts and platform authorization contracts | Automation contracts and execution outcomes |
+| `extensions/plugins` | Plugin contract and later runtime boundary | Published extension contracts only | Manifest, capability, permission, and lifecycle contracts |
+| `extensions/integrations` | Provider-neutral integration contracts and adapter registration | Platform/application contracts and infrastructure ports | Commands, queries, callbacks, statuses, and error categories |
+| `infrastructure/database` | Database and migration implementations selected in G-003 | Module-owned persistence ports; never domain rules | Implementations wired only at composition roots |
+| `infrastructure/storage` | Object/file storage implementations selected in G-008 | Module-owned storage ports | Provider-neutral storage implementation |
+| `shared/contracts` | Small stable cross-module primitives and wire contracts | No apps, platform implementations, execution implementations, or providers | Versioned primitives only; no domain policy |
+
+These are ownership targets, not directories to create during this review. Each implemented package must have one owner, a concise README, a public export list, a private implementation area, allowed dependencies, forbidden dependencies, organization-scope rules, permissions, events, migrations, adapters, audit behavior, and test commands.
+
+### How bypasses are prevented
+
+A developer or AI agent could bypass a boundary by using a deep relative import, a broad barrel export, a path alias that reaches private code, a direct ORM client, a Nest global module, an erased TypeScript interface as an injection token, a circular package dependency, or a provider SDK imported into domain code. The prevention model is layered:
+
+1. Package `exports` expose only public entry points. Private files are not valid package imports.
+2. Consumers declare explicit `workspace:` dependencies. Undeclared package use fails installation or lint/build checks.
+3. TypeScript composite project references and a root solution build make package relationships explicit and reject invalid project graphs.
+4. ESLint import-boundary rules and a repository dependency-graph check reject forbidden edges, deep imports, cycles, provider imports outside adapters, and framework imports in domain packages.
+5. Architecture tests inspect package manifests and import graphs. They are separate from ordinary unit tests.
+6. CODEOWNERS or equivalent ownership review protects platform, shared contracts, and infrastructure boundary changes.
+7. Runtime bootstrap tests verify Nest tokens, module composition, and worker/API wiring because DI errors can compile successfully.
+
+The `shared` boundary must be kept deliberately narrow. It may contain stable contracts, types, validation primitives, errors, and utilities, but it must not contain application policy, a shared ORM model layer, a global service locator, or a provider client.
+
+### Framework isolation strategy
+
+**Yes, Business OS can use NestJS as an outer application and delivery framework while keeping the actual business architecture framework-independent.** The exact boundary is the package export boundary:
+
+- Domain packages contain pure TypeScript rules and value types. They do not import NestJS, HTTP types, ORM entities, database clients, provider SDKs, decorators, or framework-specific exceptions.
+- Application packages contain use cases and ports. They may depend on domain packages and public platform contracts, but they do not require NestJS when a plain function or class is sufficient.
+- Delivery packages contain Nest controllers, guards, interceptors, pipes, HTTP serialization, and composition modules. They translate external input into validated commands and invoke application contracts.
+- Infrastructure packages implement module-owned ports for persistence, storage, queues, email, messaging, model providers, and external services. Provider SDKs stop at these adapters.
+- Composition roots wire runtime tokens to implementations. TypeScript interfaces are not injection tokens because they are erased at runtime; tokens must be explicit and testable.
+
+Global NestJS modules are prohibited except for narrowly controlled composition-root infrastructure. Circular Nest module references are treated as defects, not solved by `forwardRef` as a default. Nest decorators and DI are therefore replaceable delivery concerns, not part of the domain architecture.
+
+### Human and AI developer maintainability
+
+The repository has enough architectural guidance to start, but the implementation must make the guidance executable. Every package should include ownership, public exports, allowed and forbidden imports, organization-scope rules, permissions, events, migrations, adapters, audit behavior, and validation commands. Root commands must be the only canonical commands documented for CI and local development. A change template should require affected modules, contracts, tenant-scope analysis, authorization analysis, tests, and documentation updates.
+
+Agents and junior engineers are most likely to make semantic errors that TypeScript cannot catch: an unscoped query, a direct provider import, a route-level business rule, a job that trusts stale authorization, or a broad shared utility. Mandatory architecture tests, Organization A/B negative tests, runtime schemas, import checks, and small vertical slices are stronger safeguards than additional framework features.
+
+### Manus-independence verification
+
+Nothing in the proposed base stack requires Manus. A human developer needs a supported Node.js LTS runtime, pnpm, the repository clone, documented environment variables, and later-selected standard infrastructure. Another AI coding agent needs only the repository, its version-controlled instructions, the same dependencies, and the same root validation commands. GitHub stores the source, package manifests, lockfile, configuration templates, tests, migrations, contracts, architecture records, and operational definitions.
+
+The future environment may require a database, object storage, queue/cache, email or messaging provider, identity provider, and model provider, but those are later decisions and must be configured through documented environment variables and adapters. No Manus API, runtime service, database, storage, authentication, queue, deployment mechanism, build tool, environment variable, or conversation state is part of the proposal. Any optional Manus convenience must live outside the Business OS runtime and outside domain packages.
+
+### Compatibility with G-002 through G-010
+
+The proposal leaves sufficient freedom for every later gate. G-002 can select standards-based identity and authorization without changing domain packages because principals, scopes, and permission decisions are contracts. G-003 can select a database, migration tool, and tenancy enforcement method behind module-owned ports. G-004 can select event delivery, queues, scheduling, outbox, and idempotency without making Nest or a specific queue provider part of domain logic. G-005 can choose a plugin manifest and isolation model without making workspace packages executable plugins. G-006 can choose model providers and data policy behind agent/tool interfaces. G-007 can select credentials, OAuth, webhook verification, and providers behind integration adapters. G-008 can select storage behind file/storage ports. G-009 can choose containers, CI/CD, infrastructure as code, and observability using standard Node processes. G-010 can govern installation and entitlements through application and extension contracts.
+
+The stack therefore creates no accidental later-provider commitment, provided the implementation rejects direct SDK imports, provider-shaped domain objects, global infrastructure access, and framework-dependent domain rules.
+
+## Required Changes Before Approval
+
+**No required architectural changes identified.** The proposal already states that NestJS is not the architectural firewall, keeps G-002 through G-010 deferred, and requires package-level contracts and framework-free business code.
+
+Before implementation begins after approval, the accepted G-001 record must preserve these requirements as non-optional acceptance criteria: package export maps; explicit workspace dependencies; project-reference and cycle checks; import-boundary checks; runtime schemas; no NestJS imports in domain packages; no provider SDKs in domain/application packages; explicit runtime injection tokens; and architecture plus tenant-negative tests.
+
+## Optional Improvements
+
+These improvements are useful but should not block G-001:
+
+- Add package-local `README.md` templates and a module manifest format after the first real package exists.
+- Add a dependency-graph visualization for maintainers and AI coding agents.
+- Add a change template that asks for ownership, contract, tenant, authorization, event, and audit impact.
+- Add generated API and contract documentation after the API representation is selected.
+- Add CODEOWNERS and automated dependency-review policy when implementation begins.
+- Reconsider whether a narrower HTTP framework is preferable after the first vertical slice, without moving framework concerns into domain packages.
+
+## Final recommendation
+
+### APPROVE G-001
+
+The proposed TypeScript/NestJS/pnpm stack survives the final architecture review. NestJS can be used as an outer delivery and composition framework while the business architecture remains framework-independent. The recommendation is suitable to proceed to implementation **after explicit maintainer approval**, with the package-boundary, framework-isolation, runtime-validation, import-graph, and architecture-test controls above treated as binding requirements.
+
+G-001 is still **PENDING maintainer approval**. This review does not accept the decision and does not authorize implementation.
+
 ## Approval required
 
 G-001 is **PENDING**. The maintainer must explicitly approve or reject this proposal before implementation begins. Approval should confirm the proposed stack, the boundary-enforcement requirements, the proposed root command surface, and the fact that G-002 through G-010 remain unresolved.
