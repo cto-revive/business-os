@@ -234,7 +234,7 @@ Package `exports` maps are the public API boundary. Consumers must use the ownin
 
 The `shared/` foundation must remain small and dependency-light. Shared packages must not depend on business applications, platform implementations, execution implementations, infrastructure implementations, provider SDKs, ORM/database implementations, NestJS, or application framework code. Shared must not contain application policy, domain services, repositories, ORM models, provider clients, global service locators, or hidden cross-module state. Shared contracts are stable vocabulary, not a second platform core.
 
-pnpm workspaces and TypeScript project references help describe dependency relationships but are **not sufficient architectural enforcement**. Before implementation is considered complete, CI must validate the package dependency graph, forbidden edges, cycles, public exports and deep imports, framework import restrictions, provider SDK import restrictions, package manifests, and architecture tests.
+pnpm workspaces, TypeScript project references, and package `exports` maps help describe or expose dependency relationships but are **not sufficient architectural enforcement**. An export map can be bypassed by source-relative imports, path aliases, workspace filesystem access, or an improperly declared package manifest. Before implementation is considered complete, CI must validate the package dependency graph, forbidden edges, cycles, public exports and deep imports, framework import restrictions, provider SDK import restrictions, package manifests and declared dependencies, and architecture tests. The architecture must remain valid if pnpm is replaced by another package manager or if TypeScript/project-reference tooling is replaced by another build system; those tools enforce the chosen rules but do not define the rules.
 
 ### Runtime validation requirement
 
@@ -276,6 +276,10 @@ If NestJS were removed and replaced with another HTTP or application framework, 
 
 No Manus API, Manus runtime service, Manus database, Manus storage, Manus authentication, Manus queue, Manus deployment dependency, Manus-specific environment variable, Manus-specific build tooling, or Manus conversation state may become part of the Business OS runtime or architecture. Any Manus use for development, preview, or hosting convenience must remain outside the portable runtime and outside domain/application packages.
 
+### Mechanical-enforcement boundary
+
+Static CI can reliably reject many structural violations: forbidden package edges, undeclared dependencies, deep imports, cycles, framework imports in protected packages, provider SDK imports outside adapters, invalid manifests, and missing public exports. Static checks cannot by themselves prove that every query, authorization decision, organization context, event, job, cache key, file reference, provider response, or audit record has correct business semantics. Those requirements need runtime schema tests, contract tests, integration tests, Organization A/B negative tests, and appropriate review. The proposal therefore distinguishes mechanical structural enforcement from behavioral security verification rather than claiming either is sufficient alone.
+
 ## Required Changes Before Approval
 
 The following hardening changes are required before maintainer approval:
@@ -286,6 +290,7 @@ The following hardening changes are required before maintainer approval:
 4. Add CI requirements for dependency graphs, forbidden edges, cycles, exports/deep imports, framework restrictions, provider SDK restrictions, architecture tests, and package manifest validation.
 5. Keep runtime schemas mandatory and provider/library-neutral at every untrusted boundary.
 6. Explicitly protect G-002, G-003, and G-004 from being silently decided by the implementation skeleton.
+7. Ensure the architecture rules remain portable if pnpm, TypeScript project references, or NestJS are replaced; tooling must enforce the architecture rather than become its definition.
 
 These requirements are now incorporated into this proposal. They must be implemented as acceptance criteria after approval; this review does not create the implementation or CI.
 
