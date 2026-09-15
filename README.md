@@ -39,6 +39,8 @@ Every tenant-owned record must be scoped to an organization. AI agents act only 
 |---|---|
 | [`AGENTS.md`](AGENTS.md) | Binding contributor guidance and implementation guardrails |
 | [`docs/REPOSITORY-STRUCTURE.md`](docs/REPOSITORY-STRUCTURE.md) | Stack-neutral repository boundaries and dependency direction |
+| [`docs/IMPLEMENTATION-STATUS.md`](docs/IMPLEMENTATION-STATUS.md) | Honest implementation inventory, gaps, risks, and phases |
+| [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) | Stack-neutral developer and AI-agent workflow requirements |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Modular-monolith boundaries and dependency rules |
 | [`docs/DATABASE.md`](docs/DATABASE.md) | Data architecture and migration principles |
 | [`docs/MULTI-TENANCY.md`](docs/MULTI-TENANCY.md) | Organization isolation model |
