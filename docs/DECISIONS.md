@@ -37,6 +37,14 @@ The following choices must be made before the related implementation starts. The
 | G-009 | Deployment topology, container or artifact strategy, CI/CD, infrastructure-as-code, environment promotion, observability, and incident operations | Production hosting |
 | G-010 | Product entitlement, application installation, configuration, template, theme, and marketplace governance model | Application activation or marketplace functionality |
 
+## Pending proposals
+
+### G-001 — Proposed implementation stack
+
+**Status: PENDING maintainer approval.** [`G-001-STACK-PROPOSAL.md`](G-001-STACK-PROPOSAL.md) recommends TypeScript on a repository-pinned Node.js LTS runtime, NestJS, pnpm workspaces, TypeScript project references, and Vitest. The proposal also recommends package export maps, explicit workspace dependencies, import-boundary and cycle checks, runtime schemas, and framework-free domain/application packages.
+
+This is a reviewable proposal, not an accepted decision. It does not select the database, identity model, authorization semantics, event transport, queue, scheduler, storage, plugin runtime, AI provider, integration credential model, or production deployment topology. Those choices remain in G-002 through G-010. No implementation may begin until the maintainer explicitly approves G-001.
+
 ## Review findings
 
 The architecture contains no unresolved contradiction with the stated product vision. The following tensions are deliberate design constraints that need future detail:
