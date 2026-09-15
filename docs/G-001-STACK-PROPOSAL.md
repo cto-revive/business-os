@@ -217,6 +217,29 @@ The `shared` boundary must be kept deliberately narrow. It may contain stable co
 
 Global NestJS modules are prohibited except for narrowly controlled composition-root infrastructure. Circular Nest module references are treated as defects, not solved by `forwardRef` as a default. Nest decorators and DI are therefore replaceable delivery concerns, not part of the domain architecture.
 
+The framework-isolation rules are binding architecture rules, not style guidance:
+
+- Domain packages have zero NestJS dependencies.
+- Domain and application/use-case packages have zero NestJS dependencies unless a specifically named edge or composition package requires them.
+- Domain and application packages have zero HTTP-framework dependencies.
+- Domain and application packages have zero ORM or database-client dependencies.
+- Domain and application packages have zero provider SDK dependencies.
+- Framework decorators, exceptions, controllers, guards, interceptors, pipes, and DI configuration belong only at delivery or composition edges.
+
+The implementation must mechanically enforce these rules through package manifests, import restrictions, dependency-graph validation, and architecture tests. A code review statement or TypeScript type-check is not sufficient.
+
+### Public package boundaries and shared foundation
+
+Package `exports` maps are the public API boundary. Consumers must use the owning package's public export surface. The implementation must prohibit cross-package relative imports into another package's source, imports of private or internal files, deep imports, path aliases that bypass package exports, and undeclared workspace dependencies. A Nest module export does not override the package export boundary.
+
+The `shared/` foundation must remain small and dependency-light. Shared packages must not depend on business applications, platform implementations, execution implementations, infrastructure implementations, provider SDKs, ORM/database implementations, NestJS, or application framework code. Shared must not contain application policy, domain services, repositories, ORM models, provider clients, global service locators, or hidden cross-module state. Shared contracts are stable vocabulary, not a second platform core.
+
+pnpm workspaces and TypeScript project references help describe dependency relationships but are **not sufficient architectural enforcement**. Before implementation is considered complete, CI must validate the package dependency graph, forbidden edges, cycles, public exports and deep imports, framework import restrictions, provider SDK import restrictions, package manifests, and architecture tests.
+
+### Runtime validation requirement
+
+Runtime validation is mandatory at every untrusted or externally controlled boundary: HTTP requests, webhooks, event payloads, job payloads, plugin inputs, integration callbacks, AI-tool inputs, and external provider responses where appropriate. The concrete schema library remains replaceable and is not selected by G-001. TypeScript types, DTO declarations, or Nest decorators do not substitute for runtime validation.
+
 ### Human and AI developer maintainability
 
 The repository has enough architectural guidance to start, but the implementation must make the guidance executable. Every package should include ownership, public exports, allowed and forbidden imports, organization-scope rules, permissions, events, migrations, adapters, audit behavior, and validation commands. Root commands must be the only canonical commands documented for CI and local development. A change template should require affected modules, contracts, tenant-scope analysis, authorization analysis, tests, and documentation updates.
@@ -235,11 +258,36 @@ The proposal leaves sufficient freedom for every later gate. G-002 can select st
 
 The stack therefore creates no accidental later-provider commitment, provided the implementation rejects direct SDK imports, provider-shaped domain objects, global infrastructure access, and framework-dependent domain rules.
 
+G-001 approval does **not** decide G-002 identity semantics, session semantics, membership semantics, role semantics, permission naming, authorization policy, delegation, impersonation, service principals, or AI/automation principals. The implementation skeleton must not silently establish any of them.
+
+G-001 approval does **not** select G-003's database engine, ORM, migration framework, identifier strategy, transaction strategy, tenant-enforcement mechanism, database-level isolation strategy, or time/timestamp conventions. The skeleton must not introduce a generic ORM or database abstraction that pre-decides G-003.
+
+G-001 approval does **not** introduce any G-004 queue, durable job system, outbox, scheduler, retry system, or event transport. Those remain explicitly deferred to G-004.
+
+### Toolchain versus architecture
+
+Business OS architecture is the durable ownership model, dependency direction, organization isolation, authorization boundary, public-contract model, adapter rule, and extension governance described by the repository documents. Node.js, TypeScript, NestJS, pnpm, Vitest, ESLint, formatting tools, and TypeScript project references are implementation and tooling choices. The conceptual architecture must remain understandable and valid if NestJS, pnpm, Vitest, or another tooling component is replaced.
+
+### Framework replacement test
+
+If NestJS were removed and replaced with another HTTP or application framework, domain and application packages should remain substantially unchanged. The replacement would affect delivery adapters, composition roots, framework wiring, and framework-specific tests. It must not require rewriting domain rules, application use cases, public contracts, organization context, authorization contracts, events, actions, ports, or infrastructure interfaces. This is an explicit acceptance test for framework independence.
+
+### Manus-independence confirmation
+
+No Manus API, Manus runtime service, Manus database, Manus storage, Manus authentication, Manus queue, Manus deployment dependency, Manus-specific environment variable, Manus-specific build tooling, or Manus conversation state may become part of the Business OS runtime or architecture. Any Manus use for development, preview, or hosting convenience must remain outside the portable runtime and outside domain/application packages.
+
 ## Required Changes Before Approval
 
-**No required architectural changes identified.** The proposal already states that NestJS is not the architectural firewall, keeps G-002 through G-010 deferred, and requires package-level contracts and framework-free business code.
+The following hardening changes are required before maintainer approval:
 
-Before implementation begins after approval, the accepted G-001 record must preserve these requirements as non-optional acceptance criteria: package export maps; explicit workspace dependencies; project-reference and cycle checks; import-boundary checks; runtime schemas; no NestJS imports in domain packages; no provider SDKs in domain/application packages; explicit runtime injection tokens; and architecture plus tenant-negative tests.
+1. Treat the zero-framework, zero-ORM, zero-provider-SDK rules for domain/application packages as CI-enforced architecture rules.
+2. Treat package export maps as the public API boundary and prohibit deep imports, private/internal imports, cross-package relative source imports, bypassing aliases, and undeclared workspace dependencies.
+3. Enforce the narrow shared foundation and prohibit shared dependencies on implementations, providers, ORMs, NestJS, and application framework code.
+4. Add CI requirements for dependency graphs, forbidden edges, cycles, exports/deep imports, framework restrictions, provider SDK restrictions, architecture tests, and package manifest validation.
+5. Keep runtime schemas mandatory and provider/library-neutral at every untrusted boundary.
+6. Explicitly protect G-002, G-003, and G-004 from being silently decided by the implementation skeleton.
+
+These requirements are now incorporated into this proposal. They must be implemented as acceptance criteria after approval; this review does not create the implementation or CI.
 
 ## Optional Improvements
 
@@ -254,9 +302,9 @@ These improvements are useful but should not block G-001:
 
 ## Final recommendation
 
-### APPROVE G-001
+### APPROVE G-001 WITH CHANGES
 
-The proposed TypeScript/NestJS/pnpm stack survives the final architecture review. NestJS can be used as an outer delivery and composition framework while the business architecture remains framework-independent. The recommendation is suitable to proceed to implementation **after explicit maintainer approval**, with the package-boundary, framework-isolation, runtime-validation, import-graph, and architecture-test controls above treated as binding requirements.
+The proposed TypeScript/NestJS/pnpm stack remains suitable, and NestJS can be used as an outer delivery and composition framework while the business architecture remains framework-independent. However, the hardening requirements above must be incorporated as binding acceptance criteria before approval. The proposal may proceed to implementation only after those changes are accepted and the maintainer explicitly approves G-001.
 
 G-001 is still **PENDING maintainer approval**. This review does not accept the decision and does not authorize implementation.
 
