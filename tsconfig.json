@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/shared-contracts" },
+    { "path": "./packages/shared-validation" },
+    { "path": "./packages/runtime-config" },
+    { "path": "./packages/api-edge" },
+    { "path": "./packages/worker-edge" }
+  ]
+}

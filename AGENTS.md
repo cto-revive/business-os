@@ -4,7 +4,7 @@
 
 This repository is the authoritative source of truth for Business OS. All production source code, database migrations, configuration templates, automated tests, and architecture documentation must be committed here. Do not place required business logic, schema changes, or operational configuration solely in a hosted builder, a personal workspace, or an undocumented external setting.
 
-The current repository phase is **architecture foundation**. Do not add application functionality, user interfaces, database tables, provider-specific integrations, or a final technology stack until the architecture is explicitly approved. Documentation changes that clarify the approved direction are allowed when they preserve the product vision and this file.
+The current repository phase is **G-001 repository runtime foundation**. G-001 has been approved with conditions. Add only the portable package, tooling, test, CI, configuration, and process-entry foundation authorized by `docs/G-001-DECISION-CLOSURE.md`. Do not add application functionality, user interfaces, database tables, provider-specific integrations, or any G-002 through G-010 implementation.
 
 ## Non-negotiable architectural rules
 

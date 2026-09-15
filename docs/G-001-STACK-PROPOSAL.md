@@ -2,7 +2,7 @@
 
 ## Executive summary
 
-**Proposed stack: TypeScript on a repository-pinned Node.js LTS runtime, NestJS, pnpm workspaces, TypeScript project references, and Vitest.** The proposal is **PENDING maintainer approval**. No implementation should begin on the basis of this proposal alone.
+**Approved G-001 stack: TypeScript on a repository-pinned Node.js LTS runtime, NestJS, pnpm workspaces, TypeScript project references, and Vitest.** The proposal is **APPROVED WITH CONDITIONS** for the Phase 1 repository runtime foundation. Product implementation and G-002 through G-010 work remain prohibited.
 
 The recommendation is for a portable modular monolith with one repository and source-controlled Web/API and worker entry points. NestJS should provide delivery and composition at the edge. Framework-free domain and application packages should expose narrow public contracts. Package exports, workspace dependencies, TypeScript project references, import-boundary checks, cycle checks, runtime schemas, and architecture tests should enforce the boundaries. Nest modules alone are not sufficient as an architectural firewall.
 
@@ -311,7 +311,7 @@ These improvements are useful but should not block G-001:
 
 The proposed TypeScript/NestJS/pnpm stack remains suitable, and NestJS can be used as an outer delivery and composition framework while the business architecture remains framework-independent. However, the hardening requirements above must be incorporated as binding acceptance criteria before approval. The proposal may proceed to implementation only after those changes are accepted and the maintainer explicitly approves G-001.
 
-G-001 is still **PENDING maintainer approval**. This review does not accept the decision and does not authorize implementation.
+G-001 is **APPROVED WITH CONDITIONS** for the Phase 1 repository runtime foundation. This approval does not authorize product implementation or any G-002 through G-010 implementation.
 
 ## Approval required
 

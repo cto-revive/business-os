@@ -2,7 +2,7 @@
 
 **Business OS** is an AI-native, modular, multi-tenant SaaS platform. Each company operates in an isolated organization workspace and can adopt Business OS applications, plugins, integrations, AI agents, templates, and themes as its needs evolve.
 
-> **Current status: architecture foundation only.** This repository intentionally contains no application functionality, database schema, runtime stack selection, or Manus-specific runtime dependency. Implementation may begin only after explicit approval of this architecture.
+> **Current status: G-001 repository runtime foundation.** The approved Phase 1 foundation contains only portable packages, tooling, tests, CI, configuration validation, and minimal process entry points. It contains no product functionality, database schema, migrations, authentication, authorization, durable execution, AI, integrations, plugins, or Manus-specific runtime dependency.
 
 ## Product direction
 
@@ -41,7 +41,8 @@ Every tenant-owned record must be scoped to an organization. AI agents act only 
 | [`docs/REPOSITORY-STRUCTURE.md`](docs/REPOSITORY-STRUCTURE.md) | Stack-neutral repository boundaries and dependency direction |
 | [`docs/IMPLEMENTATION-STATUS.md`](docs/IMPLEMENTATION-STATUS.md) | Honest implementation inventory, gaps, risks, and phases |
 | [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) | Stack-neutral developer and AI-agent workflow requirements |
-| [`docs/G-001-STACK-PROPOSAL.md`](docs/G-001-STACK-PROPOSAL.md) | Pending implementation-stack evaluation and maintainer approval |
+| [`docs/G-001-STACK-PROPOSAL.md`](docs/G-001-STACK-PROPOSAL.md) | Approved G-001 stack and Phase 1 conditions |
+| [`docs/G-001-DECISION-CLOSURE.md`](docs/G-001-DECISION-CLOSURE.md) | G-001 approval conditions and implementation boundary |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Modular-monolith boundaries and dependency rules |
 | [`docs/DATABASE.md`](docs/DATABASE.md) | Data architecture and migration principles |
 | [`docs/MULTI-TENANCY.md`](docs/MULTI-TENANCY.md) | Organization isolation model |
@@ -63,9 +64,9 @@ The conceptual repository boundaries, module ownership rules, and dependency dir
 
 ## Implementation gate
 
-Before implementation begins, the maintainers must approve the architecture documentation and resolve the implementation gates in [`docs/DECISIONS.md`](docs/DECISIONS.md). Future code and migrations must preserve the architectural boundaries documented here.
+Before product implementation begins, future work must preserve the architectural boundaries documented here and resolve the relevant implementation gates in [`docs/DECISIONS.md`](docs/DECISIONS.md). G-001 Phase 1 is approved with conditions; G-002 through G-010 remain pending.
 
-The current G-001 stack proposal is explicitly **pending approval**. It must not be treated as an accepted implementation decision.
+The G-001 stack proposal is approved only for the repository runtime foundation and only with the conditions in [`docs/G-001-DECISION-CLOSURE.md`](docs/G-001-DECISION-CLOSURE.md). It must not be used to silently decide G-002 through G-010.
 
 ## References
 

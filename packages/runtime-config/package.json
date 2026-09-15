@@ -1,0 +1,22 @@
+{
+  "name": "@business-os/runtime-config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@business-os/shared-validation": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "businessOs": {
+    "layer": "foundation",
+    "owner": "platform-foundation"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@business-os/worker-edge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@business-os/runtime-config": "workspace:*"
+  },
+  "scripts": {
+    "dev": "node dist/main.js",
+    "build": "tsc --build"
+  },
+  "businessOs": {
+    "layer": "delivery",
+    "owner": "execution-worker"
+  }
+}

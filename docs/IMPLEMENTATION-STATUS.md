@@ -2,7 +2,7 @@
 
 ## Status summary
 
-Business OS remains at the **pre-implementation foundation** stage. The repository contains architecture, portability, security, tenancy, extensibility, deployment, and repository-boundary documentation. It does not yet contain an application runtime, domain code, database schema, migrations, API, UI, integrations, AI provider adapters, automation engine, plugin runtime, tests, or CI pipeline.
+Business OS is in the **G-001 repository runtime foundation** stage. The repository contains the approved portable workspace, strict TypeScript project references, delivery-edge process entry points, configuration validation, architecture checks, tests, and CI. It does not contain product functionality, domain code, database schema, migrations, authentication, authorization, integrations, AI provider adapters, automation engine, plugin runtime, or production provider implementations.
 
 Documented architecture is not implemented functionality. No component should be represented as available until source code and appropriate tests exist in the repository.
 
@@ -12,32 +12,32 @@ Documented architecture is not implemented functionality. No component should be
 |---|---|---|
 | Repository authority | Implemented as a repository policy | `AGENTS.md`, `README.md`, ADR-008 |
 | Architecture | Documented; not implemented | `docs/ARCHITECTURE.md` |
-| Repository boundaries | Documented conceptually; directories are intentionally not populated | `docs/REPOSITORY-STRUCTURE.md`, ADR-011 |
+| Repository boundaries | Documented and partially implemented for Phase 1 packages | `docs/REPOSITORY-STRUCTURE.md`, `packages/`, ADR-011 |
 | Organization tenancy | Documented only | `docs/MULTI-TENANCY.md` |
 | Identity and permissions | Documented only | `docs/PERMISSIONS.md` |
 | Platform core | Not implemented | `docs/APPS.md`, `docs/ARCHITECTURE.md` |
 | Business applications | Product areas are planned; no application code exists | `docs/APPS.md`, `README.md` |
 | Database and persistence | Rules are documented; no engine, schema, or migration exists | `docs/DATABASE.md` |
-| API and interfaces | Not implemented | `docs/ARCHITECTURE.md` |
+| API and interfaces | Minimal delivery-edge health process only; no product API | `packages/api-edge`, `docs/ARCHITECTURE.md` |
 | Integrations and adapters | Contracts are documented; no provider adapter exists | `docs/INTEGRATIONS.md` |
 | Plugins | Extension boundary is documented; no runtime exists | `docs/PLUGINS.md` |
 | AI agents | Governance is documented; no agent runtime or model adapter exists | `docs/AI-AGENTS.md` |
-| Automation and jobs | Execution rules are documented; no engine, queue, scheduler, or worker exists | `docs/AUTOMATION.md` |
+| Automation and jobs | Execution rules are documented; no durable engine, queue, scheduler, or worker exists; startup-only worker edge exists | `docs/AUTOMATION.md`, `packages/worker-edge` |
 | Storage and files | Abstraction is required; no implementation exists | `docs/DATABASE.md`, `docs/DEPLOYMENT.md` |
-| Tests | No test framework or tests exist | Repository inspection |
-| CI/CD | No pipeline exists | Repository inspection |
+| Tests | Vitest unit, contract, architecture, integration, and e2e foundation tests exist | `tests/`, `vitest.config.ts` |
+| CI/CD | Portable GitHub Actions validation pipeline exists | `.github/workflows/ci.yml` |
 | Deployment | Portability requirements are documented; no deployable artifact exists | `docs/DEPLOYMENT.md` |
 | Manus dependency | No Manus runtime dependency is present or required | Repository inspection |
 
 ## Completed foundation work
 
-The repository has completed the documentation phase and the stack-neutral repository-boundary phase. It contains the architecture contract, contributor guardrails, environment template, ignore rules, product map, module ownership rules, portability requirements, implementation gates, and architecture decision records through ADR-011.
+The repository has completed the documentation phase, stack-neutral repository-boundary phase, and the initial G-001 runtime foundation. It contains the architecture contract, contributor guardrails, environment template, ignore rules, product map, module ownership rules, portability requirements, implementation gates, architecture decision records through ADR-011, and a portable package/tooling/test/CI foundation.
 
 The conceptual structure distinguishes applications, platform capabilities, horizontal execution, extensions, infrastructure adapters, shared contracts, configuration, tests, tooling, and documentation. No empty directories were created merely to make the conceptual tree appear complete.
 
 ## Missing components
 
-The first implementation slice still requires a selected runtime and development stack before code can be created responsibly. After that decision, the repository needs a buildable project skeleton, validated configuration loading, a test runner, formatting and linting, type checking where applicable, portable local-development commands, and independent CI.
+The Phase 1 foundation is implemented and validated. It intentionally does not implement the first product slice. The next required decisions are G-002 and G-003 before identity/authorization or persistence work can begin.
 
 The core domain then needs organization context, identity linkage, memberships, teams, centralized authorization, and the minimum persistence boundary required to test tenant isolation. Those components must be introduced with migrations, deterministic test data, negative authorization tests, and documentation updates.
 
@@ -45,13 +45,13 @@ Later work includes shared tasks, files, comments, notifications, events, search
 
 ## Dependencies and sequencing
 
-The highest dependency is **G-001**, which covers the runtime stack, module layout, build system, and testing strategy. A formal proposal has undergone final architecture review and two required hardening passes in [`G-001-STACK-PROPOSAL.md`](G-001-STACK-PROPOSAL.md). A complete implementation-readiness audit and phased plan are recorded in [`G-001-READINESS-AUDIT.md`](G-001-READINESS-AUDIT.md). The current recommendation is **APPROVE G-001 WITH CHANGES**, retaining TypeScript, NestJS, pnpm workspaces, TypeScript project references, and Vitest while requiring CI-enforced framework isolation, package export boundaries, shared-foundation restrictions, forbidden-edge validation, runtime schemas, tooling-replacement portability, and explicit protection of G-002 through G-004. **Approval status: PENDING maintainer approval.** G-001 is not accepted, and implementation remains blocked on maintainer approval. G-003 must then select the database and migration approach, identifier and time conventions, and tenancy enforcement design before the first migration. G-002 must define identity and authorization semantics before security-sensitive core code.
+The highest dependency, G-001, is **approved with conditions for the repository runtime foundation**. The accepted implementation boundary is recorded in [`G-001-DECISION-CLOSURE.md`](G-001-DECISION-CLOSURE.md). The foundation retains TypeScript, NestJS at delivery/composition edges, pnpm workspaces, TypeScript project references, Vitest, package export boundaries, architecture checks, runtime configuration validation, and Manus independence. G-002 must define identity and authorization semantics before security-sensitive core code. G-003 must select the database and migration approach, identifier and time conventions, and tenancy enforcement design before the first migration. G-004 remains required before durable execution.
 
 Reliable events and background execution depend on G-004. Provider adapters depend on G-007. File and storage work depends on G-008. Production delivery depends on G-009. Plugins, AI agents, automation, and application activation depend on the relevant contracts and gates listed in `docs/DECISIONS.md`.
 
 ## Known gaps and risks
 
-The current repository cannot be built or executed because no implementation stack has been selected. Attempting to add a CI pipeline, database foundation, or application skeleton now would either produce non-functional scaffolding or silently decide G-001.
+The current foundation can be installed, checked, tested, built, and started without Manus. It is intentionally not a product runtime. The remaining risk is accidental expansion into G-002 through G-010 while adding future features.
 
 Tenant isolation is a security boundary, but its enforcement mechanism is not selected. A weak choice could permit cross-organization access through queries, jobs, caches, search, files, integrations, or agents. This must be resolved with defense in depth and negative tests before tenant-owned persistence is introduced.
 
@@ -59,7 +59,7 @@ The shared platform boundary could become an overly broad dependency hub if cont
 
 ## Implementation phases
 
-1. **Foundation:** Select G-001; establish the stack-neutral project skeleton, configuration validation, test tooling, development commands, documentation conventions, and independent CI.
+1. **Foundation:** G-001 runtime foundation is complete with documented limitations; preserve its package and CI boundaries.
 2. **Core domain:** Implement the minimum organization, identity-linkage, membership, team, and authorization domain with persistence and migrations.
 3. **Security:** Enforce organization scope server-side and prove it through authorization, tenant-isolation, administrative, job, and integration-context tests.
 4. **API and application layer:** Add published commands, queries, validation, error handling, observability, and API contracts without coupling domain logic to a UI.
@@ -70,11 +70,11 @@ The shared platform boundary could become an overly broad dependency hub if cont
 
 ## Decisions required
 
-The immediate decision is G-001: runtime language/framework, package and module layout, build system, test strategy, and CI-compatible development commands. The proposal is recorded in [`G-001-STACK-PROPOSAL.md`](G-001-STACK-PROPOSAL.md), and the readiness audit and implementation plan are recorded in [`G-001-READINESS-AUDIT.md`](G-001-READINESS-AUDIT.md). G-001 has completed final architecture review and two hardening passes with a recommendation to **APPROVE G-001 WITH CHANGES**, and remains **PENDING maintainer approval**. The next decisions are G-002 and G-003: identity/authorization semantics and database/tenancy enforcement. These choices should be recorded in `docs/DECISIONS.md` before implementation begins.
+G-001 is approved with conditions for Phase 1 only. The approval conditions and exclusions are recorded in [`G-001-DECISION-CLOSURE.md`](G-001-DECISION-CLOSURE.md). The next decisions are G-002 and G-003: identity/authorization semantics and database/tenancy enforcement. These choices must be recorded in `docs/DECISIONS.md` before the corresponding implementation begins.
 
 ## Recommended immediate next steps
 
-Resolve G-001 without introducing Manus-specific dependencies. Update this status document and `docs/DECISIONS.md` with the accepted stack decision. Then create the smallest runnable project skeleton, configuration validation, tests, linting/type-checking where applicable, and CI. Do not create application schemas or broad platform modules until G-002 and G-003 are resolved.
+Preserve the Phase 1 foundation without introducing Manus-specific dependencies. Resolve G-002 and G-003 before authentication, authorization, persistence, schemas, or broad platform modules. Resolve G-004 before durable events, jobs, queues, webhooks, automation, or worker execution.
 
 ## References
 
@@ -87,3 +87,4 @@ Resolve G-001 without introducing Manus-specific dependencies. Update this statu
 [7]: DECISIONS.md "Business OS Architecture Decisions"
 [8]: G-001-STACK-PROPOSAL.md "Business OS G-001 Stack Proposal"
 [9]: G-001-READINESS-AUDIT.md "Business OS G-001 Implementation Readiness Audit and Plan"
+[10]: G-001-DECISION-CLOSURE.md "Business OS G-001 Decision Closure"

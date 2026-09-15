@@ -25,6 +25,7 @@ dist/
 out/
 .cache/
 .tmp/
+*.tsbuildinfo
 
 # Local tooling state
 .venv/

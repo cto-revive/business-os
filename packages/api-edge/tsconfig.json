@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "references": [{ "path": "../runtime-config" }, { "path": "../shared-contracts" }],
+  "include": ["src/**/*.ts"]
+}

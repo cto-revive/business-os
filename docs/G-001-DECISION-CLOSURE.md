@@ -2,7 +2,7 @@
 
 ## Purpose and current status
 
-This document converts the completed implementation-readiness audit into a precise maintainer-approval package. It does not accept G-001 and does not authorize implementation.
+This document converts the completed implementation-readiness audit into a precise maintainer-approval package. The maintainer has approved G-001 with conditions for the Phase 1 repository runtime foundation. It does not authorize product implementation or any G-002 through G-010 implementation.
 
 The repository's committed readiness audit is [`G-001-READINESS-AUDIT.md`](G-001-READINESS-AUDIT.md). The task instruction referred to `G-001-IMPLEMENTATION-READINESS-AUDIT.md`; that filename does not exist in the current repository. The committed `G-001-READINESS-AUDIT.md` is the authoritative audit used here. Inspection of the current `main` branch found no later commit that changes its conclusions: the repository remains documentation-only, G-001 remains pending, and the later gates remain unresolved.
 
@@ -180,9 +180,9 @@ G-009 deployment/CI/CD/operations ─────────────── 
 
 ## G. Maintainer approval block
 
-### G-001 Decision: PENDING MAINTAINER APPROVAL
+### G-001 Decision: APPROVED WITH CONDITIONS
 
-This is the recommended approval form. It is **not an approval by this document**. The maintainer must explicitly accept the exact proposal and all conditions below before G-001 becomes accepted.
+The maintainer explicitly approved the exact proposal and all conditions below. This approval is limited to the Phase 1 repository runtime foundation.
 
 Conditions to accept:
 
@@ -211,7 +211,7 @@ The task must explicitly exclude product functionality, tenant-owned persistence
 
 No existing architectural decision is contradicted by this closure package. The package makes the pending G-001 proposal precise and defines the exact implementation boundary after approval without accepting G-001 or resolving later gates.
 
-**G-001 remains PENDING maintainer approval.**
+**G-001 is approved with conditions for Phase 1 only. G-002 through G-010 remain pending.**
 
 ## References
 
