@@ -19,6 +19,7 @@ This document records the durable architectural decisions that govern Business O
 | ADR-009 | Prohibit optional-plugin dependency from core | Accepted | Plugins use documented extension points and cannot modify core source |
 | ADR-010 | Version-control all database evolution | Accepted | Schema changes require repository migrations and documented deployment procedures |
 | ADR-011 | Define a stack-neutral conceptual repository structure | Accepted | Organize future apps, platform capabilities, execution, extensions, infrastructure, shared contracts, tests, tooling, and documentation by ownership and dependency direction without selecting implementation technologies |
+| ADR-012 | Adopt the G-002 identity and authorization contract | Accepted | Establishes provider-neutral identity, authentication, session, membership, principal, authorization, delegation, revocation, and audit semantics without implementing runtime infrastructure |
 
 ## Implementation gates
 
@@ -37,19 +38,31 @@ The following choices must be made before the related implementation starts. The
 | G-009 | Deployment topology, container or artifact strategy, CI/CD, infrastructure-as-code, environment promotion, observability, and incident operations | Production hosting |
 | G-010 | Product entitlement, application installation, configuration, template, theme, and marketplace governance model | Application activation or marketplace functionality |
 
-## Pending proposals
+## Gate decisions
 
 ### G-001 — Approved implementation stack
 
 **Status: ACCEPTED WITH CONDITIONS.** The maintainer approved the Phase 1 repository runtime foundation. [`G-001-STACK-PROPOSAL.md`](G-001-STACK-PROPOSAL.md) specifies TypeScript on a repository-pinned Node.js LTS runtime, NestJS at delivery/composition edges, pnpm workspaces, TypeScript project references, and Vitest. The accepted conditions require package export maps, explicit workspace dependencies, import-boundary and cycle checks, runtime validation at exposed untrusted boundaries, framework-free domain/application packages, and the exclusions recorded in [`G-001-DECISION-CLOSURE.md`](G-001-DECISION-CLOSURE.md).
 
-This acceptance is limited to the repository runtime foundation. It does not select the database, identity model, authorization semantics, event transport, queue, scheduler, storage, plugin runtime, AI provider, integration credential model, or production deployment topology. Those choices remain in G-002 through G-010. Product implementation remains blocked by the relevant later gates.
+This acceptance is limited to the repository runtime foundation. It does not select the database, event transport, queue, scheduler, storage, plugin runtime, AI provider, integration credential model, or production deployment topology. Those choices remain in G-003 through G-010. Product implementation remains blocked by the relevant later gates.
 
-### G-002 — Proposed identity and authorization model
+### G-002 — Approved identity and authorization contract
 
-**Status: PENDING maintainer approval.** [`G-002-DECISION-CLOSURE.md`](G-002-DECISION-CLOSURE.md) proposes globally unique human identities, organization-scoped memberships, provider-neutral OIDC Authorization Code with PKCE, opaque server-side sessions, explicit organization switching, deny-by-default RBAC with scoped grants and narrow resource predicates, distinct non-human principal kinds, constrained delegation, no baseline impersonation or break-glass access, separation of duties for high-risk actions, explicit revocation, and structured audit records.
+**Gate:** G-002
 
-The proposal does not implement authentication or authorization and does not select a provider SDK, database, session store, credential store, queue, event system, or production infrastructure. G-003, G-004, and G-007 remain dependencies for the corresponding implementation work. G-002 is not accepted until the maintainer explicitly approves the specification.
+**Decision:** **APPROVED**
+
+**Approval date:** 2026-09-16
+
+**Maintainer/owner:** Business OS maintainer
+
+**Approved document:** [`G-002-DECISION-CLOSURE.md`](G-002-DECISION-CLOSURE.md)
+
+**Approved document commit:** `48b4f2bd9febba9dffeb98d5f9fa99946b76e213`
+
+The G-002 identity and authorization contract in the approved document is now authoritative for Business OS. It defines provider-neutral OIDC Authorization Code with PKCE semantics, authentication assurance, identity linkage, opaque server-side session semantics, organization membership and switching, deny-by-default authorization, distinct principal kinds, delegation, revocation, separation of duties, and audit requirements.
+
+This approval records governance only. It does not implement authentication, authorization, sessions, memberships, roles, permissions, credentials, providers, schemas, migrations, queues, events, AI, plugins, integrations, storage, or production infrastructure. Implementation remains gated by G-003, G-004, and G-007 where specified in the approved document. **Deviations: NONE.**
 
 ## Review findings
 
