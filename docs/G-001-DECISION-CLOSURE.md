@@ -4,7 +4,7 @@
 
 This document converts the completed implementation-readiness audit into a precise maintainer-approval package. The maintainer has approved G-001 with conditions for the Phase 1 repository runtime foundation. It does not authorize product implementation or any G-002 through G-010 implementation.
 
-The repository's committed readiness audit is [`G-001-READINESS-AUDIT.md`](G-001-READINESS-AUDIT.md). The task instruction referred to `G-001-IMPLEMENTATION-READINESS-AUDIT.md`; that filename does not exist in the current repository. The committed `G-001-READINESS-AUDIT.md` is the authoritative audit used here. Inspection of the current `main` branch found no later commit that changes its conclusions: the repository remains documentation-only, G-001 remains pending, and the later gates remain unresolved.
+The repository's committed readiness audit is [`G-001-READINESS-AUDIT.md`](G-001-READINESS-AUDIT.md). The task instruction referred to `G-001-IMPLEMENTATION-READINESS-AUDIT.md`; that filename does not exist in the current repository. The committed audit is historical input to this closure. The current `main` branch contains the approved Phase 1 runtime foundation; G-001 is closed, and the later gates remain unresolved.
 
 ## A. G-001 decision proposed for approval
 
@@ -44,12 +44,12 @@ The table distinguishes accepted architectural requirements from the proposed G-
 | Optional plugins cannot be core dependencies | Accepted in ADR-009 | Preserve | No new approval; plugin model remains G-005 | Core remains operable without optional plugins |
 | Version-controlled database evolution | Accepted in ADR-010 | Preserve | No new approval; database and migration choices remain G-003 | Schema changes remain repository-owned migrations |
 | Stack-neutral conceptual repository structure | Accepted in ADR-011 | Preserve | No new approval; physical package implementation follows G-001 | Ownership and dependency direction remain understandable across tooling changes |
-| G-001 runtime and language | Pending proposal | Node.js LTS and strict TypeScript | **Yes** | Establishes the portable language/runtime foundation |
-| G-001 package manager and workspace | Pending proposal | pnpm workspaces with explicit workspace dependencies | **Yes** | Establishes package installation and local dependency workflow |
-| G-001 framework and composition | Pending proposal | NestJS at delivery/composition edges only | **Yes** | Provides outer application composition without making the domain framework-dependent |
-| G-001 build and type checking | Pending proposal | TypeScript project references and clean `tsc --build` | **Yes** | Provides strict build/type-check feedback and explicit project relationships |
-| G-001 test framework | Pending proposal | Vitest test projects | **Yes** | Establishes unit, contract, integration, and end-to-end test execution |
-| G-001 architecture enforcement | Pending proposal | CI graph, forbidden-edge, export, cycle, manifest, import, and architecture checks | **Yes** | Makes package and framework rules executable rather than documentation-only |
+| G-001 runtime and language | Accepted with conditions | Node.js LTS and strict TypeScript | Closed | Establishes the portable language/runtime foundation |
+| G-001 package manager and workspace | Accepted with conditions | pnpm workspaces with explicit workspace dependencies | Closed | Establishes package installation and local dependency workflow |
+| G-001 framework and composition | Accepted with conditions | NestJS at delivery/composition edges only | Closed | Provides outer application composition without making the domain framework-dependent |
+| G-001 build and type checking | Accepted with conditions | TypeScript project references and clean `tsc --build` | Closed | Provides strict build/type-check feedback and explicit project relationships |
+| G-001 test framework | Accepted with conditions | Vitest test projects | Closed | Establishes unit, contract, integration, and end-to-end test execution |
+| G-001 architecture enforcement | Accepted with conditions | CI graph, forbidden-edge, export, cycle, manifest, import, and architecture checks | Closed | Makes package and framework rules executable rather than documentation-only |
 | G-001 runtime schema mechanism | Requirement established; library pending | Use a replaceable runtime-schema mechanism | **Yes, for the requirement; no library selection in G-001** | External data is validated without locking the architecture to a schema vendor |
 | G-002 identity, sessions, memberships, roles, and authorization | Not yet defined | Remain pending | **Yes, in G-002** | Blocks authentication and authorization implementation |
 | G-003 database, ORM, migrations, IDs, time, transactions, tenancy | Not yet defined | Remain pending | **Yes, in G-003** | Blocks persistent tenant-owned records and migrations |
@@ -123,7 +123,7 @@ The following remain prohibited after G-001 approval:
 
 ## E. Required G-001 acceptance criteria
 
-The maintainer should approve G-001 only with the following objective acceptance criteria. They are acceptance criteria for the later implementation, not claims that they currently pass.
+G-001 was approved with the following objective acceptance criteria. They remain the verification criteria for the Phase 1 foundation; they are not authorization for G-002 through G-010 implementation.
 
 1. A new developer can clone the repository from GitHub.
 2. Dependencies can be installed with documented standard tooling and a committed lockfile.

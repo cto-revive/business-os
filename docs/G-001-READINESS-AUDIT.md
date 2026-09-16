@@ -1,5 +1,7 @@
 # G-001 Implementation Readiness Audit and Plan
 
+> **Historical snapshot.** This audit records the repository state before G-001 approval and implementation. G-001 is now closed; the current status is recorded in [`G-001-DECISION-CLOSURE.md`](G-001-DECISION-CLOSURE.md) and [`IMPLEMENTATION-STATUS.md`](IMPLEMENTATION-STATUS.md).
+
 ## Executive summary
 
 Business OS is **not yet ready to begin product implementation**. It is ready for a controlled **decision-closure and repository-foundation phase** only.

@@ -45,6 +45,12 @@ The following choices must be made before the related implementation starts. The
 
 This acceptance is limited to the repository runtime foundation. It does not select the database, identity model, authorization semantics, event transport, queue, scheduler, storage, plugin runtime, AI provider, integration credential model, or production deployment topology. Those choices remain in G-002 through G-010. Product implementation remains blocked by the relevant later gates.
 
+### G-002 — Proposed identity and authorization model
+
+**Status: PENDING maintainer approval.** [`G-002-DECISION-CLOSURE.md`](G-002-DECISION-CLOSURE.md) proposes globally unique human identities, organization-scoped memberships, provider-neutral OIDC Authorization Code with PKCE, opaque server-side sessions, explicit organization switching, deny-by-default RBAC with scoped grants and narrow resource predicates, distinct non-human principal kinds, constrained delegation, no baseline impersonation or break-glass access, separation of duties for high-risk actions, explicit revocation, and structured audit records.
+
+The proposal does not implement authentication or authorization and does not select a provider SDK, database, session store, credential store, queue, event system, or production infrastructure. G-003, G-004, and G-007 remain dependencies for the corresponding implementation work. G-002 is not accepted until the maintainer explicitly approves the specification.
+
 ## Review findings
 
 The architecture contains no unresolved contradiction with the stated product vision. The following tensions are deliberate design constraints that need future detail:

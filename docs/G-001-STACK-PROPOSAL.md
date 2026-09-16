@@ -315,7 +315,7 @@ G-001 is **APPROVED WITH CONDITIONS** for the Phase 1 repository runtime foundat
 
 ## Approval required
 
-G-001 is **PENDING**. The maintainer must explicitly approve or reject this proposal before implementation begins. Approval should confirm the proposed stack, the boundary-enforcement requirements, the proposed root command surface, and the fact that G-002 through G-010 remain unresolved.
+G-001 is **CLOSED — APPROVED WITH CONDITIONS**. The maintainer approved the proposed stack, boundary-enforcement requirements, and root command surface for the Phase 1 repository runtime foundation. G-002 through G-010 remain unresolved, and this approval does not authorize their implementation.
 
 No `package.json`, framework source, database file, migration, application directory, UI, API implementation, CI workflow, Docker deployment, authentication, or infrastructure implementation was created for this proposal.
 

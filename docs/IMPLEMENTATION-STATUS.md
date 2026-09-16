@@ -2,7 +2,7 @@
 
 ## Status summary
 
-Business OS is in the **G-001 repository runtime foundation** stage. The repository contains the approved portable workspace, strict TypeScript project references, delivery-edge process entry points, configuration validation, architecture checks, tests, and CI. It does not contain product functionality, domain code, database schema, migrations, authentication, authorization, integrations, AI provider adapters, automation engine, plugin runtime, or production provider implementations.
+Business OS is in the **G-002 decision-closure and architecture-specification** stage. G-001 is closed. The repository contains the approved portable workspace, strict TypeScript project references, delivery-edge process entry points, configuration validation, architecture checks, tests, and CI, plus the pending G-002 specification. It does not contain product functionality, domain code, database schema, migrations, authentication, authorization, integrations, AI provider adapters, automation engine, plugin runtime, or production provider implementations.
 
 Documented architecture is not implemented functionality. No component should be represented as available until source code and appropriate tests exist in the repository.
 
@@ -14,7 +14,7 @@ Documented architecture is not implemented functionality. No component should be
 | Architecture | Documented; not implemented | `docs/ARCHITECTURE.md` |
 | Repository boundaries | Documented and partially implemented for Phase 1 packages | `docs/REPOSITORY-STRUCTURE.md`, `packages/`, ADR-011 |
 | Organization tenancy | Documented only | `docs/MULTI-TENANCY.md` |
-| Identity and permissions | Documented only | `docs/PERMISSIONS.md` |
+| Identity and permissions | G-002 specification proposed; not implemented | `docs/G-002-DECISION-CLOSURE.md`, `docs/PERMISSIONS.md` |
 | Platform core | Not implemented | `docs/APPS.md`, `docs/ARCHITECTURE.md` |
 | Business applications | Product areas are planned; no application code exists | `docs/APPS.md`, `README.md` |
 | Database and persistence | Rules are documented; no engine, schema, or migration exists | `docs/DATABASE.md` |
@@ -37,7 +37,7 @@ The conceptual structure distinguishes applications, platform capabilities, hori
 
 ## Missing components
 
-The Phase 1 foundation is implemented and validated. It intentionally does not implement the first product slice. The next required decisions are G-002 and G-003 before identity/authorization or persistence work can begin.
+The Phase 1 foundation is implemented and validated. It intentionally does not implement the first product slice. The G-002 specification is now proposed and pending maintainer approval. G-003 remains required before identity/authorization persistence or tenant-owned data work can begin.
 
 The core domain then needs organization context, identity linkage, memberships, teams, centralized authorization, and the minimum persistence boundary required to test tenant isolation. Those components must be introduced with migrations, deterministic test data, negative authorization tests, and documentation updates.
 
@@ -45,7 +45,7 @@ Later work includes shared tasks, files, comments, notifications, events, search
 
 ## Dependencies and sequencing
 
-The highest dependency, G-001, is **approved with conditions for the repository runtime foundation**. The accepted implementation boundary is recorded in [`G-001-DECISION-CLOSURE.md`](G-001-DECISION-CLOSURE.md). The foundation retains TypeScript, NestJS at delivery/composition edges, pnpm workspaces, TypeScript project references, Vitest, package export boundaries, architecture checks, runtime configuration validation, and Manus independence. G-002 must define identity and authorization semantics before security-sensitive core code. G-003 must select the database and migration approach, identifier and time conventions, and tenancy enforcement design before the first migration. G-004 remains required before durable execution.
+The highest dependency, G-001, is **closed with conditions for the repository runtime foundation**. The active G-002 specification is pending maintainer approval. G-003 must select the database and migration approach, identifier and time conventions, and tenancy enforcement design before identity/authorization persistence or the first migration. G-004 remains required before durable execution.
 
 Reliable events and background execution depend on G-004. Provider adapters depend on G-007. File and storage work depends on G-008. Production delivery depends on G-009. Plugins, AI agents, automation, and application activation depend on the relevant contracts and gates listed in `docs/DECISIONS.md`.
 
@@ -60,7 +60,7 @@ The shared platform boundary could become an overly broad dependency hub if cont
 ## Implementation phases
 
 1. **Foundation:** G-001 runtime foundation is complete with documented limitations; preserve its package and CI boundaries.
-2. **Core domain:** Implement the minimum organization, identity-linkage, membership, team, and authorization domain with persistence and migrations.
+2. **Governance:** Close G-002 and G-003 before implementing identity, membership, authorization, or persistence.
 3. **Security:** Enforce organization scope server-side and prove it through authorization, tenant-isolation, administrative, job, and integration-context tests.
 4. **API and application layer:** Add published commands, queries, validation, error handling, observability, and API contracts without coupling domain logic to a UI.
 5. **Shared platform capabilities:** Add tasks and other shared services only when their contracts and ownership are sufficiently defined.
@@ -70,7 +70,7 @@ The shared platform boundary could become an overly broad dependency hub if cont
 
 ## Decisions required
 
-G-001 is approved with conditions for Phase 1 only. The approval conditions and exclusions are recorded in [`G-001-DECISION-CLOSURE.md`](G-001-DECISION-CLOSURE.md). The next decisions are G-002 and G-003: identity/authorization semantics and database/tenancy enforcement. These choices must be recorded in `docs/DECISIONS.md` before the corresponding implementation begins.
+G-001 is closed with conditions for Phase 1 only. The G-002 identity and authorization specification is pending maintainer approval. G-003 remains pending for database, persistence, and tenancy enforcement. These choices must be recorded in `docs/DECISIONS.md` before corresponding implementation begins.
 
 ## Recommended immediate next steps
 
