@@ -2,7 +2,7 @@
 
 **Business OS** is an AI-native, modular, multi-tenant SaaS platform. Each company operates in an isolated organization workspace and can adopt Business OS applications, plugins, integrations, AI agents, templates, and themes as its needs evolve.
 
-> **Current status: G-002 decision closure and architecture specification.** G-001 is closed. This phase adds only the implementation-ready G-002 identity and authorization specification; it contains no authentication, authorization, sessions, memberships, roles, permissions, credentials, identity infrastructure, database schema, migrations, durable execution, AI, integrations, plugins, or Manus-specific runtime dependency.
+> **Current status: G-003 database, persistence, and tenancy decision closure.** G-001 and G-002 are closed. This phase adds only the implementation-ready G-003 persistence specification; it contains no database, schema, migration, ORM model, persistence package, authentication persistence, application record, durable execution, AI, integrations, plugins, or Manus-specific runtime dependency.
 
 ## Product direction
 
@@ -44,6 +44,7 @@ Every tenant-owned record must be scoped to an organization. AI agents act only 
 | [`docs/G-001-STACK-PROPOSAL.md`](docs/G-001-STACK-PROPOSAL.md) | Approved G-001 stack and Phase 1 conditions |
 | [`docs/G-001-DECISION-CLOSURE.md`](docs/G-001-DECISION-CLOSURE.md) | G-001 approval conditions and implementation boundary |
 | [`docs/G-002-DECISION-CLOSURE.md`](docs/G-002-DECISION-CLOSURE.md) | Pending G-002 identity and authorization specification |
+| [`docs/G-003-DECISION-CLOSURE.md`](docs/G-003-DECISION-CLOSURE.md) | Pending G-003 database, persistence, and tenancy specification |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Modular-monolith boundaries and dependency rules |
 | [`docs/DATABASE.md`](docs/DATABASE.md) | Data architecture and migration principles |
 | [`docs/MULTI-TENANCY.md`](docs/MULTI-TENANCY.md) | Organization isolation model |
@@ -65,9 +66,9 @@ The conceptual repository boundaries, module ownership rules, and dependency dir
 
 ## Implementation gate
 
-Before product implementation begins, future work must preserve the architectural boundaries documented here and resolve the relevant implementation gates in [`docs/DECISIONS.md`](docs/DECISIONS.md). G-001 Phase 1 is approved with conditions; G-002 through G-010 remain pending.
+Before product implementation begins, future work must preserve the architectural boundaries documented here and resolve the relevant implementation gates in [`docs/DECISIONS.md`](docs/DECISIONS.md). G-001 and G-002 are closed; G-003 through G-010 remain pending.
 
-G-001 is closed for the repository runtime foundation. The G-002 specification in [`docs/G-002-DECISION-CLOSURE.md`](docs/G-002-DECISION-CLOSURE.md) is pending maintainer approval and does not authorize authentication or authorization implementation.
+G-001 is closed for the repository runtime foundation. G-002 is approved as the identity and authorization contract, but its implementation remains gated by G-003, G-004, and G-007 where specified. The G-003 specification in [`docs/G-003-DECISION-CLOSURE.md`](docs/G-003-DECISION-CLOSURE.md) is pending maintainer approval and does not authorize database implementation.
 
 ## References
 

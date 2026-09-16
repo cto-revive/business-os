@@ -4,7 +4,7 @@
 
 This repository is the authoritative source of truth for Business OS. All production source code, database migrations, configuration templates, automated tests, and architecture documentation must be committed here. Do not place required business logic, schema changes, or operational configuration solely in a hosted builder, a personal workspace, or an undocumented external setting.
 
-The current repository phase is **G-002 decision closure and architecture specification**. G-001 is closed. During this phase, add only the G-002 specification and required decision-record updates. Do not add authentication, authorization, sessions, memberships, roles, permissions, credentials, identity infrastructure, application functionality, database tables, provider-specific integrations, or any G-003 through G-010 implementation.
+The current repository phase is **G-003 database, persistence, and tenancy decision closure**. G-001 and G-002 are closed. During this phase, add only the G-003 specification and required decision-record updates. Do not add databases, schemas, migrations, ORM models, persistence packages, authentication persistence, application functionality, provider-specific integrations, or any G-004 through G-010 implementation.
 
 ## Non-negotiable architectural rules
 

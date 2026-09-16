@@ -64,6 +64,12 @@ The G-002 identity and authorization contract in the approved document is now au
 
 This approval records governance only. It does not implement authentication, authorization, sessions, memberships, roles, permissions, credentials, providers, schemas, migrations, queues, events, AI, plugins, integrations, storage, or production infrastructure. Implementation remains gated by G-003, G-004, and G-007 where specified in the approved document. **Deviations: NONE.**
 
+### G-003 — Proposed database, persistence, and tenancy architecture
+
+**Status: PENDING maintainer approval.** [`G-003-DECISION-CLOSURE.md`](G-003-DECISION-CLOSURE.md) proposes PostgreSQL 16 or later, SQL-first Kysely repositories with the `pg` adapter, application-generated UUIDv7 identifiers, UTC `timestamptz` values, use-case-owned transactions, repository-enforced organization context, PostgreSQL row-level security as defense in depth, module-owned schemas and migrations, append-oriented audit persistence, and portable `node-pg-migrate` migrations.
+
+The proposal does not create a database, schema, migration, ORM model, persistence package, authentication persistence, application record, or runtime infrastructure. G-004, G-007, G-008, and G-009 remain responsible for their explicitly deferred concerns. G-003 is not accepted until the maintainer explicitly approves the specification.
+
 ## Review findings
 
 The architecture contains no unresolved contradiction with the stated product vision. The following tensions are deliberate design constraints that need future detail:
