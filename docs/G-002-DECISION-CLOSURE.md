@@ -164,7 +164,11 @@ A user identity without an active membership in an organization cannot read orga
 
 ### 7.1 Provider-neutral mechanism
 
-The baseline authentication mechanism is a provider-neutral OIDC adapter using the Authorization Code flow with PKCE for interactive sign-in. The adapter translates a trusted provider result into a Business OS authentication result. The architecture does not select an OIDC vendor, SDK, cloud service, or credential storage provider.
+G-002 decides the provider-neutral authentication protocol and contract: OIDC using the Authorization Code flow with PKCE for interactive sign-in. The adapter translates a trusted provider result into a Business OS authentication result. G-002 owns the protocol semantics, authentication assurance semantics, Business OS identity-linkage semantics, and authentication-result contract.
+
+G-007 owns external identity-provider and vendor selection, the provider SDK, provider-specific configuration, callback and provider-integration details, external credential handling, and provider-specific recovery or operational behavior. G-007 must implement the G-002 contract and must not silently replace the OIDC Authorization Code with PKCE model. Changing the authentication protocol requires an explicit architecture amendment.
+
+The architecture does not select an OIDC vendor, SDK, cloud service, or credential storage provider in G-002.
 
 Business OS does not store human passwords in the baseline. Passwordless, password, recovery, email verification, and MFA factor management are responsibilities of the selected identity provider, subject to the assurance requirements below. A future decision may add a first-party credential mechanism only through an explicit architectural amendment; it is not implied by this document.
 
@@ -191,13 +195,27 @@ MFA is required before high-risk actions, including ownership transfer, role or 
 
 The policy does not require Business OS to store MFA factors. The authentication adapter must expose sufficient assurance information to allow the authorization policy to require an approved MFA level. If the provider cannot prove the required assurance, the action is denied or returned as `requires_approval` according to the action policy.
 
-### 7.4 Authentication failures and rate limits
+### 7.4 Authentication assurance contract
+
+The authentication adapter reports a provider-neutral assurance level. The baseline vocabulary is:
+
+- `AAL1`: the identity provider authenticated the principal using the baseline assurance without an approved additional factor for the current authentication.
+- `AAL2`: the identity provider authenticated the principal with an approved multi-factor assurance that meets the Business OS requirement for high-risk actions.
+- `AAL3`: reserved for a future stronger assurance level. The baseline must not assume that AAL3 is available or require it.
+
+The adapter result must include the assurance level, the authentication time, the time at which the required assurance was satisfied, and whether the assurance is provider-verified or unavailable. It must also expose a `recentAuthentication` result relative to a server-defined action-specific freshness window. A recent authentication is a trusted server-side comparison between the authentication timestamp and the freshness requirement; it is not a client assertion.
+
+Authorization policies declare the minimum assurance and freshness required for an action. Ordinary authenticated actions may accept AAL1. High-risk actions require AAL2 and recent authentication unless a stricter action policy applies. If assurance is absent, stale, downgraded, or unverifiable, the authorization result is `deny` or `requires_approval`; it is never treated as sufficient by default.
+
+Client-supplied assurance, MFA, authentication-time, or recent-authentication claims are never trusted. A provider adapter must fail closed when it cannot validate the required assurance. No MFA vendor, factor type, or implementation is selected by this contract.
+
+### 7.5 Authentication failures and rate limits
 
 Authentication failure responses must not reveal whether a user, organization, email, or external subject exists. Repeated failures, callback replay, invalid state, invalid PKCE verifier, and suspicious authentication patterns must be rate-limited and auditable.
 
 Exact thresholds are operational configuration, not a provider or database decision. The authentication boundary must support account/provider rate limits, IP or device abuse controls where available, and incident response without placing rate-limit logic in domain modules.
 
-### 7.5 Account recovery and email verification
+### 7.6 Account recovery and email verification
 
 Account recovery and primary email verification are delegated to the selected identity provider in the baseline. Business OS may require a verified email or equivalent assurance for invitations and high-risk actions, but it must not infer verification from an untrusted client claim.
 
@@ -205,7 +223,9 @@ Account recovery and primary email verification are delegated to the selected id
 
 ### 8.1 Opaque server-side sessions
 
-The baseline uses opaque, server-side sessions. Business OS does not use self-contained JWT claims as the source of authorization. An opaque session identifier points to a replaceable session record through an adapter. G-003 decides the persistence technology and migration mechanism for that record.
+G-002 owns opaque server-side session semantics, including lifecycle, rotation, expiration, idle timeout, revocation, fixation protections, organization-switch behavior, authorization-epoch semantics, and security requirements for session records. Business OS does not use self-contained JWT claims as the source of authorization.
+
+An opaque session identifier points to a replaceable session record through an adapter. G-003 owns the session persistence technology, database engine, storage schema, indexes, migrations, transaction semantics, persistence implementation, and tenancy enforcement for persisted session, membership, and grant records. G-003 must implement the storage required by G-002 without silently changing these security semantics. Any change to G-002 session semantics requires an explicit architecture amendment.
 
 Browser sessions use a `Secure`, `HttpOnly`, and appropriate `SameSite` cookie. Non-browser clients may use an opaque bearer session token through a documented delivery adapter. Token transport does not change the authorization contract.
 
@@ -577,11 +597,11 @@ After G-002 approval, implementation may begin only after the relevant G-003 dec
 
 | Gate | G-002 dependency and boundary |
 |---|---|
-| G-003 | Owns database engine, schemas, migrations, identifier strategy, transaction boundaries, epoch persistence, and tenancy enforcement. G-002 supplies semantics but not storage. |
+| G-003 | Owns database engine, schemas, migrations, identifier strategy, transaction boundaries, session persistence, indexes, epoch persistence, and tenancy enforcement for persisted session, membership, and grant records. G-002 supplies security semantics but not storage. |
 | G-004 | Owns durable approval work, event propagation, job cancellation, reauthorization timing, retries, and idempotency. G-002 requires reauthorization at execution boundaries. |
 | G-005 | Owns plugin principal installation, sandboxing, manifest permissions, and lifecycle. Plugins must use G-002 principal and action contracts. |
 | G-006 | Owns AI provider, model/data policy, budgets, retrieval, and approval details. G-002 defines AI agents as distinct principals without implicit user privilege. |
-| G-007 | Owns integration credentials, OAuth/API keys, provider callbacks, and external provider contracts. G-002 defines integration principals and their authorization scope. |
+| G-007 | Owns external identity-provider/vendor selection, provider SDKs, provider-specific configuration and callbacks, integration credentials, OAuth/API keys, provider recovery, and external provider contracts. G-002 defines the OIDC protocol contract, authentication result, integration principals, and authorization scope; G-007 must not silently replace those semantics. |
 | G-008 | Owns credential/file secret storage, retention, export, deletion, and restoration implementation where applicable. |
 | G-009 | Owns production identity operations, secret delivery, session-store operations, monitoring, recovery, and incident response. |
 | G-010 | Owns application installation, entitlement, configuration, and marketplace governance. G-002 permissions must not imply entitlement. |
@@ -603,22 +623,26 @@ G-002 may be marked accepted only when the maintainer confirms that:
 1. Human identity, organization, and membership semantics are explicit.
 2. Multi-organization membership and organization switching are explicit.
 3. Authentication is separate from authorization and uses a provider-neutral contract.
-4. The baseline authentication mechanism is explicitly standards-based OIDC Authorization Code with PKCE, without selecting a provider or SDK.
-5. Password, recovery, email-verification, and MFA responsibilities are explicit.
-6. Session transport, lifetime, rotation, expiry, logout, revocation, and fixation protections are explicit.
-7. Client-supplied organization, role, and permission claims are never trusted as authority.
-8. Authorization uses deny-by-default RBAC with scoped grants and narrow explainable resource predicates.
-9. Permission names, resource/action vocabulary, scopes, roles, and policy decision outcomes are explicit.
-10. Human, service, integration, automation, and AI principals have distinct semantics and no implicit privilege inheritance.
-11. Delegation is explicit, narrower, expiring, one-hop, revocable, and auditable.
-12. Impersonation and break-glass status is explicit: both are unsupported in the baseline.
-13. Separation-of-duties actions are identified and require independent authority.
-14. Credential lifecycle and revocation states are explicit without silently selecting a storage provider.
-15. Audit events and required audit fields are explicit.
-16. The multi-tenancy threat model maps each required threat to a control and a test.
-17. The testing strategy includes positive, negative, tenant-isolation, revocation, principal, delegation, and audit tests.
-18. G-003 through G-010 dependencies are explicit and no later gate is silently resolved.
-19. No database schemas, migrations, authentication code, authorization code, provider SDK, credentials, queue, event, AI, plugin, integration, storage, or production infrastructure is introduced by G-002 closure.
+4. OIDC protocol semantics are decided as Authorization Code with PKCE, while external identity-provider/vendor selection remains separately governed by G-007.
+5. External identity-provider/vendor SDK, provider configuration, callbacks, credentials, and provider-specific recovery remain separately governed by G-007 and cannot replace the G-002 protocol without an architecture amendment.
+6. Password, recovery, email-verification, and MFA responsibilities are explicit.
+7. Authentication assurance semantics are provider-neutral and define AAL1, AAL2, AAL3, recent authentication, fail-closed behavior, and untrusted client claims.
+8. Authorization can distinguish ordinary authentication from the AAL2 and recent-authentication assurance required for high-risk actions.
+9. Session semantics are decided, including transport, lifetime, rotation, expiry, idle timeout, logout, revocation, authorization epochs, and fixation protections.
+10. Session persistence technology, schema, indexes, migrations, transactions, and tenancy enforcement remain G-003 responsibilities and cannot silently change the G-002 session semantics.
+11. Client-supplied organization, role, permission, assurance, and authentication-time claims are never trusted as authority.
+12. Authorization uses deny-by-default RBAC with scoped grants and narrow explainable resource predicates.
+13. Permission names, resource/action vocabulary, scopes, roles, and policy decision outcomes are explicit.
+14. Human, service, integration, automation, and AI principals have distinct semantics and no implicit privilege inheritance.
+15. Delegation is explicit, narrower, expiring, one-hop, revocable, and auditable.
+16. Impersonation and break-glass status is explicit: both are unsupported in the baseline.
+17. Separation-of-duties actions are identified and require independent authority.
+18. Credential lifecycle and revocation states are explicit without silently selecting a storage provider.
+19. Audit events and required audit fields are explicit.
+20. The multi-tenancy threat model maps each required threat to a control and a test.
+21. The testing strategy includes positive, negative, tenant-isolation, revocation, principal, delegation, and audit tests.
+22. G-003 through G-010 dependencies are explicit and no later gate is silently resolved.
+23. No database schemas, migrations, authentication code, authorization code, provider SDK, credentials, queue, event, AI, plugin, integration, storage, or production infrastructure is introduced by G-002 closure.
 
 ## 25. Decision record
 
