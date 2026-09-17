@@ -2,9 +2,9 @@
 
 ## 1. Status
 
-**Status: PROPOSED — PENDING MAINTAINER APPROVAL.**
+**Status: APPROVED — GOVERNANCE CLOSED.**
 
-This document is an implementation-ready specification proposal for G-002. It closes the identity, authentication, session, membership, principal, authorization, delegation, revocation, and audit decisions needed before authentication or authorization implementation begins. It does not implement any of them.
+This document is the approved implementation-ready specification for G-002. It closes the identity, authentication, session, membership, principal, authorization, delegation, revocation, and audit decisions needed before authentication or authorization implementation begins. It does not implement any of them.
 
 G-001 is closed. The Phase 1 repository foundation remains unchanged. The current packages expose only shared contracts, validation, runtime configuration, and delivery-edge startup. No identity, session, membership, role, permission, credential, or authorization runtime exists.
 
@@ -50,69 +50,69 @@ No part of this document authorizes runtime implementation. It is a decision pac
 
 The proposed G-002 model is summarized below.
 
-| Area | Proposed decision | Status |
-|---|---|---|
-| Human identity | One globally unique Business OS user identity, separate from organization membership | Proposed; maintainer approval required |
-| Organization | Globally unique tenant/workspace owned by the platform | Established by ADR-002; G-002 specifies access semantics |
-| Membership | Explicit organization-scoped relationship with lifecycle, status, role assignments, and authorization epoch | Proposed; maintainer approval required |
-| Multi-organization users | Supported | Proposed; maintainer approval required |
-| Authentication | Provider-neutral standards-based OIDC adapter using Authorization Code with PKCE for interactive sign-in; Business OS does not store user passwords | Proposed; maintainer approval required |
-| MFA | Required for high-risk administrative actions; assurance is carried in the trusted authentication result | Proposed; maintainer approval required |
-| Sessions | Opaque server-side sessions; no self-contained JWT authorization tokens in the baseline | Proposed; maintainer approval required |
-| Organization switching | Explicit switch creates a fresh organization context and re-evaluates membership and permissions | Proposed; maintainer approval required |
-| Authorization | RBAC with scoped grants and narrow explainable ABAC/resource predicates | Proposed; maintainer approval required |
-| Permission vocabulary | Stable `<resource>:<action>` capability names with explicit scope | Proposed; maintainer approval required |
-| Principals | Distinct human, service, integration, automation, and AI-agent principal kinds | Proposed; maintainer approval required |
-| Delegation | Supported only as explicit, narrower, expiring, one-hop authority | Proposed; maintainer approval required |
-| Impersonation | Not supported in the baseline | Proposed; maintainer approval required |
-| Break-glass | Not supported in the baseline | Proposed; maintainer approval required |
-| Separation of duties | Required for defined high-risk administrative and security actions | Proposed; maintainer approval required |
-| Revocation | Epoch-based membership/session invalidation plus explicit principal, grant, credential, and delegation revocation | Proposed; maintainer approval required |
-| Audit | Structured, organization-scoped audit records for identity, authentication, authorization, delegation, principal, and high-risk events | Proposed; maintainer approval required |
+| Area                     | Proposed decision                                                                                                                                   | Status                                                   |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Human identity           | One globally unique Business OS user identity, separate from organization membership                                                                | Proposed; maintainer approval required                   |
+| Organization             | Globally unique tenant/workspace owned by the platform                                                                                              | Established by ADR-002; G-002 specifies access semantics |
+| Membership               | Explicit organization-scoped relationship with lifecycle, status, role assignments, and authorization epoch                                         | Proposed; maintainer approval required                   |
+| Multi-organization users | Supported                                                                                                                                           | Proposed; maintainer approval required                   |
+| Authentication           | Provider-neutral standards-based OIDC adapter using Authorization Code with PKCE for interactive sign-in; Business OS does not store user passwords | Proposed; maintainer approval required                   |
+| MFA                      | Required for high-risk administrative actions; assurance is carried in the trusted authentication result                                            | Proposed; maintainer approval required                   |
+| Sessions                 | Opaque server-side sessions; no self-contained JWT authorization tokens in the baseline                                                             | Proposed; maintainer approval required                   |
+| Organization switching   | Explicit switch creates a fresh organization context and re-evaluates membership and permissions                                                    | Proposed; maintainer approval required                   |
+| Authorization            | RBAC with scoped grants and narrow explainable ABAC/resource predicates                                                                             | Proposed; maintainer approval required                   |
+| Permission vocabulary    | Stable `<resource>:<action>` capability names with explicit scope                                                                                   | Proposed; maintainer approval required                   |
+| Principals               | Distinct human, service, integration, automation, and AI-agent principal kinds                                                                      | Proposed; maintainer approval required                   |
+| Delegation               | Supported only as explicit, narrower, expiring, one-hop authority                                                                                   | Proposed; maintainer approval required                   |
+| Impersonation            | Not supported in the baseline                                                                                                                       | Proposed; maintainer approval required                   |
+| Break-glass              | Not supported in the baseline                                                                                                                       | Proposed; maintainer approval required                   |
+| Separation of duties     | Required for defined high-risk administrative and security actions                                                                                  | Proposed; maintainer approval required                   |
+| Revocation               | Epoch-based membership/session invalidation plus explicit principal, grant, credential, and delegation revocation                                   | Proposed; maintainer approval required                   |
+| Audit                    | Structured, organization-scoped audit records for identity, authentication, authorization, delegation, principal, and high-risk events              | Proposed; maintainer approval required                   |
 
 ## Decision classification
 
 The following classifications make the proposal's boundary explicit. **DECIDED** means that G-002 specifies the semantic contract. **DEFERRED TO A SPECIFIC LATER GATE** means that the concern is intentionally owned by another gate and is not being selected indirectly. **OPEN BLOCKER** means that G-002 cannot proceed until the named issue is resolved; this proposal has no open blocker within its scope.
 
-| Concern | Classification | Resolution |
-|---|---|---|
-| Human identity, organization, membership, multi-organization membership, and organization switching | **DECIDED** | Globally unique user identities; explicit organization-scoped memberships; fresh authorization context and session rotation on switching |
-| Authentication mechanism and assurance | **DECIDED** | Provider-neutral OIDC Authorization Code with PKCE; no Business OS password storage; explicit assurance and MFA requirements |
-| Authentication provider/vendor and SDK | **DEFERRED TO A SPECIFIC LATER GATE** | Provider selection and external credential/callback details remain behind replaceable adapters and require G-007 or a recorded amendment |
-| Session/token semantics, revocation, logout, and fixation protection | **DECIDED** | Opaque server-side sessions, explicit lifetime, rotation, revocation, secure transport, and epoch checks |
-| Database, session persistence, membership persistence, migrations, and transaction semantics | **DEFERRED TO A SPECIFIC LATER GATE** | G-003 selects the engine, schema, migration, identifier, time, and tenancy-enforcement mechanisms |
-| Roles, permissions, scopes, policy decisions, RBAC, and narrow resource predicates | **DECIDED** | Deny-by-default RBAC with scoped grants and explainable resource predicates |
-| Human, service, integration, automation, and AI principals | **DECIDED** | Distinct principal kinds with explicit scope, action allowlists, lifecycle, revocation, and audit |
-| Delegation | **DECIDED** | Narrower, expiring, one-hop, revocable, auditable delegation; no further delegation |
-| Impersonation and break-glass | **DECIDED** | Both are unsupported in the baseline |
-| Separation of duties | **DECIDED** | Independent authority is required for named high-risk administrative and security actions |
-| Credential storage, external credential lifecycle, and provider recovery | **DEFERRED TO A SPECIFIC LATER GATE** | G-003, G-007, and G-009 own persistence, external credential, and operational recovery mechanisms; G-002 owns the principal and revocation contract |
-| Durable approval work, revocation propagation, asynchronous execution, and events | **DEFERRED TO A SPECIFIC LATER GATE** | G-004 owns queues, events, jobs, retries, idempotency, and durable approval execution |
-| Audit event semantics and required fields | **DECIDED** | Structured, attributable, organization-scoped audit records for identity, authentication, authorization, delegation, principal, and high-risk events |
-| G-002 conceptual scope | **DECIDED** | The proposal is complete for maintainer review; its overall status remains pending maintainer approval |
+| Concern                                                                                             | Classification                        | Resolution                                                                                                                                           |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Human identity, organization, membership, multi-organization membership, and organization switching | **DECIDED**                           | Globally unique user identities; explicit organization-scoped memberships; fresh authorization context and session rotation on switching             |
+| Authentication mechanism and assurance                                                              | **DECIDED**                           | Provider-neutral OIDC Authorization Code with PKCE; no Business OS password storage; explicit assurance and MFA requirements                         |
+| Authentication provider/vendor and SDK                                                              | **DEFERRED TO A SPECIFIC LATER GATE** | Provider selection and external credential/callback details remain behind replaceable adapters and require G-007 or a recorded amendment             |
+| Session/token semantics, revocation, logout, and fixation protection                                | **DECIDED**                           | Opaque server-side sessions, explicit lifetime, rotation, revocation, secure transport, and epoch checks                                             |
+| Database, session persistence, membership persistence, migrations, and transaction semantics        | **DEFERRED TO A SPECIFIC LATER GATE** | G-003 selects the engine, schema, migration, identifier, time, and tenancy-enforcement mechanisms                                                    |
+| Roles, permissions, scopes, policy decisions, RBAC, and narrow resource predicates                  | **DECIDED**                           | Deny-by-default RBAC with scoped grants and explainable resource predicates                                                                          |
+| Human, service, integration, automation, and AI principals                                          | **DECIDED**                           | Distinct principal kinds with explicit scope, action allowlists, lifecycle, revocation, and audit                                                    |
+| Delegation                                                                                          | **DECIDED**                           | Narrower, expiring, one-hop, revocable, auditable delegation; no further delegation                                                                  |
+| Impersonation and break-glass                                                                       | **DECIDED**                           | Both are unsupported in the baseline                                                                                                                 |
+| Separation of duties                                                                                | **DECIDED**                           | Independent authority is required for named high-risk administrative and security actions                                                            |
+| Credential storage, external credential lifecycle, and provider recovery                            | **DEFERRED TO A SPECIFIC LATER GATE** | G-003, G-007, and G-009 own persistence, external credential, and operational recovery mechanisms; G-002 owns the principal and revocation contract  |
+| Durable approval work, revocation propagation, asynchronous execution, and events                   | **DEFERRED TO A SPECIFIC LATER GATE** | G-004 owns queues, events, jobs, retries, idempotency, and durable approval execution                                                                |
+| Audit event semantics and required fields                                                           | **DECIDED**                           | Structured, attributable, organization-scoped audit records for identity, authentication, authorization, delegation, principal, and high-risk events |
+| G-002 conceptual scope                                                                              | **DECIDED**                           | The approved contract is complete; implementation remains governed by the later persistence and provider gates where specified                       |
 
 ## 5. Terminology
 
 The following terms are normative.
 
-| Term | Definition |
-|---|---|
-| **User identity** | A globally unique Business OS identity representing a human. It is not organization membership and does not itself grant tenant access. |
-| **Organization** | The primary tenant boundary and workspace for a company or independently administered business entity. |
-| **Membership** | An organization-scoped relationship between a user identity and an organization. It carries lifecycle status, role assignments, authorization epoch, and audit history. |
-| **Principal** | Any identifiable actor that can request or perform an action: human user, service principal, integration principal, automation principal, or AI-agent principal. |
-| **Role** | A named bundle of permissions assignable within a defined scope. |
-| **Permission** | A stable capability to perform an action on a resource class. |
-| **Resource** | A typed business or platform object on which an action may operate. |
-| **Action** | A registered operation that reads, creates, changes, deletes, exports, invokes, or otherwise affects a resource. |
-| **Scope** | The boundary within which a permission applies, such as an organization, team, object, relationship, or platform scope. |
-| **Grant** | A rule assigning a role or permission to a principal within a scope and validity period. |
-| **Policy decision** | A server-side result of `allow`, `deny`, or `requires_approval`, together with the policy basis and audit context. |
-| **Delegation** | An explicit, constrained transfer of authority from one principal to another. |
-| **Authentication** | Establishing that a claimed identity has passed the configured identity-verification process. |
-| **Authorization** | Deciding whether an identified principal may perform an action on a resource in an organization and scope. |
-| **Organization context** | The trusted organization, principal, membership or credential, authorization epoch, and request correlation needed before tenant-owned access. |
-| **Authentication assurance** | Evidence about how strongly the identity provider verified the principal, including whether an approved MFA factor was used. |
+| Term                         | Definition                                                                                                                                                              |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **User identity**            | A globally unique Business OS identity representing a human. It is not organization membership and does not itself grant tenant access.                                 |
+| **Organization**             | The primary tenant boundary and workspace for a company or independently administered business entity.                                                                  |
+| **Membership**               | An organization-scoped relationship between a user identity and an organization. It carries lifecycle status, role assignments, authorization epoch, and audit history. |
+| **Principal**                | Any identifiable actor that can request or perform an action: human user, service principal, integration principal, automation principal, or AI-agent principal.        |
+| **Role**                     | A named bundle of permissions assignable within a defined scope.                                                                                                        |
+| **Permission**               | A stable capability to perform an action on a resource class.                                                                                                           |
+| **Resource**                 | A typed business or platform object on which an action may operate.                                                                                                     |
+| **Action**                   | A registered operation that reads, creates, changes, deletes, exports, invokes, or otherwise affects a resource.                                                        |
+| **Scope**                    | The boundary within which a permission applies, such as an organization, team, object, relationship, or platform scope.                                                 |
+| **Grant**                    | A rule assigning a role or permission to a principal within a scope and validity period.                                                                                |
+| **Policy decision**          | A server-side result of `allow`, `deny`, or `requires_approval`, together with the policy basis and audit context.                                                      |
+| **Delegation**               | An explicit, constrained transfer of authority from one principal to another.                                                                                           |
+| **Authentication**           | Establishing that a claimed identity has passed the configured identity-verification process.                                                                           |
+| **Authorization**            | Deciding whether an identified principal may perform an action on a resource in an organization and scope.                                                              |
+| **Organization context**     | The trusted organization, principal, membership or credential, authorization epoch, and request correlation needed before tenant-owned access.                          |
+| **Authentication assurance** | Evidence about how strongly the identity provider verified the principal, including whether an approved MFA factor was used.                                            |
 
 Authentication does not imply authorization. A user identity without an active organization membership cannot access organization-owned resources.
 
@@ -501,39 +501,39 @@ An audit record contains at least:
 
 At minimum, the following events are auditable:
 
-| Category | Required events |
-|---|---|
-| Identity | Identity creation, link, unlink, suspension, deletion, recovery, and security attribute changes |
+| Category       | Required events                                                                                                                                                |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Identity       | Identity creation, link, unlink, suspension, deletion, recovery, and security attribute changes                                                                |
 | Authentication | Login success, logout, failed authentication, invalid callback/state/PKCE, MFA assurance changes, account-linking attempts, and authentication-provider errors |
-| Session | Session creation, rotation, switch, revocation, expiry, logout-all, suspicious reuse, and fixation/hijacking rejection |
-| Membership | Invitation, acceptance, activation, suspension, revocation, expiry, ownership changes, and organization switching |
-| Authorization | Allowed high-risk action, denial, `requires_approval`, stale-context denial, policy change, role change, permission change, and scope failure |
-| Principals | Service/integration/automation/AI principal creation, grant, scope change, credential issue, rotation, suspension, and revocation |
-| Delegation | Creation, use, rejection, expiry, revocation, and attempted further delegation |
-| Administration | Separation-of-duties request, approval, rejection, ownership transfer, audit-control change, and protected export/deletion request |
+| Session        | Session creation, rotation, switch, revocation, expiry, logout-all, suspicious reuse, and fixation/hijacking rejection                                         |
+| Membership     | Invitation, acceptance, activation, suspension, revocation, expiry, ownership changes, and organization switching                                              |
+| Authorization  | Allowed high-risk action, denial, `requires_approval`, stale-context denial, policy change, role change, permission change, and scope failure                  |
+| Principals     | Service/integration/automation/AI principal creation, grant, scope change, credential issue, rotation, suspension, and revocation                              |
+| Delegation     | Creation, use, rejection, expiry, revocation, and attempted further delegation                                                                                 |
+| Administration | Separation-of-duties request, approval, rejection, ownership transfer, audit-control change, and protected export/deletion request                             |
 
 Audit access itself requires authorization and must not allow a principal to erase or rewrite its own audit history. Retention, storage, export, and deletion implementation remain G-003/G-008/G-009 concerns.
 
 ## 18. Multi-tenancy threat model
 
-| Threat | Required control | Test that must prove it |
-|---|---|---|
-| Cross-organization resource access | Require active organization context and scope every authorization decision and resource access | A principal active in Organization A cannot read or mutate an equivalent target in Organization B |
-| Forged organization ID | Treat client organization input as a selection request; validate membership server-side | Send Organization B's ID while authenticated only in Organization A; expect denial and an audit record |
-| Stale membership | Check membership status and authorization epoch at the trusted action boundary | Revoke membership after session creation; the next sensitive action is denied |
-| Revoked user | Reject suspended/deleted identities and revoke linked sessions | Suspend the identity and attempt a new request and existing-session request; both are denied |
-| Stale session | Use session expiry, revocation, rotation, and epoch checks | Use a revoked or pre-switch session token; expect denial |
-| Privilege escalation | Resolve effective grants server-side and deny self-grant or unauthorized role changes | A Member attempts to grant Administrator or alter its own grants; expect denial |
-| Role escalation | Restrict role and permission administration and enforce separation of duties | An Administrator attempts protected role changes without independent approval; expect `requires_approval` or denial |
-| Service-principal overreach | Give each service principal explicit scope and action allowlist | A service principal invokes an unregistered action or another organization's resource; expect denial |
-| AI privilege escalation | Treat AI agents as distinct principals with tool allowlists and scoped grants | An agent attempts a tool outside its allowlist or a user's unrelated permission; expect denial |
-| Automation privilege escalation | Reauthorize each registered action at execution time | A rule created by an Administrator attempts an action after its grant is revoked; expect denial |
-| Delegated authority escape | Enforce narrower scope, expiry, one-hop depth, and revocation | A delegate attempts broader scope, further delegation, or post-expiry use; expect denial |
-| Impersonation abuse | Do not support implicit impersonation or hidden user sessions | Any request claiming another user without an approved future capability is denied and audited |
-| Cache/session organization confusion | Qualify cache/session context with organization and authorization epoch | Switch from Organization A to B and verify no A decision or resource is returned for B |
-| Missing organization in background execution | Require explicit organization context and principal on every executable action | Attempt execution with missing or mismatched context; expect denial before resource access |
-| Forged provider/authentication claims | Validate adapter results and never trust client role or organization claims | Alter claims or callback data; expect authentication failure or authorization denial |
-| Audit evasion | Require audit at authorization and high-risk action boundaries | A denied or side-effecting action without a corresponding audit record fails the test |
+| Threat                                       | Required control                                                                               | Test that must prove it                                                                                             |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Cross-organization resource access           | Require active organization context and scope every authorization decision and resource access | A principal active in Organization A cannot read or mutate an equivalent target in Organization B                   |
+| Forged organization ID                       | Treat client organization input as a selection request; validate membership server-side        | Send Organization B's ID while authenticated only in Organization A; expect denial and an audit record              |
+| Stale membership                             | Check membership status and authorization epoch at the trusted action boundary                 | Revoke membership after session creation; the next sensitive action is denied                                       |
+| Revoked user                                 | Reject suspended/deleted identities and revoke linked sessions                                 | Suspend the identity and attempt a new request and existing-session request; both are denied                        |
+| Stale session                                | Use session expiry, revocation, rotation, and epoch checks                                     | Use a revoked or pre-switch session token; expect denial                                                            |
+| Privilege escalation                         | Resolve effective grants server-side and deny self-grant or unauthorized role changes          | A Member attempts to grant Administrator or alter its own grants; expect denial                                     |
+| Role escalation                              | Restrict role and permission administration and enforce separation of duties                   | An Administrator attempts protected role changes without independent approval; expect `requires_approval` or denial |
+| Service-principal overreach                  | Give each service principal explicit scope and action allowlist                                | A service principal invokes an unregistered action or another organization's resource; expect denial                |
+| AI privilege escalation                      | Treat AI agents as distinct principals with tool allowlists and scoped grants                  | An agent attempts a tool outside its allowlist or a user's unrelated permission; expect denial                      |
+| Automation privilege escalation              | Reauthorize each registered action at execution time                                           | A rule created by an Administrator attempts an action after its grant is revoked; expect denial                     |
+| Delegated authority escape                   | Enforce narrower scope, expiry, one-hop depth, and revocation                                  | A delegate attempts broader scope, further delegation, or post-expiry use; expect denial                            |
+| Impersonation abuse                          | Do not support implicit impersonation or hidden user sessions                                  | Any request claiming another user without an approved future capability is denied and audited                       |
+| Cache/session organization confusion         | Qualify cache/session context with organization and authorization epoch                        | Switch from Organization A to B and verify no A decision or resource is returned for B                              |
+| Missing organization in background execution | Require explicit organization context and principal on every executable action                 | Attempt execution with missing or mismatched context; expect denial before resource access                          |
+| Forged provider/authentication claims        | Validate adapter results and never trust client role or organization claims                    | Alter claims or callback data; expect authentication failure or authorization denial                                |
+| Audit evasion                                | Require audit at authorization and high-risk action boundaries                                 | A denied or side-effecting action without a corresponding audit record fails the test                               |
 
 ## 19. Security controls
 
@@ -595,16 +595,16 @@ After G-002 approval, implementation may begin only after the relevant G-003 dec
 
 ## 22. Dependencies on G-003 through G-010
 
-| Gate | G-002 dependency and boundary |
-|---|---|
-| G-003 | Owns database engine, schemas, migrations, identifier strategy, transaction boundaries, session persistence, indexes, epoch persistence, and tenancy enforcement for persisted session, membership, and grant records. G-002 supplies security semantics but not storage. |
-| G-004 | Owns durable approval work, event propagation, job cancellation, reauthorization timing, retries, and idempotency. G-002 requires reauthorization at execution boundaries. |
-| G-005 | Owns plugin principal installation, sandboxing, manifest permissions, and lifecycle. Plugins must use G-002 principal and action contracts. |
-| G-006 | Owns AI provider, model/data policy, budgets, retrieval, and approval details. G-002 defines AI agents as distinct principals without implicit user privilege. |
+| Gate  | G-002 dependency and boundary                                                                                                                                                                                                                                                                                                                                                   |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| G-003 | Owns database engine, schemas, migrations, identifier strategy, transaction boundaries, session persistence, indexes, epoch persistence, and tenancy enforcement for persisted session, membership, and grant records. G-002 supplies security semantics but not storage.                                                                                                       |
+| G-004 | Owns durable approval work, event propagation, job cancellation, reauthorization timing, retries, and idempotency. G-002 requires reauthorization at execution boundaries.                                                                                                                                                                                                      |
+| G-005 | Owns plugin principal installation, sandboxing, manifest permissions, and lifecycle. Plugins must use G-002 principal and action contracts.                                                                                                                                                                                                                                     |
+| G-006 | Owns AI provider, model/data policy, budgets, retrieval, and approval details. G-002 defines AI agents as distinct principals without implicit user privilege.                                                                                                                                                                                                                  |
 | G-007 | Owns external identity-provider/vendor selection, provider SDKs, provider-specific configuration and callbacks, integration credentials, OAuth/API keys, provider recovery, and external provider contracts. G-002 defines the OIDC protocol contract, authentication result, integration principals, and authorization scope; G-007 must not silently replace those semantics. |
-| G-008 | Owns credential/file secret storage, retention, export, deletion, and restoration implementation where applicable. |
-| G-009 | Owns production identity operations, secret delivery, session-store operations, monitoring, recovery, and incident response. |
-| G-010 | Owns application installation, entitlement, configuration, and marketplace governance. G-002 permissions must not imply entitlement. |
+| G-008 | Owns credential/file secret storage, retention, export, deletion, and restoration implementation where applicable.                                                                                                                                                                                                                                                              |
+| G-009 | Owns production identity operations, secret delivery, session-store operations, monitoring, recovery, and incident response.                                                                                                                                                                                                                                                    |
+| G-010 | Owns application installation, entitlement, configuration, and marketplace governance. G-002 permissions must not imply entitlement.                                                                                                                                                                                                                                            |
 
 ## 23. Open blockers
 
@@ -667,7 +667,7 @@ Adopt this document as the G-002 identity and authorization contract, with the f
 
 ### Current decision status
 
-**G-002: PENDING MAINTAINER APPROVAL.** This document is a specification proposal. It must not be treated as accepted until the maintainer records approval in `docs/DECISIONS.md`.
+**G-002: APPROVED.** This document is the authoritative identity and authorization contract. It does not authorize runtime implementation outside the approved later-gate boundaries.
 
 ### Required record after approval
 
@@ -675,13 +675,13 @@ The acceptance record must include the approval date, maintainer or owner, this 
 
 ## References
 
-[1]: ../AGENTS.md "Business OS Contributor Guidance"
-[2]: ../README.md "Business OS Repository Overview"
-[3]: ARCHITECTURE.md "Business OS Architecture"
-[4]: MULTI-TENANCY.md "Business OS Multi-Tenancy"
-[5]: PERMISSIONS.md "Business OS Permissions"
-[6]: SECURITY.md "Business OS Security"
-[7]: DECISIONS.md "Business OS Architecture Decisions"
-[8]: REPOSITORY-STRUCTURE.md "Business OS Repository Structure"
-[9]: DEVELOPMENT.md "Business OS Development"
-[10]: G-001-DECISION-CLOSURE.md "Business OS G-001 Decision Closure"
+[1]: ../AGENTS.md 'Business OS Contributor Guidance'
+[2]: ../README.md 'Business OS Repository Overview'
+[3]: ARCHITECTURE.md 'Business OS Architecture'
+[4]: MULTI-TENANCY.md 'Business OS Multi-Tenancy'
+[5]: PERMISSIONS.md 'Business OS Permissions'
+[6]: SECURITY.md 'Business OS Security'
+[7]: DECISIONS.md 'Business OS Architecture Decisions'
+[8]: REPOSITORY-STRUCTURE.md 'Business OS Repository Structure'
+[9]: DEVELOPMENT.md 'Business OS Development'
+[10]: G-001-DECISION-CLOSURE.md 'Business OS G-001 Decision Closure'

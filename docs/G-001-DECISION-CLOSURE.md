@@ -6,60 +6,64 @@ This document converts the completed implementation-readiness audit into a preci
 
 The repository's committed readiness audit is [`G-001-READINESS-AUDIT.md`](G-001-READINESS-AUDIT.md). The task instruction referred to `G-001-IMPLEMENTATION-READINESS-AUDIT.md`; that filename does not exist in the current repository. The committed audit is historical input to this closure. The current `main` branch contains the approved Phase 1 runtime foundation; G-001 is closed, and the later gates remain unresolved.
 
-## A. G-001 decision proposed for approval
+## A. Historical G-001 decision proposal
+
+The following section preserves the original approval-package wording for historical traceability. It is not a current pending proposal: G-001 is **CLOSED / VERIFIED** for the Phase 1 runtime foundation.
 
 The exact proposal is the hardened G-001 stack proposal in [`G-001-STACK-PROPOSAL.md`](G-001-STACK-PROPOSAL.md). The proposed decision is:
 
-| Concern | Proposed G-001 decision |
-|---|---|
-| Runtime | Repository-pinned Node.js LTS runtime |
-| Language | TypeScript with strict compiler settings |
-| Package manager | pnpm |
-| Workspace strategy | pnpm workspaces, one committed lockfile, and explicit `workspace:` dependencies |
-| Framework | NestJS for delivery, dependency composition, and API/worker composition roots |
-| Test framework | Vitest with separate unit, contract, integration, and end-to-end projects |
-| Build and type checking | TypeScript composite project references, a root solution, and a clean `tsc --build` type-check/build gate |
-| Public package boundary | Package `exports` maps are the public API boundary. Consumers use only declared public exports. Private files, deep imports, cross-package relative source imports, bypassing path aliases, and undeclared workspace dependencies are prohibited. |
-| Architecture enforcement | CI-enforced package dependency graph validation, forbidden-edge validation, framework and provider-SDK import restrictions, cycle detection, package-manifest validation, public-export/deep-import validation, and architecture tests |
-| Framework boundary | NestJS remains at delivery/composition edges. Domain and application/use-case packages have no NestJS, HTTP-framework, ORM/database-client, or external-provider SDK dependencies. |
-| Runtime validation | A replaceable runtime-schema mechanism validates HTTP, webhook, event, job, plugin, integration-callback, AI-tool, and relevant provider-response boundaries. The concrete schema library is not selected by G-001. |
-| Deployment posture | Portable modular monolith with source-controlled Web/API and worker entry points. No Manus runtime dependency. |
+| Concern                  | Proposed G-001 decision                                                                                                                                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Runtime                  | Repository-pinned Node.js LTS runtime                                                                                                                                                                                                             |
+| Language                 | TypeScript with strict compiler settings                                                                                                                                                                                                          |
+| Package manager          | pnpm                                                                                                                                                                                                                                              |
+| Workspace strategy       | pnpm workspaces, one committed lockfile, and explicit `workspace:` dependencies                                                                                                                                                                   |
+| Framework                | NestJS for delivery, dependency composition, and API/worker composition roots                                                                                                                                                                     |
+| Test framework           | Vitest with separate unit, contract, integration, and end-to-end projects                                                                                                                                                                         |
+| Build and type checking  | TypeScript composite project references, a root solution, and a clean `tsc --build` type-check/build gate                                                                                                                                         |
+| Public package boundary  | Package `exports` maps are the public API boundary. Consumers use only declared public exports. Private files, deep imports, cross-package relative source imports, bypassing path aliases, and undeclared workspace dependencies are prohibited. |
+| Architecture enforcement | CI-enforced package dependency graph validation, forbidden-edge validation, framework and provider-SDK import restrictions, cycle detection, package-manifest validation, public-export/deep-import validation, and architecture tests            |
+| Framework boundary       | NestJS remains at delivery/composition edges. Domain and application/use-case packages have no NestJS, HTTP-framework, ORM/database-client, or external-provider SDK dependencies.                                                                |
+| Runtime validation       | A replaceable runtime-schema mechanism validates HTTP, webhook, event, job, plugin, integration-callback, AI-tool, and relevant provider-response boundaries. The concrete schema library is not selected by G-001.                               |
+| Deployment posture       | Portable modular monolith with source-controlled Web/API and worker entry points. No Manus runtime dependency.                                                                                                                                    |
 
 This proposal does **not** select a database, ORM, identity provider, queue, scheduler, storage provider, AI provider, plugin runtime, integration provider, cloud platform, or production CI/CD platform.
 
-## B. Approved versus pending decisions
+## B. Historical approved-versus-pending decision matrix
+
+This matrix preserves the decision state as described in the original G-001 approval package. Current gate status is maintained in [`DECISIONS.md`](DECISIONS.md); G-003 is now approved and the G-004 through G-010 gates remain pending.
 
 The table distinguishes accepted architectural requirements from the proposed G-001 implementation decision and the later gates that must remain pending.
 
-| Decision | Current status | Proposed decision | Must maintainer approve? | Consequence |
-|---|---|---|---|---|
-| Start as a modular monolith | Accepted in ADR-001 | Preserve | No new approval; must be preserved | One repository and initial deployment shape; no premature microservices |
-| Organization as primary tenant boundary | Accepted in ADR-002 | Preserve | No new approval; must be preserved | Tenant-owned records and execution paths enforce organization scope |
-| Users as organization members | Accepted in ADR-003 | Preserve | No new approval; detailed G-002 semantics remain pending | Applications do not own parallel identity systems |
-| Shared platform capabilities | Accepted in ADR-004 | Preserve | No new approval; implementation details remain gated | Applications use platform contracts for shared capabilities |
-| Distinct apps, plugins, integrations, agents, templates, and themes | Accepted in ADR-005 | Preserve | No new approval; individual gates remain pending | Extension concepts are not collapsed into one generic mechanism |
-| AI and automation as horizontal capabilities | Accepted in ADR-006 | Preserve | No new approval; execution decisions remain gated | Agents and automation use registered actions, permissions, scope, and audit |
-| Provider adapter boundaries | Accepted in ADR-007 | Preserve | No new approval; provider selections remain pending | Domain rules remain provider-neutral |
-| GitHub authority and portability | Accepted in ADR-008 | Preserve | No new approval; must be mechanically demonstrated later | Manus is not required at runtime |
-| Optional plugins cannot be core dependencies | Accepted in ADR-009 | Preserve | No new approval; plugin model remains G-005 | Core remains operable without optional plugins |
-| Version-controlled database evolution | Accepted in ADR-010 | Preserve | No new approval; database and migration choices remain G-003 | Schema changes remain repository-owned migrations |
-| Stack-neutral conceptual repository structure | Accepted in ADR-011 | Preserve | No new approval; physical package implementation follows G-001 | Ownership and dependency direction remain understandable across tooling changes |
-| G-001 runtime and language | Accepted with conditions | Node.js LTS and strict TypeScript | Closed | Establishes the portable language/runtime foundation |
-| G-001 package manager and workspace | Accepted with conditions | pnpm workspaces with explicit workspace dependencies | Closed | Establishes package installation and local dependency workflow |
-| G-001 framework and composition | Accepted with conditions | NestJS at delivery/composition edges only | Closed | Provides outer application composition without making the domain framework-dependent |
-| G-001 build and type checking | Accepted with conditions | TypeScript project references and clean `tsc --build` | Closed | Provides strict build/type-check feedback and explicit project relationships |
-| G-001 test framework | Accepted with conditions | Vitest test projects | Closed | Establishes unit, contract, integration, and end-to-end test execution |
-| G-001 architecture enforcement | Accepted with conditions | CI graph, forbidden-edge, export, cycle, manifest, import, and architecture checks | Closed | Makes package and framework rules executable rather than documentation-only |
-| G-001 runtime schema mechanism | Requirement established; library pending | Use a replaceable runtime-schema mechanism | **Yes, for the requirement; no library selection in G-001** | External data is validated without locking the architecture to a schema vendor |
-| G-002 identity, sessions, memberships, roles, and authorization | Not yet defined | Remain pending | **Yes, in G-002** | Blocks authentication and authorization implementation |
-| G-003 database, ORM, migrations, IDs, time, transactions, tenancy | Not yet defined | Remain pending | **Yes, in G-003** | Blocks persistent tenant-owned records and migrations |
-| G-004 events, queue, scheduler, jobs, outbox, retry, idempotency | Not yet defined | Remain pending | **Yes, in G-004** | Blocks durable events, jobs, webhooks, automation, and background execution |
-| G-005 plugin package and isolation | Not yet defined | Remain pending | **Yes, in G-005** | Blocks executable or installable plugins |
-| G-006 AI provider and data policy | Not yet defined | Remain pending | **Yes, in G-006** | Blocks production AI-agent execution |
-| G-007 integrations and credentials | Not yet defined | Remain pending | **Yes, in G-007** | Blocks external provider connections |
-| G-008 storage and file policy | Not yet defined | Remain pending | **Yes, in G-008** | Blocks file handling and tenant-data retention implementation |
-| G-009 deployment and operations | Not yet defined | Remain pending | **Yes, in G-009** | Blocks production hosting and operational commitments |
-| G-010 entitlements and app installation | Not yet defined | Remain pending | **Yes, in G-010** | Blocks application activation and marketplace governance |
+| Decision                                                            | Current status                           | Proposed decision                                                                  | Must maintainer approve?                                       | Consequence                                                                          |
+| ------------------------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Start as a modular monolith                                         | Accepted in ADR-001                      | Preserve                                                                           | No new approval; must be preserved                             | One repository and initial deployment shape; no premature microservices              |
+| Organization as primary tenant boundary                             | Accepted in ADR-002                      | Preserve                                                                           | No new approval; must be preserved                             | Tenant-owned records and execution paths enforce organization scope                  |
+| Users as organization members                                       | Accepted in ADR-003                      | Preserve                                                                           | No new approval; detailed G-002 semantics remain pending       | Applications do not own parallel identity systems                                    |
+| Shared platform capabilities                                        | Accepted in ADR-004                      | Preserve                                                                           | No new approval; implementation details remain gated           | Applications use platform contracts for shared capabilities                          |
+| Distinct apps, plugins, integrations, agents, templates, and themes | Accepted in ADR-005                      | Preserve                                                                           | No new approval; individual gates remain pending               | Extension concepts are not collapsed into one generic mechanism                      |
+| AI and automation as horizontal capabilities                        | Accepted in ADR-006                      | Preserve                                                                           | No new approval; execution decisions remain gated              | Agents and automation use registered actions, permissions, scope, and audit          |
+| Provider adapter boundaries                                         | Accepted in ADR-007                      | Preserve                                                                           | No new approval; provider selections remain pending            | Domain rules remain provider-neutral                                                 |
+| GitHub authority and portability                                    | Accepted in ADR-008                      | Preserve                                                                           | No new approval; must be mechanically demonstrated later       | Manus is not required at runtime                                                     |
+| Optional plugins cannot be core dependencies                        | Accepted in ADR-009                      | Preserve                                                                           | No new approval; plugin model remains G-005                    | Core remains operable without optional plugins                                       |
+| Version-controlled database evolution                               | Accepted in ADR-010                      | Preserve                                                                           | No new approval; database and migration choices remain G-003   | Schema changes remain repository-owned migrations                                    |
+| Stack-neutral conceptual repository structure                       | Accepted in ADR-011                      | Preserve                                                                           | No new approval; physical package implementation follows G-001 | Ownership and dependency direction remain understandable across tooling changes      |
+| G-001 runtime and language                                          | Accepted with conditions                 | Node.js LTS and strict TypeScript                                                  | Closed                                                         | Establishes the portable language/runtime foundation                                 |
+| G-001 package manager and workspace                                 | Accepted with conditions                 | pnpm workspaces with explicit workspace dependencies                               | Closed                                                         | Establishes package installation and local dependency workflow                       |
+| G-001 framework and composition                                     | Accepted with conditions                 | NestJS at delivery/composition edges only                                          | Closed                                                         | Provides outer application composition without making the domain framework-dependent |
+| G-001 build and type checking                                       | Accepted with conditions                 | TypeScript project references and clean `tsc --build`                              | Closed                                                         | Provides strict build/type-check feedback and explicit project relationships         |
+| G-001 test framework                                                | Accepted with conditions                 | Vitest test projects                                                               | Closed                                                         | Establishes unit, contract, integration, and end-to-end test execution               |
+| G-001 architecture enforcement                                      | Accepted with conditions                 | CI graph, forbidden-edge, export, cycle, manifest, import, and architecture checks | Closed                                                         | Makes package and framework rules executable rather than documentation-only          |
+| G-001 runtime schema mechanism                                      | Requirement established; library pending | Use a replaceable runtime-schema mechanism                                         | **Yes, for the requirement; no library selection in G-001**    | External data is validated without locking the architecture to a schema vendor       |
+| G-002 identity, sessions, memberships, roles, and authorization     | Not yet defined                          | Remain pending                                                                     | **Yes, in G-002**                                              | Blocks authentication and authorization implementation                               |
+| G-003 database, ORM, migrations, IDs, time, transactions, tenancy   | Not yet defined                          | Remain pending                                                                     | **Yes, in G-003**                                              | Blocks persistent tenant-owned records and migrations                                |
+| G-004 events, queue, scheduler, jobs, outbox, retry, idempotency    | Not yet defined                          | Remain pending                                                                     | **Yes, in G-004**                                              | Blocks durable events, jobs, webhooks, automation, and background execution          |
+| G-005 plugin package and isolation                                  | Not yet defined                          | Remain pending                                                                     | **Yes, in G-005**                                              | Blocks executable or installable plugins                                             |
+| G-006 AI provider and data policy                                   | Not yet defined                          | Remain pending                                                                     | **Yes, in G-006**                                              | Blocks production AI-agent execution                                                 |
+| G-007 integrations and credentials                                  | Not yet defined                          | Remain pending                                                                     | **Yes, in G-007**                                              | Blocks external provider connections                                                 |
+| G-008 storage and file policy                                       | Not yet defined                          | Remain pending                                                                     | **Yes, in G-008**                                              | Blocks file handling and tenant-data retention implementation                        |
+| G-009 deployment and operations                                     | Not yet defined                          | Remain pending                                                                     | **Yes, in G-009**                                              | Blocks production hosting and operational commitments                                |
+| G-010 entitlements and app installation                             | Not yet defined                          | Remain pending                                                                     | **Yes, in G-010**                                              | Blocks application activation and marketplace governance                             |
 
 ## C. Non-negotiable G-001 constraints
 
@@ -167,16 +171,16 @@ G-008 storage policy and abstraction ──────────── Storag
 G-009 deployment/CI/CD/operations ─────────────── Production deployment
 ```
 
-| Capability | Must happen first | Reason |
-|---|---|---|
-| Authentication and authorization | G-001, then G-002 | The runtime foundation must exist; identity, membership, roles, permissions, delegation, and revocation must be defined before implementation |
-| Database and persistence | G-001, then G-003 | Engine, migrations, IDs, timestamps, transactions, and tenant enforcement cannot be inferred safely |
-| Events, jobs, and automation | G-001, G-003, then G-004 | Reliable publication must coordinate committed state with transport, retries, idempotency, and recovery |
-| AI execution | G-002, G-004, and G-006 | Agents need defined principals, authorized actions, durable execution, model/data policy, budgets, and approvals |
-| Plugins | G-005 | Executable extensions require manifest, compatibility, permissions, isolation, and lifecycle decisions |
-| Integrations | G-007 and, for asynchronous callbacks, G-004 | Credentials, provider contracts, webhook verification, organization binding, and deduplication must be defined |
-| Storage and files | G-003 and G-008 | File metadata and access need persistence and a storage/retention/export/deletion policy |
-| Production deployment | G-001 foundation and G-009 | Production needs artifact, topology, CI/CD, infrastructure, observability, recovery, and incident decisions |
+| Capability                       | Must happen first                            | Reason                                                                                                                                        |
+| -------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Authentication and authorization | G-001, then G-002                            | The runtime foundation must exist; identity, membership, roles, permissions, delegation, and revocation must be defined before implementation |
+| Database and persistence         | G-001, then G-003                            | Engine, migrations, IDs, timestamps, transactions, and tenant enforcement cannot be inferred safely                                           |
+| Events, jobs, and automation     | G-001, G-003, then G-004                     | Reliable publication must coordinate committed state with transport, retries, idempotency, and recovery                                       |
+| AI execution                     | G-002, G-004, and G-006                      | Agents need defined principals, authorized actions, durable execution, model/data policy, budgets, and approvals                              |
+| Plugins                          | G-005                                        | Executable extensions require manifest, compatibility, permissions, isolation, and lifecycle decisions                                        |
+| Integrations                     | G-007 and, for asynchronous callbacks, G-004 | Credentials, provider contracts, webhook verification, organization binding, and deduplication must be defined                                |
+| Storage and files                | G-003 and G-008                              | File metadata and access need persistence and a storage/retention/export/deletion policy                                                      |
+| Production deployment            | G-001 foundation and G-009                   | Production needs artifact, topology, CI/CD, infrastructure, observability, recovery, and incident decisions                                   |
 
 ## G. Maintainer approval block
 
@@ -215,16 +219,16 @@ No existing architectural decision is contradicted by this closure package. The 
 
 ## References
 
-[1]: ../AGENTS.md "Business OS Contributor Guidance"
-[2]: ../README.md "Business OS Repository Overview"
-[3]: G-001-READINESS-AUDIT.md "Business OS G-001 Implementation Readiness Audit and Plan"
-[4]: G-001-STACK-PROPOSAL.md "Business OS G-001 Stack Proposal"
-[5]: DECISIONS.md "Business OS Architecture Decisions"
-[6]: ARCHITECTURE.md "Business OS Architecture"
-[7]: REPOSITORY-STRUCTURE.md "Business OS Repository Structure"
-[8]: DEVELOPMENT.md "Business OS Development"
-[9]: DATABASE.md "Business OS Database Architecture"
-[10]: MULTI-TENANCY.md "Business OS Multi-Tenancy"
-[11]: PERMISSIONS.md "Business OS Permissions"
-[12]: SECURITY.md "Business OS Security"
-[13]: DEPLOYMENT.md "Business OS Deployment"
+[1]: ../AGENTS.md 'Business OS Contributor Guidance'
+[2]: ../README.md 'Business OS Repository Overview'
+[3]: G-001-READINESS-AUDIT.md 'Business OS G-001 Implementation Readiness Audit and Plan'
+[4]: G-001-STACK-PROPOSAL.md 'Business OS G-001 Stack Proposal'
+[5]: DECISIONS.md 'Business OS Architecture Decisions'
+[6]: ARCHITECTURE.md 'Business OS Architecture'
+[7]: REPOSITORY-STRUCTURE.md 'Business OS Repository Structure'
+[8]: DEVELOPMENT.md 'Business OS Development'
+[9]: DATABASE.md 'Business OS Database Architecture'
+[10]: MULTI-TENANCY.md 'Business OS Multi-Tenancy'
+[11]: PERMISSIONS.md 'Business OS Permissions'
+[12]: SECURITY.md 'Business OS Security'
+[13]: DEPLOYMENT.md 'Business OS Deployment'

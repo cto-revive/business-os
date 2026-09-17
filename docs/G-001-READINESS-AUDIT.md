@@ -8,7 +8,7 @@ Business OS is **not yet ready to begin product implementation**. It is ready fo
 
 The repository is internally consistent at the architecture level. The conceptual modular-monolith boundaries, organization tenancy requirements, authorization posture, provider adapters, AI governance, automation controls, extension model, and portability rules agree with one another. The actual repository contains only documentation and configuration templates; it contains no runtime, application source, database schema, migrations, tests, CI pipeline, or deployment artifact.
 
-The immediate hard blocker is that **G-001 remains PENDING maintainer approval**. The current proposal recommends Node.js LTS, strict TypeScript, NestJS, pnpm workspaces, TypeScript project references, and Vitest, subject to the hardening requirements in [`G-001-STACK-PROPOSAL.md`](G-001-STACK-PROPOSAL.md). The proposal is not an accepted decision.
+At the time of this historical audit, the immediate hard blocker was that **G-001 remained PENDING maintainer approval**. The proposal was subsequently approved with conditions; current status is recorded in [`G-001-DECISION-CLOSURE.md`](G-001-DECISION-CLOSURE.md).
 
 After G-001 approval, a small repository runtime foundation can be implemented without deciding the later product gates. However, persistent tenant-owned data requires G-003 first, authentication and authorization implementation requires G-002 first, and events, queues, schedules, jobs, webhooks, automation, or agent execution require G-004 first. These gates are not optional details that can safely be inferred from framework defaults.
 
@@ -152,28 +152,28 @@ After G-001 approval, `DEVELOPMENT.md` must be updated in the same change as the
 
 ## Implementation-readiness matrix
 
-| Area | Status | Evidence | Blocking issue | Required decision |
-|---|---|---|---|---|
-| Repository authority and portability | READY WITH CONDITION | `AGENTS.md`, `README.md`, `DEPLOYMENT.md`, `REPOSITORY-STRUCTURE.md` | Portability is documented but not yet proven by a runnable system | Preserve GitHub authority and require standard non-Manus commands after G-001 |
-| Conceptual modular-monolith architecture | READY | `ARCHITECTURE.md`, `REPOSITORY-STRUCTURE.md`, `DECISIONS.md` ADR-001/011 | Physical package layout and graph checks do not yet exist | Adopt the G-001 package model and enforce it during foundation work |
-| G-001 runtime/tooling choice | BLOCKED | `G-001-STACK-PROPOSAL.md`, `DECISIONS.md` | Proposal remains pending maintainer approval | Explicitly approve or reject the hardened proposal |
-| Framework isolation and package boundaries | READY WITH CONDITION | Hardened G-001 proposal | No implementation or CI checks exist | Build package exports, dependency graph checks, forbidden-edge rules, and architecture tests before feature work |
-| Shared boundary | READY WITH CONDITION | `REPOSITORY-STRUCTURE.md`, hardened G-001 proposal | Shared package has not yet been physically constrained | Create only narrow shared contracts and mechanically reject forbidden dependencies |
-| Organization tenancy model | READY WITH CONDITION | `MULTI-TENANCY.md`, `DATABASE.md`, `SECURITY.md` | Runtime and persistence enforcement are absent; G-003 is open | Resolve G-003 and implement Organization A/B negative tests |
-| Identity and authentication | BLOCKED | `PERMISSIONS.md`, `SECURITY.md`, `DECISIONS.md` G-002 | Identity, sessions, membership, and principal semantics are unresolved | Resolve G-002 before authentication or authorization implementation |
-| Authorization | BLOCKED | `PERMISSIONS.md`, `AI-AGENTS.md`, `AUTOMATION.md` | Roles, permissions, delegation, revocation, and principal semantics are unresolved | Resolve G-002 and define the trusted action boundary |
-| Database and migrations | BLOCKED | `DATABASE.md`, `DECISIONS.md` G-003 | No engine, ORM/client, migration, ID, transaction, or tenancy strategy | Resolve G-003 before persistent application records |
-| Events and reliable publication | BLOCKED | `DATABASE.md`, `AUTOMATION.md`, `DECISIONS.md` G-004 | Outbox, event format, transport, retries, and idempotency are unresolved | Resolve G-004 before events that drive work or integrations |
-| API and delivery boundary | READY WITH CONDITION | `ARCHITECTURE.md`, `DEPLOYMENT.md`, G-001 proposal | No runtime or API contract convention exists | Define API delivery adapters after G-001, without placing HTTP in domain/application packages |
-| Web/API and worker roles | READY WITH CONDITION | `DEPLOYMENT.md`, `AUTOMATION.md` | Worker semantics depend on G-004 | Create process entry points only after the relevant execution decisions |
-| AI execution | BLOCKED | `AI-AGENTS.md`, `PERMISSIONS.md`, `DECISIONS.md` G-002/G-004/G-006 | Principal, durable execution, provider, data, and approval policies are unresolved | Resolve the required gates before production agent work |
-| Automation | BLOCKED | `AUTOMATION.md`, `DATABASE.md`, `DECISIONS.md` G-004 | Reliable event and action execution semantics are unresolved | Resolve G-004 before automation implementation |
-| Integrations and webhooks | BLOCKED | `INTEGRATIONS.md`, `SECURITY.md`, `DECISIONS.md` G-007 | Credential, provider, callback, and deduplication policies are unresolved | Resolve G-007 before external connections |
-| Plugins | BLOCKED | `PLUGINS.md`, `DECISIONS.md` G-005 | Manifest, isolation, lifecycle, and resource/network controls are unresolved | Resolve G-005 before executable plugins |
-| Storage and files | BLOCKED | `DATABASE.md`, `DEPLOYMENT.md`, `DECISIONS.md` G-008 | Storage, access, retention, export, deletion, and recovery are unresolved | Resolve G-008 before file handling |
-| Observability and deployment | READY WITH CONDITION | `SECURITY.md`, `DEPLOYMENT.md`, `DECISIONS.md` G-009 | Production topology, CI/CD, IaC, and recovery objectives are open | Define a portable development baseline after G-001; resolve G-009 before production |
-| Product applications | NOT YET DEFINED for implementation | `APPS.md`, `README.md` | No application domain, contracts, or lifecycle implementation exists | Select the first bounded application after platform prerequisites |
-| Test strategy | READY WITH CONDITION | G-001 proposal, `SECURITY.md`, `MULTI-TENANCY.md` | No test runner, fixtures, disposable services, or CI exists | Establish test projects and security invariants in Phase 1 |
+| Area                                       | Status                             | Evidence                                                                 | Blocking issue                                                                     | Required decision                                                                                                |
+| ------------------------------------------ | ---------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Repository authority and portability       | READY WITH CONDITION               | `AGENTS.md`, `README.md`, `DEPLOYMENT.md`, `REPOSITORY-STRUCTURE.md`     | Portability is documented but not yet proven by a runnable system                  | Preserve GitHub authority and require standard non-Manus commands after G-001                                    |
+| Conceptual modular-monolith architecture   | READY                              | `ARCHITECTURE.md`, `REPOSITORY-STRUCTURE.md`, `DECISIONS.md` ADR-001/011 | Physical package layout and graph checks do not yet exist                          | Adopt the G-001 package model and enforce it during foundation work                                              |
+| G-001 runtime/tooling choice               | **HISTORICAL BLOCKER — CLOSED**    | `G-001-STACK-PROPOSAL.md`, `DECISIONS.md`                                | At the time of this audit, the proposal remained pending maintainer approval       | The hardened proposal was subsequently approved for the Phase 1 foundation                                       |
+| Framework isolation and package boundaries | READY WITH CONDITION               | Hardened G-001 proposal                                                  | No implementation or CI checks exist                                               | Build package exports, dependency graph checks, forbidden-edge rules, and architecture tests before feature work |
+| Shared boundary                            | READY WITH CONDITION               | `REPOSITORY-STRUCTURE.md`, hardened G-001 proposal                       | Shared package has not yet been physically constrained                             | Create only narrow shared contracts and mechanically reject forbidden dependencies                               |
+| Organization tenancy model                 | READY WITH CONDITION               | `MULTI-TENANCY.md`, `DATABASE.md`, `SECURITY.md`                         | Runtime and persistence enforcement are absent; G-003 is open                      | Resolve G-003 and implement Organization A/B negative tests                                                      |
+| Identity and authentication                | BLOCKED                            | `PERMISSIONS.md`, `SECURITY.md`, `DECISIONS.md` G-002                    | Identity, sessions, membership, and principal semantics are unresolved             | Resolve G-002 before authentication or authorization implementation                                              |
+| Authorization                              | BLOCKED                            | `PERMISSIONS.md`, `AI-AGENTS.md`, `AUTOMATION.md`                        | Roles, permissions, delegation, revocation, and principal semantics are unresolved | Resolve G-002 and define the trusted action boundary                                                             |
+| Database and migrations                    | BLOCKED                            | `DATABASE.md`, `DECISIONS.md` G-003                                      | No engine, ORM/client, migration, ID, transaction, or tenancy strategy             | Resolve G-003 before persistent application records                                                              |
+| Events and reliable publication            | BLOCKED                            | `DATABASE.md`, `AUTOMATION.md`, `DECISIONS.md` G-004                     | Outbox, event format, transport, retries, and idempotency are unresolved           | Resolve G-004 before events that drive work or integrations                                                      |
+| API and delivery boundary                  | READY WITH CONDITION               | `ARCHITECTURE.md`, `DEPLOYMENT.md`, G-001 proposal                       | No runtime or API contract convention exists                                       | Define API delivery adapters after G-001, without placing HTTP in domain/application packages                    |
+| Web/API and worker roles                   | READY WITH CONDITION               | `DEPLOYMENT.md`, `AUTOMATION.md`                                         | Worker semantics depend on G-004                                                   | Create process entry points only after the relevant execution decisions                                          |
+| AI execution                               | BLOCKED                            | `AI-AGENTS.md`, `PERMISSIONS.md`, `DECISIONS.md` G-002/G-004/G-006       | Principal, durable execution, provider, data, and approval policies are unresolved | Resolve the required gates before production agent work                                                          |
+| Automation                                 | BLOCKED                            | `AUTOMATION.md`, `DATABASE.md`, `DECISIONS.md` G-004                     | Reliable event and action execution semantics are unresolved                       | Resolve G-004 before automation implementation                                                                   |
+| Integrations and webhooks                  | BLOCKED                            | `INTEGRATIONS.md`, `SECURITY.md`, `DECISIONS.md` G-007                   | Credential, provider, callback, and deduplication policies are unresolved          | Resolve G-007 before external connections                                                                        |
+| Plugins                                    | BLOCKED                            | `PLUGINS.md`, `DECISIONS.md` G-005                                       | Manifest, isolation, lifecycle, and resource/network controls are unresolved       | Resolve G-005 before executable plugins                                                                          |
+| Storage and files                          | BLOCKED                            | `DATABASE.md`, `DEPLOYMENT.md`, `DECISIONS.md` G-008                     | Storage, access, retention, export, deletion, and recovery are unresolved          | Resolve G-008 before file handling                                                                               |
+| Observability and deployment               | READY WITH CONDITION               | `SECURITY.md`, `DEPLOYMENT.md`, `DECISIONS.md` G-009                     | Production topology, CI/CD, IaC, and recovery objectives are open                  | Define a portable development baseline after G-001; resolve G-009 before production                              |
+| Product applications                       | NOT YET DEFINED for implementation | `APPS.md`, `README.md`                                                   | No application domain, contracts, or lifecycle implementation exists               | Select the first bounded application after platform prerequisites                                                |
+| Test strategy                              | READY WITH CONDITION               | G-001 proposal, `SECURITY.md`, `MULTI-TENANCY.md`                        | No test runner, fixtures, disposable services, or CI exists                        | Establish test projects and security invariants in Phase 1                                                       |
 
 ## Hard blockers
 
@@ -397,47 +397,47 @@ These are proposed issues only. They should not be created until the maintainer 
 
 ### Phase 0 issues
 
-| Issue title | Purpose | Dependencies | Expected files/modules | Acceptance criteria |
-|---|---|---|---|---|
-| Approve and record G-001 | Move the stack from proposal to accepted decision | Maintainer review | `docs/DECISIONS.md`, `docs/G-001-STACK-PROPOSAL.md`, `docs/IMPLEMENTATION-STATUS.md` | Explicit approval recorded; no later gate is silently decided |
-| Decide G-002 identity and authorization | Define trusted principals and policy semantics | G-001 approval | `docs/DECISIONS.md`, `docs/PERMISSIONS.md`, `docs/SECURITY.md` | Identity, sessions, memberships, roles, permissions, delegation, revocation, and audit semantics are documented |
-| Decide G-003 persistence and tenancy | Select database, migrations, IDs, transactions, and isolation | G-001 approval; G-002 context where relevant | `docs/DECISIONS.md`, `docs/DATABASE.md`, `docs/MULTI-TENANCY.md` | No unresolved persistence choice remains before migrations |
-| Decide G-004 reliable execution | Select event, queue, scheduler, retry, outbox, and idempotency semantics | G-001/G-003 | `docs/DECISIONS.md`, `docs/AUTOMATION.md`, `docs/DATABASE.md` | Durable execution and recovery semantics are recorded |
+| Issue title                             | Purpose                                                                  | Dependencies                                 | Expected files/modules                                                               | Acceptance criteria                                                                                             |
+| --------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| Approve and record G-001                | Move the stack from proposal to accepted decision                        | Maintainer review                            | `docs/DECISIONS.md`, `docs/G-001-STACK-PROPOSAL.md`, `docs/IMPLEMENTATION-STATUS.md` | Explicit approval recorded; no later gate is silently decided                                                   |
+| Decide G-002 identity and authorization | Define trusted principals and policy semantics                           | G-001 approval                               | `docs/DECISIONS.md`, `docs/PERMISSIONS.md`, `docs/SECURITY.md`                       | Identity, sessions, memberships, roles, permissions, delegation, revocation, and audit semantics are documented |
+| Decide G-003 persistence and tenancy    | Select database, migrations, IDs, transactions, and isolation            | G-001 approval; G-002 context where relevant | `docs/DECISIONS.md`, `docs/DATABASE.md`, `docs/MULTI-TENANCY.md`                     | No unresolved persistence choice remains before migrations                                                      |
+| Decide G-004 reliable execution         | Select event, queue, scheduler, retry, outbox, and idempotency semantics | G-001/G-003                                  | `docs/DECISIONS.md`, `docs/AUTOMATION.md`, `docs/DATABASE.md`                        | Durable execution and recovery semantics are recorded                                                           |
 
 ### Phase 1 issues
 
-| Issue title | Purpose | Dependencies | Expected files/modules | Acceptance criteria |
-|---|---|---|---|---|
-| Create portable runtime foundation | Establish the approved language, workspace, compiler, and root commands | Accepted G-001 | Root manifests, configuration, tooling, documentation | Clone-to-validation workflow runs without Manus |
-| Add architecture enforcement | Mechanically enforce package and framework boundaries | Runtime foundation | Package manifests, export maps, graph checks, architecture tests | Forbidden imports, deep imports, cycles, and undeclared dependencies fail checks |
-| Add test projects and fixtures | Establish unit, contract, architecture, integration, and e2e structure | Runtime foundation; G-003 for real infrastructure | Test configuration and repository tooling | CI/local commands are identical and security fixtures are documented |
-| Add bootstrap and operational conventions | Provide configuration, logging, errors, health, and shutdown behavior | Runtime foundation | Delivery/composition packages and docs | No domain logic depends on framework edges; logs do not leak tenant data |
+| Issue title                               | Purpose                                                                 | Dependencies                                      | Expected files/modules                                           | Acceptance criteria                                                              |
+| ----------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Create portable runtime foundation        | Establish the approved language, workspace, compiler, and root commands | Accepted G-001                                    | Root manifests, configuration, tooling, documentation            | Clone-to-validation workflow runs without Manus                                  |
+| Add architecture enforcement              | Mechanically enforce package and framework boundaries                   | Runtime foundation                                | Package manifests, export maps, graph checks, architecture tests | Forbidden imports, deep imports, cycles, and undeclared dependencies fail checks |
+| Add test projects and fixtures            | Establish unit, contract, architecture, integration, and e2e structure  | Runtime foundation; G-003 for real infrastructure | Test configuration and repository tooling                        | CI/local commands are identical and security fixtures are documented             |
+| Add bootstrap and operational conventions | Provide configuration, logging, errors, health, and shutdown behavior   | Runtime foundation                                | Delivery/composition packages and docs                           | No domain logic depends on framework edges; logs do not leak tenant data         |
 
 ### Phase 2 issues
 
-| Issue title | Purpose | Dependencies | Expected files/modules | Acceptance criteria |
-|---|---|---|---|---|
-| Implement organization context | Establish explicit organization and principal scope | G-002/G-003 | Platform organization and context packages | Context is required before tenant-owned access; cross-tenant tests pass |
-| Implement membership and authorization core | Apply G-002 decisions at trusted action boundaries | G-002/G-003 | Platform identity, membership, permissions, audit packages | Deny-by-default, revocation, audit, and negative tests pass |
-| Implement minimum persistence boundary | Add migrations and data access under G-003 | G-003 | Infrastructure database and owning module migrations | Migrations are source-controlled and scope is enforced in real infrastructure |
-| Implement minimum shared capabilities | Add only tasks/audit/events/etc. required by first slice | G-002/G-003/G-004 as applicable | Owned platform packages | Each capability has a public contract and private data boundary |
+| Issue title                                 | Purpose                                                  | Dependencies                    | Expected files/modules                                     | Acceptance criteria                                                           |
+| ------------------------------------------- | -------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Implement organization context              | Establish explicit organization and principal scope      | G-002/G-003                     | Platform organization and context packages                 | Context is required before tenant-owned access; cross-tenant tests pass       |
+| Implement membership and authorization core | Apply G-002 decisions at trusted action boundaries       | G-002/G-003                     | Platform identity, membership, permissions, audit packages | Deny-by-default, revocation, audit, and negative tests pass                   |
+| Implement minimum persistence boundary      | Add migrations and data access under G-003               | G-003                           | Infrastructure database and owning module migrations       | Migrations are source-controlled and scope is enforced in real infrastructure |
+| Implement minimum shared capabilities       | Add only tasks/audit/events/etc. required by first slice | G-002/G-003/G-004 as applicable | Owned platform packages                                    | Each capability has a public contract and private data boundary               |
 
 ### Phase 3 issues
 
-| Issue title | Purpose | Dependencies | Expected files/modules | Acceptance criteria |
-|---|---|---|---|---|
-| Implement CRM contact capability | Prove an application-owned domain slice | Phase 2 | Sales & CRM package and tests | Contacts are organization-scoped, authorized, audited, migrated, and contract-tested |
-| Implement CRM follow-up task relation | Prove collaboration through a platform contract | Tasks capability; CRM contact capability | CRM/task public contracts and tests | CRM never writes the task store directly; relation authorization passes |
-| Validate first vertical slice end to end | Prove portable assembly and security invariants | Previous Phase 3 issues | API/delivery tests and integration harness | Clone, run, test, migrate, and isolate organizations using standard infrastructure |
+| Issue title                              | Purpose                                         | Dependencies                             | Expected files/modules                     | Acceptance criteria                                                                  |
+| ---------------------------------------- | ----------------------------------------------- | ---------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Implement CRM contact capability         | Prove an application-owned domain slice         | Phase 2                                  | Sales & CRM package and tests              | Contacts are organization-scoped, authorized, audited, migrated, and contract-tested |
+| Implement CRM follow-up task relation    | Prove collaboration through a platform contract | Tasks capability; CRM contact capability | CRM/task public contracts and tests        | CRM never writes the task store directly; relation authorization passes              |
+| Validate first vertical slice end to end | Prove portable assembly and security invariants | Previous Phase 3 issues                  | API/delivery tests and integration harness | Clone, run, test, migrate, and isolate organizations using standard infrastructure   |
 
 ### Phase 4 issues
 
-| Issue title | Purpose | Dependencies | Expected files/modules | Acceptance criteria |
-|---|---|---|---|---|
-| Add public API delivery | Expose stable API contracts without moving business rules to HTTP | Phase 3; G-001/G-002 | Execution API adapters | API validates, authorizes, audits, and uses public actions |
-| Add webhook delivery | Receive verified external callbacks | G-004/G-007 | Webhook adapters and tests | Signature, organization resolution, deduplication, and audit pass |
-| Add automation execution | Execute approved rules and actions | G-004 | Automation packages and worker role | Retries, idempotency, scopes, approvals, and recovery pass |
-| Add governed AI tools | Execute provider-neutral registered tools | G-002/G-004/G-006 | AI execution packages and adapters | Tool allowlists, policy, budgets, approvals, provider replacement, and audit pass |
+| Issue title              | Purpose                                                           | Dependencies         | Expected files/modules              | Acceptance criteria                                                               |
+| ------------------------ | ----------------------------------------------------------------- | -------------------- | ----------------------------------- | --------------------------------------------------------------------------------- |
+| Add public API delivery  | Expose stable API contracts without moving business rules to HTTP | Phase 3; G-001/G-002 | Execution API adapters              | API validates, authorizes, audits, and uses public actions                        |
+| Add webhook delivery     | Receive verified external callbacks                               | G-004/G-007          | Webhook adapters and tests          | Signature, organization resolution, deduplication, and audit pass                 |
+| Add automation execution | Execute approved rules and actions                                | G-004                | Automation packages and worker role | Retries, idempotency, scopes, approvals, and recovery pass                        |
+| Add governed AI tools    | Execute provider-neutral registered tools                         | G-002/G-004/G-006    | AI execution packages and adapters  | Tool allowlists, policy, budgets, approvals, provider replacement, and audit pass |
 
 ### Phase 5 and Phase 6 issues
 
@@ -529,21 +529,21 @@ After the relevant gates are approved, the team can decide package granularity, 
 
 ## References
 
-[1]: ../AGENTS.md "Business OS Contributor Guidance"
-[2]: ../README.md "Business OS Repository Overview"
-[3]: ARCHITECTURE.md "Business OS Architecture"
-[4]: REPOSITORY-STRUCTURE.md "Business OS Repository Structure"
-[5]: IMPLEMENTATION-STATUS.md "Business OS Implementation Status"
-[6]: DEVELOPMENT.md "Business OS Development"
-[7]: G-001-STACK-PROPOSAL.md "Business OS G-001 Stack Proposal"
-[8]: DATABASE.md "Business OS Database Architecture"
-[9]: MULTI-TENANCY.md "Business OS Multi-Tenancy"
-[10]: PERMISSIONS.md "Business OS Permissions"
-[11]: APPS.md "Business OS Applications"
-[12]: PLUGINS.md "Business OS Plugins"
-[13]: AI-AGENTS.md "Business OS AI Agents"
-[14]: AUTOMATION.md "Business OS Automation"
-[15]: INTEGRATIONS.md "Business OS Integrations"
-[16]: SECURITY.md "Business OS Security"
-[17]: DEPLOYMENT.md "Business OS Deployment"
-[18]: DECISIONS.md "Business OS Architecture Decisions"
+[1]: ../AGENTS.md 'Business OS Contributor Guidance'
+[2]: ../README.md 'Business OS Repository Overview'
+[3]: ARCHITECTURE.md 'Business OS Architecture'
+[4]: REPOSITORY-STRUCTURE.md 'Business OS Repository Structure'
+[5]: IMPLEMENTATION-STATUS.md 'Business OS Implementation Status'
+[6]: DEVELOPMENT.md 'Business OS Development'
+[7]: G-001-STACK-PROPOSAL.md 'Business OS G-001 Stack Proposal'
+[8]: DATABASE.md 'Business OS Database Architecture'
+[9]: MULTI-TENANCY.md 'Business OS Multi-Tenancy'
+[10]: PERMISSIONS.md 'Business OS Permissions'
+[11]: APPS.md 'Business OS Applications'
+[12]: PLUGINS.md 'Business OS Plugins'
+[13]: AI-AGENTS.md 'Business OS AI Agents'
+[14]: AUTOMATION.md 'Business OS Automation'
+[15]: INTEGRATIONS.md 'Business OS Integrations'
+[16]: SECURITY.md 'Business OS Security'
+[17]: DEPLOYMENT.md 'Business OS Deployment'
+[18]: DECISIONS.md 'Business OS Architecture Decisions'

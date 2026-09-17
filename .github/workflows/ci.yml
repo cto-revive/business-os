@@ -11,6 +11,21 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres_test
+          POSTGRES_DB: business_os_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d business_os_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      DATABASE_URL: postgresql://business_os_app:business_os_test@127.0.0.1:5432/business_os_test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,6 +50,20 @@ jobs:
         run: pnpm typecheck
       - name: Architecture checks
         run: pnpm architecture:check
+      - name: Prepare PostgreSQL runtime role
+        env:
+          PGURL: postgresql://postgres:postgres_test@127.0.0.1:5432/business_os_test
+        run: |
+          psql "$PGURL" -v ON_ERROR_STOP=1 -c "CREATE ROLE business_os_app LOGIN PASSWORD 'business_os_test';"
+      - name: Run G-003 migrations
+        env:
+          DATABASE_URL: postgresql://postgres:postgres_test@127.0.0.1:5432/business_os_test
+        run: pnpm db:migrate
+      - name: Grant G-003 runtime privileges
+        env:
+          PGURL: postgresql://postgres:postgres_test@127.0.0.1:5432/business_os_test
+        run: |
+          psql "$PGURL" -v ON_ERROR_STOP=1 -c "GRANT USAGE ON SCHEMA public TO business_os_app" -c "GRANT SELECT, INSERT ON TABLE public.audit_events TO business_os_app"
       - name: Tests
         run: pnpm test
       - name: Build

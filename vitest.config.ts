@@ -8,6 +8,8 @@ export default defineConfig({
       '@business-os/shared-contracts': source('./packages/shared-contracts/src/index.ts'),
       '@business-os/shared-validation': source('./packages/shared-validation/src/index.ts'),
       '@business-os/runtime-config': source('./packages/runtime-config/src/index.ts'),
+      '@business-os/persistence-contracts': source('./packages/persistence-contracts/src/index.ts'),
+      '@business-os/persistence-postgres': source('./packages/persistence-postgres/src/index.ts'),
     },
   },
   test: {

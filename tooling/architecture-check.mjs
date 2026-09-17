@@ -89,6 +89,7 @@ for (const [packageName, info] of manifests) {
       }
       if (
         layer !== 'delivery' &&
+        !(layer === 'infrastructure' && specifier === 'pg') &&
         forbiddenFrameworks.some(
           (prefix) => specifier === prefix || specifier.startsWith(`${prefix}/`),
         )

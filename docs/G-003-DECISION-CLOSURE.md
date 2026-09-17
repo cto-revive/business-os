@@ -2,9 +2,9 @@
 
 ## 1. Status
 
-**Status: PROPOSED — PENDING MAINTAINER APPROVAL.**
+**Status: APPROVED — GOVERNANCE CLOSED.**
 
-This document is an implementation-ready persistence architecture proposal. It closes the G-003 decisions required before the first database migration or persistent application record. It does not create a database, schema, migration, ORM model, database package, authentication persistence, or application record.
+This document is the approved implementation-ready persistence architecture. It closes the G-003 decisions required before the first database migration or persistent application record. The approval authorizes only the G-003 persistence foundation described by this document; it does not authorize product modules or later-gate implementation.
 
 G-001 is closed and G-002 is approved. This proposal must preserve the G-002 identity and authorization contract. G-003 owns storage semantics; it must not change G-002 security semantics. G-004 through G-010 remain separate gates.
 
@@ -43,24 +43,24 @@ G-003 does not implement or select:
 
 ## 4. Decision summary
 
-| Concern | Proposed decision | Classification |
-|---|---|---|
-| Database engine | PostgreSQL 16 or later, using the current supported major version within the repository support window | **DECIDED** |
-| Portability | Independently deployable PostgreSQL; no Manus-managed database dependency | **DECIDED** |
-| Persistence approach | SQL-first repositories using Kysely as a type-safe query builder and `pg` as the PostgreSQL adapter; no domain ORM entities | **DECIDED** |
-| Domain/persistence separation | Framework-free domain/application code depends on repository contracts, never Kysely, `pg`, or PostgreSQL types | **DECIDED** |
-| Migration runner | `node-pg-migrate` with repository-owned plain SQL migration files and reviewable migration metadata | **DECIDED** |
-| Identifiers | Application-generated UUIDv7 values stored in PostgreSQL `uuid` columns | **DECIDED** |
-| Time | UTC instants stored as PostgreSQL `timestamptz`; microsecond database precision; RFC 3339 UTC at boundaries | **DECIDED** |
-| Baseline transaction isolation | PostgreSQL `READ COMMITTED`, with explicit locks or stronger isolation for contention-sensitive operations | **DECIDED** |
-| Tenancy enforcement | Mandatory application organization context plus PostgreSQL row-level security on organization-owned tables | **DECIDED** |
-| Cross-organization access | Prohibited by default; no general cross-organization query primitive | **DECIDED** |
-| Schema ownership | The owning module owns tables, repositories, migrations, permissions, and lifecycle; consumers use public contracts | **DECIDED** |
-| Soft deletion | No universal soft-delete column; lifecycle and archival are domain-specific; audit records are append-oriented | **DECIDED** |
-| Audit persistence | Append-oriented, organization-scoped where applicable, indexed, and transactionally coupled to audited state changes | **DECIDED** |
-| Secret storage | Store references or one-way protected session identifiers; never store passwords or raw tokens; external secret storage remains G-007/G-009 | **DECIDED / DEFERRED TO SPECIFIC LATER GATES** |
-| Backup and recovery | G-003 requires durable committed storage and backup-compatible database behavior; G-009 owns production backup, restore, and disaster-recovery operations | **DEFERRED TO A SPECIFIC LATER GATE** |
-| Open conceptual blockers | None within G-003 scope | **DECIDED** |
+| Concern                        | Proposed decision                                                                                                                                         | Classification                                 |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| Database engine                | PostgreSQL 16 or later, using the current supported major version within the repository support window                                                    | **DECIDED**                                    |
+| Portability                    | Independently deployable PostgreSQL; no Manus-managed database dependency                                                                                 | **DECIDED**                                    |
+| Persistence approach           | SQL-first repositories using Kysely as a type-safe query builder and `pg` as the PostgreSQL adapter; no domain ORM entities                               | **DECIDED**                                    |
+| Domain/persistence separation  | Framework-free domain/application code depends on repository contracts, never Kysely, `pg`, or PostgreSQL types                                           | **DECIDED**                                    |
+| Migration runner               | `node-pg-migrate` with repository-owned plain SQL migration files and reviewable migration metadata                                                       | **DECIDED**                                    |
+| Identifiers                    | Application-generated UUIDv7 values stored in PostgreSQL `uuid` columns                                                                                   | **DECIDED**                                    |
+| Time                           | UTC instants stored as PostgreSQL `timestamptz`; microsecond database precision; RFC 3339 UTC at boundaries                                               | **DECIDED**                                    |
+| Baseline transaction isolation | PostgreSQL `READ COMMITTED`, with explicit locks or stronger isolation for contention-sensitive operations                                                | **DECIDED**                                    |
+| Tenancy enforcement            | Mandatory application organization context plus PostgreSQL row-level security on organization-owned tables                                                | **DECIDED**                                    |
+| Cross-organization access      | Prohibited by default; no general cross-organization query primitive                                                                                      | **DECIDED**                                    |
+| Schema ownership               | The owning module owns tables, repositories, migrations, permissions, and lifecycle; consumers use public contracts                                       | **DECIDED**                                    |
+| Soft deletion                  | No universal soft-delete column; lifecycle and archival are domain-specific; audit records are append-oriented                                            | **DECIDED**                                    |
+| Audit persistence              | Append-oriented, organization-scoped where applicable, indexed, and transactionally coupled to audited state changes                                      | **DECIDED**                                    |
+| Secret storage                 | Store references or one-way protected session identifiers; never store passwords or raw tokens; external secret storage remains G-007/G-009               | **DECIDED / DEFERRED TO SPECIFIC LATER GATES** |
+| Backup and recovery            | G-003 requires durable committed storage and backup-compatible database behavior; G-009 owns production backup, restore, and disaster-recovery operations | **DEFERRED TO A SPECIFIC LATER GATE**          |
+| Open conceptual blockers       | None within G-003 scope                                                                                                                                   | **DECIDED**                                    |
 
 ## 5. Compatibility with G-001 and G-002
 
@@ -79,22 +79,22 @@ The persistence implementation must remain inside the approved G-001 boundaries:
 
 The storage design preserves the approved G-002 contract:
 
-| G-002 semantic | G-003 persistence consequence |
-|---|---|
-| Globally unique immutable user identity | User identity records use immutable UUIDv7 identifiers; email and provider subjects are attributes or qualified links, not authorization keys |
-| Globally unique organization | Organization records use immutable UUIDv7 identifiers |
-| Membership uniqueness | Enforce uniqueness for `(user_identity_id, organization_id)`; membership lifecycle is represented explicitly rather than by deleting history |
-| Membership lifecycle | Status transitions are constrained by module-owned commands and audited state changes |
-| Authorization epochs | Epoch values are updated atomically with membership, grant, or security changes and checked before sensitive actions |
-| Opaque server-side sessions | Session records store a one-way protected token identifier or equivalent non-replayable representation; raw session tokens are never persisted |
-| Session revocation | Revocation state and relevant epoch references are persisted and checked by the session boundary |
-| Role and grant persistence | Roles and grants are organization-scoped records owned by the authorization module; G-003 supplies storage only |
-| Distinct principal kinds | Principal kind is explicit and constrained; no human privilege is inferred for service, integration, automation, or AI principals |
-| Delegation | Delegations have explicit organization, principal, scope, expiry, revocation, and one-hop fields owned by the authorization module |
-| Credential references | Persistence stores references and lifecycle metadata, not raw external secrets; G-007/G-009 own external secret handling |
-| Audit records | Audit records carry actor, organization or explicit platform scope, action, target, policy basis, outcome, and correlation data |
-| Organization switching | Session context is replaced and authorization is re-evaluated; persisted session and membership scope cannot be reused across organizations |
-| Deny-by-default authorization | Database constraints and RLS reduce leakage but never replace the G-002 application authorization decision |
+| G-002 semantic                          | G-003 persistence consequence                                                                                                                  |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Globally unique immutable user identity | User identity records use immutable UUIDv7 identifiers; email and provider subjects are attributes or qualified links, not authorization keys  |
+| Globally unique organization            | Organization records use immutable UUIDv7 identifiers                                                                                          |
+| Membership uniqueness                   | Enforce uniqueness for `(user_identity_id, organization_id)`; membership lifecycle is represented explicitly rather than by deleting history   |
+| Membership lifecycle                    | Status transitions are constrained by module-owned commands and audited state changes                                                          |
+| Authorization epochs                    | Epoch values are updated atomically with membership, grant, or security changes and checked before sensitive actions                           |
+| Opaque server-side sessions             | Session records store a one-way protected token identifier or equivalent non-replayable representation; raw session tokens are never persisted |
+| Session revocation                      | Revocation state and relevant epoch references are persisted and checked by the session boundary                                               |
+| Role and grant persistence              | Roles and grants are organization-scoped records owned by the authorization module; G-003 supplies storage only                                |
+| Distinct principal kinds                | Principal kind is explicit and constrained; no human privilege is inferred for service, integration, automation, or AI principals              |
+| Delegation                              | Delegations have explicit organization, principal, scope, expiry, revocation, and one-hop fields owned by the authorization module             |
+| Credential references                   | Persistence stores references and lifecycle metadata, not raw external secrets; G-007/G-009 own external secret handling                       |
+| Audit records                           | Audit records carry actor, organization or explicit platform scope, action, target, policy basis, outcome, and correlation data                |
+| Organization switching                  | Session context is replaced and authorization is re-evaluated; persisted session and membership scope cannot be reused across organizations    |
+| Deny-by-default authorization           | Database constraints and RLS reduce leakage but never replace the G-002 application authorization decision                                     |
 
 If a future implementation cannot preserve one of these semantics, implementation must stop and produce an explicit architecture amendment. A database limitation is not permission to weaken G-002.
 
@@ -457,26 +457,26 @@ A future database implementation must prove that a committed transaction is not 
 
 ## 19. Persistence-specific threat model
 
-| Threat | Required control | Test that must prove it |
-|---|---|---|
-| Cross-organization query leakage | Mandatory organization context, repository scoping, non-null organization FK, RLS, and least-privilege roles | A principal in Organization A cannot read, count, update, delete, or export Organization B data through any repository path |
-| Missing organization predicate | Require organization context in repository contracts and fail closed in RLS | Execute a tenant query without context; it fails before or at the database boundary |
-| Forged organization ID | Validate the target organization through G-002 membership/principal context before transaction setup | Submit Organization B while authorized only for A; request is denied and no B query succeeds |
-| Repository bypass | Private tables and persistence models remain module-owned; cross-module access uses public contracts | Attempt a private-table import or direct mutation; architecture checks and code review reject it |
-| Accidental unrestricted query | Prohibit unscoped repository methods and use RLS as defense in depth | Static/architecture check plus runtime query test proves tenant methods require scope |
-| Incorrect composite uniqueness | Database composite unique constraints include organization where scope requires it | Concurrently create same scoped natural key in A and B and same key twice in A; only the latter conflicts |
-| Stale authorization epoch | Atomically update epoch with security changes and compare before side effects | Revoke membership or grant after context creation; stale transaction is denied or revalidated |
-| Transaction race during membership/role changes | Explicit locks/version checks, transaction boundaries, and same-transaction audit | Concurrent role/membership updates produce one valid outcome and complete audit records |
-| Audit record mutation | Append-oriented table permissions and controlled redaction process | Ordinary application principal cannot update or delete an audit record |
-| Migration drift | Ordered repository migrations, clean-schema CI, generated-schema comparison, and drift checks | Modify schema outside migrations; CI fails |
-| Destructive migration | Expand-and-contract, destructive review, backup/export assessment, and forward recovery | Destructive migration without required metadata or compatibility plan is rejected |
-| Secret or token persistence | No passwords, raw session tokens, credentials, or provider secrets in ordinary tables or logs | Scan source, migrations, fixtures, logs, and records for prohibited secret fields and values |
-| Backup exposure | G-009-controlled encryption, access, retention, and restore testing | Operational backup test proves unauthorized principal cannot access backup content |
-| Global record treated as tenant-owned | Explicit record classification and repository boundary | A platform-global record cannot be used to return tenant data without an approved platform-scope path |
-| Tenant record treated as global | Default organization ownership, required organization FK, RLS | Attempt to create tenant data without organization scope; constraint or repository rejects it |
-| Background access without organization context | Future execution envelope must contain organization and principal context; repository fails closed | Run a background-like persistence call without context; no tenant query executes |
-| Concurrent authorization-sensitive updates | Version checks or short explicit locks, reauthorization after retry, atomic audit | Concurrent grant, delegation, epoch, or revocation changes cannot commit an unauthorized stale result |
-| Session-context leakage through pool reuse | Transaction-local RLS settings and connection reset tests | Alternate organizations over one pool and prove no context crosses transactions |
+| Threat                                          | Required control                                                                                             | Test that must prove it                                                                                                     |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| Cross-organization query leakage                | Mandatory organization context, repository scoping, non-null organization FK, RLS, and least-privilege roles | A principal in Organization A cannot read, count, update, delete, or export Organization B data through any repository path |
+| Missing organization predicate                  | Require organization context in repository contracts and fail closed in RLS                                  | Execute a tenant query without context; it fails before or at the database boundary                                         |
+| Forged organization ID                          | Validate the target organization through G-002 membership/principal context before transaction setup         | Submit Organization B while authorized only for A; request is denied and no B query succeeds                                |
+| Repository bypass                               | Private tables and persistence models remain module-owned; cross-module access uses public contracts         | Attempt a private-table import or direct mutation; architecture checks and code review reject it                            |
+| Accidental unrestricted query                   | Prohibit unscoped repository methods and use RLS as defense in depth                                         | Static/architecture check plus runtime query test proves tenant methods require scope                                       |
+| Incorrect composite uniqueness                  | Database composite unique constraints include organization where scope requires it                           | Concurrently create same scoped natural key in A and B and same key twice in A; only the latter conflicts                   |
+| Stale authorization epoch                       | Atomically update epoch with security changes and compare before side effects                                | Revoke membership or grant after context creation; stale transaction is denied or revalidated                               |
+| Transaction race during membership/role changes | Explicit locks/version checks, transaction boundaries, and same-transaction audit                            | Concurrent role/membership updates produce one valid outcome and complete audit records                                     |
+| Audit record mutation                           | Append-oriented table permissions and controlled redaction process                                           | Ordinary application principal cannot update or delete an audit record                                                      |
+| Migration drift                                 | Ordered repository migrations, clean-schema CI, generated-schema comparison, and drift checks                | Modify schema outside migrations; CI fails                                                                                  |
+| Destructive migration                           | Expand-and-contract, destructive review, backup/export assessment, and forward recovery                      | Destructive migration without required metadata or compatibility plan is rejected                                           |
+| Secret or token persistence                     | No passwords, raw session tokens, credentials, or provider secrets in ordinary tables or logs                | Scan source, migrations, fixtures, logs, and records for prohibited secret fields and values                                |
+| Backup exposure                                 | G-009-controlled encryption, access, retention, and restore testing                                          | Operational backup test proves unauthorized principal cannot access backup content                                          |
+| Global record treated as tenant-owned           | Explicit record classification and repository boundary                                                       | A platform-global record cannot be used to return tenant data without an approved platform-scope path                       |
+| Tenant record treated as global                 | Default organization ownership, required organization FK, RLS                                                | Attempt to create tenant data without organization scope; constraint or repository rejects it                               |
+| Background access without organization context  | Future execution envelope must contain organization and principal context; repository fails closed           | Run a background-like persistence call without context; no tenant query executes                                            |
+| Concurrent authorization-sensitive updates      | Version checks or short explicit locks, reauthorization after retry, atomic audit                            | Concurrent grant, delegation, epoch, or revocation changes cannot commit an unauthorized stale result                       |
+| Session-context leakage through pool reuse      | Transaction-local RLS settings and connection reset tests                                                    | Alternate organizations over one pool and prove no context crosses transactions                                             |
 
 ## 20. Testing strategy
 
@@ -517,16 +517,16 @@ Test data is synthetic and organization-separated. Each test creates explicit or
 
 ## 21. Explicit gate boundaries
 
-| Gate | Preserved boundary |
-|---|---|
+| Gate  | Preserved boundary                                                                                                                                                             |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | G-002 | G-003 stores records required by G-002 but does not change identity, authentication, session, membership, authorization, delegation, assurance, revocation, or audit semantics |
-| G-004 | Durable events, queues, schedulers, jobs, retries, idempotent event processing, reliable publication, and durable approval execution remain deferred |
-| G-005 | Plugin runtime, package, manifest, isolation, review, versioning, and lifecycle remain deferred |
-| G-006 | AI provider/model/retrieval/runtime policy, cost controls, and human-approval implementation remain deferred |
-| G-007 | External identity provider/vendor implementation, provider SDK, OAuth/API keys, integration credentials, and provider callbacks remain deferred |
-| G-008 | File/storage implementation, retention, export, deletion, and restoration remain deferred |
-| G-009 | Production deployment, database operations, backups, disaster recovery, observability, incident response, and production secret delivery remain deferred |
-| G-010 | Entitlements, application installation, and marketplace governance remain deferred |
+| G-004 | Durable events, queues, schedulers, jobs, retries, idempotent event processing, reliable publication, and durable approval execution remain deferred                           |
+| G-005 | Plugin runtime, package, manifest, isolation, review, versioning, and lifecycle remain deferred                                                                                |
+| G-006 | AI provider/model/retrieval/runtime policy, cost controls, and human-approval implementation remain deferred                                                                   |
+| G-007 | External identity provider/vendor implementation, provider SDK, OAuth/API keys, integration credentials, and provider callbacks remain deferred                                |
+| G-008 | File/storage implementation, retention, export, deletion, and restoration remain deferred                                                                                      |
+| G-009 | Production deployment, database operations, backups, disaster recovery, observability, incident response, and production secret delivery remain deferred                       |
+| G-010 | Entitlements, application installation, and marketplace governance remain deferred                                                                                             |
 
 G-003 does not build an outbox, event table, job table, queue, credential vault, file store, or production database.
 
@@ -534,23 +534,23 @@ G-003 does not build an outbox, event table, job table, queue, credential vault,
 
 The following classifications are normative for this proposal.
 
-| Concern | Classification | Resolution |
-|---|---|---|
-| PostgreSQL engine and support window | **DECIDED** | PostgreSQL 16 or later, with current-major plus two preceding supported majors within the repository support window |
-| SQL-first Kysely/`pg` persistence | **DECIDED** | Type-safe query builder and driver remain in infrastructure adapters; no ORM entities in domain/application code |
-| Migration runner and repository policy | **DECIDED** | `node-pg-migrate`, repository-owned plain SQL migration files, immutable ordering, CI drift checks, forward-first production policy |
-| UUIDv7 identifiers | **DECIDED** | Application-generated immutable UUIDv7 values stored as PostgreSQL `uuid` |
-| UTC instant and precision policy | **DECIDED** | `timestamptz`, UTC instants, microsecond database precision, RFC 3339 boundaries, injected clocks |
-| Transaction and concurrency baseline | **DECIDED** | `READ COMMITTED`, explicit locks/version checks for invariants, bounded retry for serialization/deadlock failures |
-| Organization isolation and RLS | **DECIDED** | Mandatory trusted context, organization-aware repositories, non-null tenant FKs, transaction-local RLS, no default cross-organization query |
-| Schema ownership | **DECIDED** | Owning module owns records, repositories, migrations, lifecycle, authorization requirements, and audit behavior |
-| Soft deletion and lifecycle | **DECIDED** | No universal soft delete; domain-specific lifecycle; audit append orientation; no automatic security meaning |
-| Audit persistence characteristics | **DECIDED** | Append-oriented, scoped, indexed, and transactionally coupled to sensitive state changes |
-| Secret and token persistence | **DECIDED** | No passwords or raw tokens; hashed session identifiers and external secret references only |
-| Backup, restore, and production database operations | **DEFERRED TO A SPECIFIC LATER GATE** | G-009 owns production durability objectives and operations; G-008 owns file/storage recovery where applicable |
-| Reliable events and durable async work | **DEFERRED TO A SPECIFIC LATER GATE** | G-004 owns publication, queues, jobs, retries, and approval execution |
-| External provider and credential implementation | **DEFERRED TO A SPECIFIC LATER GATE** | G-007 owns provider selection, SDKs, callbacks, credentials, and external recovery |
-| G-003 conceptual scope | **DECIDED** | No unresolved conceptual blocker remains within database, persistence, and tenancy decision scope |
+| Concern                                             | Classification                        | Resolution                                                                                                                                  |
+| --------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| PostgreSQL engine and support window                | **DECIDED**                           | PostgreSQL 16 or later, with current-major plus two preceding supported majors within the repository support window                         |
+| SQL-first Kysely/`pg` persistence                   | **DECIDED**                           | Type-safe query builder and driver remain in infrastructure adapters; no ORM entities in domain/application code                            |
+| Migration runner and repository policy              | **DECIDED**                           | `node-pg-migrate`, repository-owned plain SQL migration files, immutable ordering, CI drift checks, forward-first production policy         |
+| UUIDv7 identifiers                                  | **DECIDED**                           | Application-generated immutable UUIDv7 values stored as PostgreSQL `uuid`                                                                   |
+| UTC instant and precision policy                    | **DECIDED**                           | `timestamptz`, UTC instants, microsecond database precision, RFC 3339 boundaries, injected clocks                                           |
+| Transaction and concurrency baseline                | **DECIDED**                           | `READ COMMITTED`, explicit locks/version checks for invariants, bounded retry for serialization/deadlock failures                           |
+| Organization isolation and RLS                      | **DECIDED**                           | Mandatory trusted context, organization-aware repositories, non-null tenant FKs, transaction-local RLS, no default cross-organization query |
+| Schema ownership                                    | **DECIDED**                           | Owning module owns records, repositories, migrations, lifecycle, authorization requirements, and audit behavior                             |
+| Soft deletion and lifecycle                         | **DECIDED**                           | No universal soft delete; domain-specific lifecycle; audit append orientation; no automatic security meaning                                |
+| Audit persistence characteristics                   | **DECIDED**                           | Append-oriented, scoped, indexed, and transactionally coupled to sensitive state changes                                                    |
+| Secret and token persistence                        | **DECIDED**                           | No passwords or raw tokens; hashed session identifiers and external secret references only                                                  |
+| Backup, restore, and production database operations | **DEFERRED TO A SPECIFIC LATER GATE** | G-009 owns production durability objectives and operations; G-008 owns file/storage recovery where applicable                               |
+| Reliable events and durable async work              | **DEFERRED TO A SPECIFIC LATER GATE** | G-004 owns publication, queues, jobs, retries, and approval execution                                                                       |
+| External provider and credential implementation     | **DEFERRED TO A SPECIFIC LATER GATE** | G-007 owns provider selection, SDKs, callbacks, credentials, and external recovery                                                          |
+| G-003 conceptual scope                              | **DECIDED**                           | No unresolved conceptual blocker remains within database, persistence, and tenancy decision scope                                           |
 
 ## 23. Open blockers
 
@@ -605,7 +605,7 @@ Adopt this document as the G-003 database, persistence, and tenancy contract wit
 
 ### Current decision status
 
-**G-003: PENDING MAINTAINER APPROVAL.** This document is a decision-closure proposal only. It must not be treated as accepted until the maintainer records approval in `docs/DECISIONS.md`.
+**G-003: APPROVED.** This document is the authoritative G-003 persistence contract. Implementation remains limited to the persistence foundation and must not begin G-004 or product-module work.
 
 ### Required record after approval
 
@@ -613,14 +613,14 @@ The acceptance record must include the approval date, maintainer or owner, this 
 
 ## References
 
-[1]: ../AGENTS.md "Business OS Contributor Guidance"
-[2]: ../README.md "Business OS Repository Overview"
-[3]: ARCHITECTURE.md "Business OS Architecture"
-[4]: DATABASE.md "Business OS Database Architecture"
-[5]: MULTI-TENANCY.md "Business OS Multi-Tenancy"
-[6]: PERMISSIONS.md "Business OS Permissions"
-[7]: SECURITY.md "Business OS Security"
-[8]: REPOSITORY-STRUCTURE.md "Business OS Repository Structure"
-[9]: DECISIONS.md "Business OS Architecture Decisions"
-[10]: G-001-DECISION-CLOSURE.md "Business OS G-001 Decision Closure"
-[11]: G-002-DECISION-CLOSURE.md "Business OS G-002 Identity and Authorization Decision Closure"
+[1]: ../AGENTS.md 'Business OS Contributor Guidance'
+[2]: ../README.md 'Business OS Repository Overview'
+[3]: ARCHITECTURE.md 'Business OS Architecture'
+[4]: DATABASE.md 'Business OS Database Architecture'
+[5]: MULTI-TENANCY.md 'Business OS Multi-Tenancy'
+[6]: PERMISSIONS.md 'Business OS Permissions'
+[7]: SECURITY.md 'Business OS Security'
+[8]: REPOSITORY-STRUCTURE.md 'Business OS Repository Structure'
+[9]: DECISIONS.md 'Business OS Architecture Decisions'
+[10]: G-001-DECISION-CLOSURE.md 'Business OS G-001 Decision Closure'
+[11]: G-002-DECISION-CLOSURE.md 'Business OS G-002 Identity and Authorization Decision Closure'
