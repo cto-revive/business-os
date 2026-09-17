@@ -2,7 +2,7 @@
 
 ## Status summary
 
-Business OS is in the **G-003 persistence foundation implementation** stage. G-001, G-002, and G-003 are closed. The repository contains the approved portable workspace, strict TypeScript project references, delivery-edge process entry points, configuration validation, architecture checks, tests, CI, and a portable PostgreSQL persistence foundation. It does not contain authentication providers, product functionality, durable execution, integrations, AI provider adapters, automation engine, plugin runtime, or production provider implementations.
+Business OS is in the **G-004 architecture and decision-closure** stage. G-001 and G-002 are closed, and G-003 is closed, approved, implemented, and verified. G-004 is proposed and pending maintainer approval. The repository contains the approved portable workspace, strict TypeScript project references, delivery-edge process entry points, configuration validation, architecture checks, tests, CI, a portable PostgreSQL persistence foundation, and the repository-owned G-004 architecture proposal. It does not contain authentication providers, product functionality, durable execution, integrations, AI provider adapters, automation engine, plugin runtime, or production provider implementations.
 
 Documented architecture is not implemented functionality. No component should be represented as available until source code and appropriate tests exist in the repository.
 
@@ -22,7 +22,7 @@ Documented architecture is not implemented functionality. No component should be
 | Integrations and adapters | Contracts are documented; no provider adapter exists                                                                          | `docs/INTEGRATIONS.md`                                                                                                                         |
 | Plugins                   | Extension boundary is documented; no runtime exists                                                                           | `docs/PLUGINS.md`                                                                                                                              |
 | AI agents                 | Governance is documented; no agent runtime or model adapter exists                                                            | `docs/AI-AGENTS.md`                                                                                                                            |
-| Automation and jobs       | Execution rules are documented; no durable engine, queue, scheduler, or worker exists; startup-only worker edge exists        | `docs/AUTOMATION.md`, `packages/worker-edge`                                                                                                   |
+| Automation and jobs       | G-004 architecture is proposed; no durable engine, queue, scheduler, or worker exists; startup-only worker edge exists         | `docs/AUTOMATION.md`, `docs/G-004-DECISION-CLOSURE.md`, `packages/worker-edge`                                                                  |
 | Storage and files         | Abstraction is required; no implementation exists                                                                             | `docs/DATABASE.md`, `docs/DEPLOYMENT.md`                                                                                                       |
 | Tests                     | Vitest unit, contract, architecture, integration, and e2e foundation tests exist                                              | `tests/`, `vitest.config.ts`                                                                                                                   |
 | CI/CD                     | Portable GitHub Actions validation pipeline exists                                                                            | `.github/workflows/ci.yml`                                                                                                                     |
@@ -37,7 +37,7 @@ The conceptual structure distinguishes applications, platform capabilities, hori
 
 ## Missing components
 
-The Phase 1 foundation is implemented and validated. It intentionally does not implement the first product slice. The G-002 contract is approved but not implemented. The G-003 persistence foundation is implemented and validated; identity/authentication persistence and product records remain outside this scope.
+The Phase 1 foundation is implemented and validated. It intentionally does not implement the first product slice. The G-002 contract is approved but not implemented. The G-003 persistence foundation is implemented and validated; identity/authentication persistence and product records remain outside this scope. The G-004 proposal is documentation only; no durable execution implementation exists.
 
 The core domain then needs organization context, identity linkage, memberships, teams, centralized authorization, and the minimum persistence boundary required to test tenant isolation. Those components must be introduced with migrations, deterministic test data, negative authorization tests, and documentation updates.
 
@@ -45,9 +45,9 @@ Later work includes shared tasks, files, comments, notifications, events, search
 
 ## Dependencies and sequencing
 
-The highest dependency, G-001, is **closed with conditions for the repository runtime foundation**. G-002 is approved as the identity and authorization contract. G-003 is approved and its portable persistence foundation is implemented. G-004 remains required before durable execution.
+The highest dependency, G-001, is **closed with conditions for the repository runtime foundation**. G-002 is approved as the identity and authorization contract. G-003 is approved and its portable persistence foundation is implemented. G-004 is proposed and remains required before durable execution.
 
-Reliable events and background execution depend on G-004. Provider adapters depend on G-007. File and storage work depends on G-008. Production delivery depends on G-009. Plugins, AI agents, automation, and application activation depend on the relevant contracts and gates listed in `docs/DECISIONS.md`.
+Reliable events and background execution depend on G-004 approval and subsequent implementation. Provider adapters depend on G-007. File and storage work depends on G-008. Production delivery depends on G-009. Plugins, AI agents, automation, and application activation depend on the relevant contracts and gates listed in `docs/DECISIONS.md`.
 
 ## Known gaps and risks
 
@@ -60,21 +60,21 @@ The shared platform boundary could become an overly broad dependency hub if cont
 ## Implementation phases
 
 1. **Foundation:** G-001 runtime foundation is complete with documented limitations; preserve its package and CI boundaries.
-2. **Governance:** G-002 and G-003 are closed; preserve their boundaries before implementing identity, membership, authorization, or product persistence.
+2. **Governance:** G-002 and G-003 are closed; G-004 is proposed and pending approval. Preserve their boundaries before implementing identity, membership, authorization, or durable execution.
 3. **Security:** Enforce organization scope server-side and prove it through authorization, tenant-isolation, administrative, job, and integration-context tests.
 4. **API and application layer:** Add published commands, queries, validation, error handling, observability, and API contracts without coupling domain logic to a UI.
 5. **Shared platform capabilities:** Add tasks and other shared services only when their contracts and ownership are sufficiently defined.
 6. **Integrations and extensions:** Add provider-neutral integration contracts and plugin boundaries, then implement one replaceable adapter or extension as a vertical slice.
-7. **AI and automation:** Add governed tools, agent provider interfaces, events, jobs, retries, idempotency, and human fallback paths.
+7. **AI and automation:** Add governed tools, agent provider interfaces, events, jobs, retries, idempotency, and human fallback paths after G-004 and G-006 approval.
 8. **Product applications and UI:** Implement one bounded application slice and its experience surface after the core contracts are stable.
 
 ## Decisions required
 
-G-001 is closed with conditions for Phase 1 only. G-002 is approved as the identity and authorization contract but remains unimplemented. G-003 is approved and its persistence foundation is implemented; further persistence requires module-owned contracts and migrations.
+G-001 is closed with conditions for Phase 1 only. G-002 is approved as the identity and authorization contract but remains unimplemented. G-003 is approved and its persistence foundation is implemented. G-004 is proposed and pending maintainer approval; further execution work requires the approved G-004 contracts and implementation phase.
 
 ## Recommended immediate next steps
 
-Preserve the Phase 1 and G-003 foundations without introducing Manus-specific dependencies. Do not begin authentication providers, product modules, or G-004. The next architecture gate is G-004.
+Preserve the Phase 1 and G-003 foundations without introducing Manus-specific dependencies. Review and approve or amend `docs/G-004-DECISION-CLOSURE.md` before any G-004 implementation begins. Do not begin authentication providers, product modules, or durable execution implementation.
 
 ## References
 
@@ -89,3 +89,4 @@ Preserve the Phase 1 and G-003 foundations without introducing Manus-specific de
 [9]: G-001-READINESS-AUDIT.md 'Business OS G-001 Implementation Readiness Audit and Plan'
 [10]: G-001-DECISION-CLOSURE.md 'Business OS G-001 Decision Closure'
 [11]: G-003-DECISION-CLOSURE.md 'Business OS G-003 Database, Persistence, and Tenancy Decision Closure'
+[12]: G-004-DECISION-CLOSURE.md 'Business OS G-004 Events, Reliable Execution, and Durable Approval Decision Closure'

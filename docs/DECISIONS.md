@@ -77,6 +77,18 @@ The G-003 database, persistence, and tenancy contract is now authoritative. It s
 
 Implementation is limited to the approved G-003 persistence foundation. G-004, G-007, G-008, and G-009 remain responsible for their explicitly deferred concerns. No product module or later-gate implementation is authorized by this record.
 
+### G-004 — Proposed events, reliable execution, and durable approval architecture
+
+**Gate:** G-004
+**Decision:** **PROPOSED — PENDING MAINTAINER APPROVAL**
+**Proposal date:** 2026-09-17
+**Owner:** Business OS maintainer
+**Proposal document:** [`G-004-DECISION-CLOSURE.md`](G-004-DECISION-CLOSURE.md)
+
+The proposal defines immutable versioned durable events, transactional outbox publication, durable at-least-once delivery and execution, provider-neutral queues and schedulers, leased jobs with recovery, explicit retry and idempotency semantics, organization/platform scope rules, and immutable approval-to-execution bindings. It preserves the G-002 authorization model and G-003 transaction, organization-context, PostgreSQL RLS, and audit boundaries.
+
+The proposal does not authorize implementation. No G-004 packages, migrations, queues, schedulers, workers, event transport, automation runtime, or durable approval workflow may be introduced until the maintainer records explicit approval. No exactly-once guarantee is claimed, and no external broker is selected by this proposal. **Deviations: NONE proposed.**
+
 #### G-003 implementation plan
 
 - **Packages/directories:** `packages/persistence-contracts` for framework-free repository and organization-context contracts; `packages/persistence-postgres` for Kysely/`pg` adapters, transactions, RLS context, UUIDv7, and audit persistence; `infrastructure/database/migrations/<module>/` for module-owned migrations; `tests/integration/persistence/` for real-PostgreSQL tests.
