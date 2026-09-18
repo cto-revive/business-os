@@ -72,10 +72,28 @@ importers:
         specifier: ^7.8.1
         version: 7.8.2
 
+  packages/execution-contracts:
+    dependencies:
+      '@business-os/persistence-contracts':
+        specifier: workspace:*
+        version: link:../persistence-contracts
+
+  packages/execution-runtime:
+    dependencies:
+      '@business-os/execution-contracts':
+        specifier: workspace:*
+        version: link:../execution-contracts
+      '@business-os/persistence-contracts':
+        specifier: workspace:*
+        version: link:../persistence-contracts
+
   packages/persistence-contracts: {}
 
   packages/persistence-postgres:
     dependencies:
+      '@business-os/execution-contracts':
+        specifier: workspace:*
+        version: link:../execution-contracts
       '@business-os/persistence-contracts':
         specifier: workspace:*
         version: link:../persistence-contracts
@@ -105,6 +123,9 @@ importers:
 
   packages/worker-edge:
     dependencies:
+      '@business-os/execution-runtime':
+        specifier: workspace:*
+        version: link:../execution-runtime
       '@business-os/runtime-config':
         specifier: workspace:*
         version: link:../runtime-config

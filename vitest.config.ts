@@ -10,6 +10,8 @@ export default defineConfig({
       '@business-os/runtime-config': source('./packages/runtime-config/src/index.ts'),
       '@business-os/persistence-contracts': source('./packages/persistence-contracts/src/index.ts'),
       '@business-os/persistence-postgres': source('./packages/persistence-postgres/src/index.ts'),
+      '@business-os/execution-contracts': source('./packages/execution-contracts/src/index.ts'),
+      '@business-os/execution-runtime': source('./packages/execution-runtime/src/index.ts'),
     },
   },
   test: {

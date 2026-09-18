@@ -10,6 +10,7 @@
     }
   },
   "dependencies": {
+    "@business-os/execution-runtime": "workspace:*",
     "@business-os/runtime-config": "workspace:*"
   },
   "scripts": {

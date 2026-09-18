@@ -2,9 +2,9 @@
 
 ## 1. Status and authority
 
-**Status: PROPOSED — REVISED — PENDING MAINTAINER APPROVAL.**
+**Status: APPROVED — IMPLEMENTATION IN PROGRESS.**
 
-This document is an architecture and decision-closure proposal only. It authorizes no runtime implementation, database table, migration, queue, scheduler, worker, event transport, automation workflow, or approval workflow. Implementation may begin only after explicit maintainer approval is recorded in `docs/DECISIONS.md`.
+This document is the approved G-004 architecture and decision closure. Implementation is authorized only within the boundaries and sequence defined here. It does not authorize G-005 through G-010, product modules, integrations, webhooks, AI providers, plugins, storage, or Manus-specific runtime behavior.
 
 G-001 remains **CLOSED / VERIFIED**. G-002 remains **CLOSED / APPROVED** and authoritative for identity, principal, authorization, delegation, revocation, separation-of-duties, and audit semantics. G-003 remains **CLOSED / APPROVED / IMPLEMENTED / VERIFIED** and authoritative for PostgreSQL, transactions, organization context, authorization epoch propagation, RLS, migrations, and persistence boundaries. G-005 through G-010 remain pending.
 
@@ -405,5 +405,4 @@ The design requires no Manus API, Manus SDK, Manus runtime service, Manus-hosted
 [18]: .github/workflows/ci.yml "Business OS Continuous Integration"
 
 <!-- Author: Manus AI -->
-<!-- Status: Proposed revised architecture only; pending maintainer approval. -->
-<!-- No G-004 implementation is authorized by this document. -->
+<!-- Status: Approved architecture; implementation and verification in progress. -->

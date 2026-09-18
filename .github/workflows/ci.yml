@@ -59,11 +59,16 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres_test@127.0.0.1:5432/business_os_test
         run: pnpm db:migrate
+      - name: Run G-004 migrations
+        env:
+          DATABASE_URL: postgresql://postgres:postgres_test@127.0.0.1:5432/business_os_test
+        run: pnpm db:migrate:g004
       - name: Grant G-003 runtime privileges
         env:
           PGURL: postgresql://postgres:postgres_test@127.0.0.1:5432/business_os_test
         run: |
           psql "$PGURL" -v ON_ERROR_STOP=1 -c "GRANT USAGE ON SCHEMA public TO business_os_app" -c "GRANT SELECT, INSERT ON TABLE public.audit_events TO business_os_app"
+          psql "$PGURL" -v ON_ERROR_STOP=1 -c "GRANT SELECT, INSERT, UPDATE ON TABLE public.execution_queue_messages, public.execution_events, public.execution_jobs, public.execution_schedules, public.execution_schedule_occurrences, public.execution_idempotency, public.execution_approvals, public.execution_records TO business_os_app"
       - name: Tests
         run: pnpm test
       - name: Build

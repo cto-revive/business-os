@@ -77,18 +77,19 @@ The G-003 database, persistence, and tenancy contract is now authoritative. It s
 
 Implementation is limited to the approved G-003 persistence foundation. G-004, G-007, G-008, and G-009 remain responsible for their explicitly deferred concerns. No product module or later-gate implementation is authorized by this record.
 
-### G-004 — Revised proposed events, reliable execution, and durable approval architecture
+### G-004 — Events, reliable execution, and durable approval architecture
 
 **Gate:** G-004
-**Decision:** **PROPOSED — REVISED — PENDING MAINTAINER APPROVAL**
-**Proposal date:** 2026-09-19
+**Decision:** **APPROVED**
+**Approval date:** 2026-09-19
 **Owner:** Business OS maintainer
 **Proposal document:** [`G-004-DECISION-CLOSURE.md`](G-004-DECISION-CLOSURE.md)
 **Audit document:** [`G-004-PRE-IMPLEMENTATION-AUDIT.md`](G-004-PRE-IMPLEMENTATION-AUDIT.md)
+**Approved document commit:** `7c6297c6d6f1ac44294272d6cf86613a2c38f9c1`
 
-The revised proposal resolves the pre-implementation audit findings. It defines a framework-free transaction-aware persistence capability, canonical serialization and SHA-256 hashing, fencing tokens, distinct durable identities, an explicit queue/job boundary, authorization-epoch and revocation behavior, versioned approval action bindings, resource preconditions, scheduler semantics, retry/clock/idempotency ownership, migration/CI composition, and a complete acceptance matrix. It preserves the G-002 authorization model and G-003 transaction, organization-context, PostgreSQL RLS, and audit boundaries.
+The revised proposal resolves the pre-implementation audit findings. It defines a framework-free transaction-aware persistence capability, canonical serialization and SHA-256 hashing, fencing tokens, distinct durable identities, an explicit queue/job boundary, authorization-epoch and revocation behavior, versioned approval action bindings, resource preconditions, scheduler semantics, retry/clock/idempotency ownership, migration/CI composition, and a complete acceptance matrix. It preserves the G-002 authorization model and G-003 transaction, organization-context, PostgreSQL RLS, and audit boundaries. The approved proposal is now authoritative for G-004 implementation.
 
-The revised proposal does not authorize implementation. No G-004 packages, migrations, queues, schedulers, workers, event transport, automation runtime, or durable approval workflow may be introduced until the maintainer records explicit approval. No exactly-once guarantee is claimed, and no external broker or scheduler is selected by this proposal. **Deviations: NONE proposed.**
+Implementation is authorized only for the approved G-004 execution capability. The initial implementation must use the existing PostgreSQL persistence foundation and must not introduce an external broker or scheduler. No exactly-once guarantee is claimed. G-005 through G-010 remain pending, and no product modules, integrations, webhooks, AI providers, plugins, files, application automation, or Manus-specific runtime behavior are authorized. **Deviations: NONE.**
 
 #### G-003 implementation plan
 

@@ -7,6 +7,8 @@
     { "path": "./packages/api-edge" },
     { "path": "./packages/worker-edge" },
     { "path": "./packages/persistence-contracts" },
-    { "path": "./packages/persistence-postgres" }
+    { "path": "./packages/persistence-postgres" },
+    { "path": "./packages/execution-contracts" },
+    { "path": "./packages/execution-runtime" }
   ]
 }

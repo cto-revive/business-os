@@ -7,6 +7,7 @@ import {
   type AuditEvent,
   type OrganizationContext,
   type PlatformContext,
+  type PersistenceScope,
   type PersistenceTransaction,
 } from '@business-os/persistence-contracts';
 
@@ -28,14 +29,41 @@ export interface AuditEventsTable {
   payload: Record<string, unknown> | null;
 }
 
+export interface ExecutionQueueMessagesTable {
+  message_id: string;
+  job_id: string;
+  message_type: string;
+  message_version: number;
+  organization_id: string | null;
+  principal_id: string;
+  principal_kind: string;
+  authorization_epoch: number | null;
+  idempotency_key: string;
+  payload: Record<string, unknown>;
+  state: string;
+  attempt: number;
+  available_at: Date;
+  leased_until: Date | null;
+  lease_owner: string | null;
+  fencing_token: number;
+  correlation_id: string;
+  causation_id: string | null;
+  last_error: string | null;
+}
+
 export interface PersistenceDatabase {
   audit_events: AuditEventsTable;
+  execution_queue_messages: ExecutionQueueMessagesTable;
 }
 
 export interface PostgresPersistence {
   readonly db: Kysely<PersistenceDatabase>;
   readonly pool: Pool;
   close(): Promise<void>;
+}
+
+export interface PostgresScope extends PersistenceScope {
+  readonly db: Kysely<PersistenceDatabase>;
 }
 
 export function createUuidV7(): string {
@@ -52,6 +80,30 @@ export function createPostgresPersistence(config: PoolConfig): PostgresPersisten
       await db.destroy();
     },
   };
+}
+
+export async function withOrganizationPostgresScope<T>(
+  persistence: PostgresPersistence,
+  context: OrganizationContext,
+  operation: (scope: PostgresScope) => Promise<T>,
+): Promise<T> {
+  const trusted = assertOrganizationContext(context);
+  return persistence.db.transaction().execute(async (transaction) => {
+    await setOrganizationRlsContext(transaction, trusted);
+    return operation({ context: trusted, transactionId: createUuidV7(), db: transaction });
+  });
+}
+
+export async function withPlatformPostgresScope<T>(
+  persistence: PostgresPersistence,
+  context: PlatformContext,
+  operation: (scope: PostgresScope) => Promise<T>,
+): Promise<T> {
+  const trusted = assertPlatformContext(context);
+  return persistence.db.transaction().execute(async (transaction) => {
+    await setPlatformRlsContext(transaction, trusted);
+    return operation({ context: trusted, transactionId: createUuidV7(), db: transaction });
+  });
 }
 
 async function setOrganizationRlsContext(
@@ -102,11 +154,7 @@ export async function withOrganizationDb<T>(
   context: OrganizationContext,
   operation: (db: Kysely<PersistenceDatabase>) => Promise<T>,
 ): Promise<T> {
-  const trusted = assertOrganizationContext(context);
-  return persistence.db.transaction().execute(async (transaction) => {
-    await setOrganizationRlsContext(transaction, trusted);
-    return operation(transaction);
-  });
+  return withOrganizationPostgresScope(persistence, context, ({ db }) => operation(db));
 }
 
 export async function withPlatformTransaction<T>(
@@ -142,11 +190,7 @@ export async function withPlatformDb<T>(
   context: PlatformContext,
   operation: (db: Kysely<PersistenceDatabase>) => Promise<T>,
 ): Promise<T> {
-  const trusted = assertPlatformContext(context);
-  return persistence.db.transaction().execute(async (transaction) => {
-    await setPlatformRlsContext(transaction, trusted);
-    return operation(transaction);
-  });
+  return withPlatformPostgresScope(persistence, context, ({ db }) => operation(db));
 }
 
 export class PostgresAuditRepository {
@@ -158,22 +202,24 @@ export class PostgresAuditRepository {
   ): Promise<void> {
     if ('organizationId' in context) {
       const trusted = assertOrganizationContext(context);
-      if (event.organizationId !== trusted.organizationId) {
+      if (event.organizationId !== trusted.organizationId)
         throw new Error('Audit organization does not match the active persistence context');
-      }
-      await withOrganizationDb(this.persistence, trusted, async (db) => {
-        await this.insert(db, event, trusted.organizationId);
-      });
+      await withOrganizationDb(this.persistence, trusted, async (db) =>
+        this.insert(db, event, trusted.organizationId),
+      );
       return;
     }
-
     const trusted = assertPlatformContext(context);
-    if (event.organizationId !== null) {
+    if (event.organizationId !== null)
       throw new Error('Platform audit events must not carry organization scope');
-    }
-    await withPlatformDb(this.persistence, trusted, async (db) => {
-      await this.insert(db, event, null);
-    });
+    await withPlatformDb(this.persistence, trusted, async (db) => this.insert(db, event, null));
+  }
+
+  public async appendInScope(scope: PostgresScope, event: AuditEvent): Promise<void> {
+    const organizationId = 'organizationId' in scope.context ? scope.context.organizationId : null;
+    if (event.organizationId !== organizationId)
+      throw new Error('Audit organization does not match the active persistence context');
+    await this.insert(scope.db, event, organizationId);
   }
 
   private async insert(
@@ -203,3 +249,10 @@ export class PostgresAuditRepository {
       .execute();
   }
 }
+
+export {
+  PostgresApprovalRepository,
+  PostgresExecutionQueueRepository,
+  PostgresIdempotencyRepository,
+  PostgresOutboxRepository,
+} from './execution.js';

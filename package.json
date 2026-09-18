@@ -23,6 +23,8 @@
     "test:e2e": "vitest run --project e2e",
     "db:migrate": "node-pg-migrate up -d DATABASE_URL -m infrastructure/database/migrations/g003",
     "db:migrate:down": "node-pg-migrate down -d DATABASE_URL -m infrastructure/database/migrations/g003",
+    "db:migrate:g004": "node-pg-migrate up -d DATABASE_URL -m 'infrastructure/database/migrations/**/*.cjs' --use-glob",
+    "db:migrate:g004:down": "node-pg-migrate down -d DATABASE_URL -m 'infrastructure/database/migrations/**/*.cjs' --use-glob",
     "build": "tsc --build --pretty false",
     "validate:config": "node tooling/validate-config.mjs",
     "validate": "pnpm validate:config && pnpm format:check && pnpm lint && pnpm typecheck && pnpm architecture:check && pnpm test && pnpm build"

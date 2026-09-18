@@ -19,6 +19,20 @@ export interface PlatformContext {
   readonly scope: readonly string[];
 }
 
+export type PersistenceContext = OrganizationContext | PlatformContext;
+
+export interface PersistenceScope<TContext extends PersistenceContext = PersistenceContext> {
+  readonly context: TContext;
+  readonly transactionId: PersistenceId;
+}
+
+export interface PersistenceUnitOfWork<TContext extends PersistenceContext = PersistenceContext> {
+  run<T>(
+    context: TContext,
+    operation: (scope: PersistenceScope<TContext>) => Promise<T>,
+  ): Promise<T>;
+}
+
 export interface AuditEvent {
   readonly eventId: PersistenceId;
   readonly occurredAt: Date;
@@ -40,6 +54,7 @@ export interface AuditEvent {
 export interface TransactionHandle {
   readonly organizationContext: OrganizationContext | null;
   readonly platformContext: PlatformContext | null;
+  readonly scope?: PersistenceScope;
 }
 
 export interface PersistenceTransaction {
@@ -52,7 +67,8 @@ export interface OrganizationScopedRepository<TRecord> {
 }
 
 export interface AuditRepository {
-  append(context: OrganizationContext | PlatformContext, event: AuditEvent): Promise<void>;
+  append(context: PersistenceContext, event: AuditEvent): Promise<void>;
+  appendInScope?(scope: PersistenceScope, event: AuditEvent): Promise<void>;
 }
 
 export function assertOrganizationContext(context: OrganizationContext): OrganizationContext {
@@ -78,4 +94,10 @@ export function assertPlatformContext(context: PlatformContext): PlatformContext
     throw new Error('A complete platform context is required for global persistence');
   }
   return Object.freeze({ ...context, scope: Object.freeze([...context.scope]) });
+}
+
+export function assertPersistenceContext(context: PersistenceContext): PersistenceContext {
+  return 'organizationId' in context
+    ? assertOrganizationContext(context)
+    : assertPlatformContext(context);
 }
