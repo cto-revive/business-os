@@ -4,7 +4,7 @@
 
 This repository is the authoritative source of truth for Business OS. All production source code, database migrations, configuration templates, automated tests, and architecture documentation must be committed here. Do not place required business logic, schema changes, or operational configuration solely in a hosted builder, a personal workspace, or an undocumented external setting.
 
-The current repository phase is **G-004 architecture and decision closure**. G-001 and G-002 are closed, and G-003 is closed, approved, implemented, and verified. G-004 is proposed and pending maintainer approval. During this phase, update architecture and governance documentation only. Do not add G-004 runtime packages, migrations, queues, schedulers, workers, event transport, automation, durable approval execution, product functionality, or any G-005 through G-010 implementation.
+The current repository phase is **G-004 revised architecture and decision closure**. G-001 and G-002 are closed, and G-003 is closed, approved, implemented, and verified. G-004 is revised and pending maintainer approval. During this phase, update architecture and governance documentation only. Do not add G-004 runtime packages, migrations, queues, schedulers, workers, event transport, automation, durable approval execution, product functionality, or any G-005 through G-010 implementation.
 
 ## Non-negotiable architectural rules
 
