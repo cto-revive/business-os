@@ -80,7 +80,7 @@ Implementation is limited to the approved G-003 persistence foundation. G-004, G
 ### G-004 — Events, reliable execution, and durable approval architecture
 
 **Gate:** G-004
-**Decision:** **APPROVED**
+**Decision:** **APPROVED / IMPLEMENTED / VERIFIED**
 **Approval date:** 2026-09-19
 **Owner:** Business OS maintainer
 **Proposal document:** [`G-004-DECISION-CLOSURE.md`](G-004-DECISION-CLOSURE.md)

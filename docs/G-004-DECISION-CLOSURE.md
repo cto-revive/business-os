@@ -2,7 +2,7 @@
 
 ## 1. Status and authority
 
-**Status: APPROVED — IMPLEMENTATION IN PROGRESS.**
+**Status: APPROVED — IMPLEMENTED — VERIFIED.**
 
 This document is the approved G-004 architecture and decision closure. Implementation is authorized only within the boundaries and sequence defined here. It does not authorize G-005 through G-010, product modules, integrations, webhooks, AI providers, plugins, storage, or Manus-specific runtime behavior.
 
@@ -405,4 +405,4 @@ The design requires no Manus API, Manus SDK, Manus runtime service, Manus-hosted
 [18]: .github/workflows/ci.yml "Business OS Continuous Integration"
 
 <!-- Author: Manus AI -->
-<!-- Status: Approved architecture; implementation and verification in progress. -->
+<!-- Status: Approved architecture; implementation and verification complete for the committed G-004 capability. -->
