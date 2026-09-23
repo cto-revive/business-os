@@ -9,7 +9,9 @@
 **Owner:** Business OS maintainer
 **Decision required:** Plugin package, manifest, permission, isolation, review, versioning, installation, and lifecycle model.
 
-This document is a decision package for maintainer review. It does not authorize executable plugin support, plugin packages, plugin migrations, runtime adapters, SDKs, marketplace functionality, or product features. G-005 must remain pending until the maintainer explicitly approves this document or an amended version.
+This document is a decision package for maintainer review. If approved, G-005 approval means approval of the **architectural contract and security posture only**. It does not authorize executable plugin support, plugin packages, plugin migrations, runtime adapters, SDKs, marketplace functionality, or product features. G-005 must remain pending until the maintainer explicitly approves this document or an amended version.
+
+Approval of this package does **not** select or approve a specific WASM engine, WASM runtime implementation, WASM component model, plugin host ABI implementation, native sandbox dependency, production deployment topology, or production executable-plugin enablement policy. Each of those choices requires a later implementation and security review. If the selected runtime cannot demonstrate the required sandbox guarantees, executable untrusted plugins must not be enabled.
 
 G-001, G-002, G-003, and G-004 remain authoritative. G-006 through G-010 remain pending. No decision in this proposal changes identity, authorization, persistence, durable execution, AI, integration, storage, deployment, or marketplace governance.
 
@@ -94,6 +96,8 @@ Permissions are evaluated as a tuple of plugin identity, release version, organi
 
 Permission evaluation is deny-by-default. A plugin cannot treat an event subscription, UI contribution, configuration value, or action registration as an implicit permission to read or mutate the related data.
 
+**Normative permission-expansion invariant:** A plugin manifest requests capabilities; it never grants them. A new release that requests additional capabilities requires explicit permission review. An existing installation must not automatically inherit newly requested capabilities merely because the plugin release is upgraded. For example, if v1 requests `read.customer` and v2 requests `read.customer` plus `write.customer`, upgrading to v2 must not grant `write.customer`; the installation remains limited to its previously approved grants until the additional capability is explicitly approved. Removing a requested capability from a new release does not silently expand authority or invalidate historical audit records.
+
 ### 6.4 Configuration
 
 Plugin configuration is typed, versioned, validated against the release manifest, and scoped to an organization or platform according to the owning capability. Configuration contains references or non-secret values only unless a future credential contract explicitly defines otherwise.
@@ -116,6 +120,8 @@ The lifecycle is explicit:
 10. **Removed:** the installation is disabled, future invocations are rejected, references are retained for audit, and deletion follows retention policy.
 
 Installation, enablement, disablement, upgrade, downgrade, and removal are separate operations. Installation does not imply enablement. Disabling a plugin does not erase execution or audit history. A downgrade is allowed only when the target release declares compatibility with the persisted configuration and data contract; otherwise it requires an explicit migration or a new installation state.
+
+Release and permission semantics are strict. Release identity, artifact digest, and manifest are immutable per release. A requested capability change is a release change. Permission grants belong to the installation and its policy decision, not to the manifest. A release requesting broader capabilities requires reapproval for those capabilities. A release requesting narrower capabilities must not regain previously removed capabilities. Existing approvals bound to a previous plugin release or digest must not be reused for a different release. Changing the plugin release, action version, permission set, target, canonical input, resource precondition, authorization context, or any other G-004 approval-binding material requires a new approval whenever the binding changes.
 
 ### 6.6 Organization and platform scope
 
@@ -143,7 +149,7 @@ UI contributions are declarative descriptors, not arbitrary host-page code. They
 
 ## 7. Security and isolation model
 
-The selected security posture is **capability-based host mediation plus an out-of-process WASM execution boundary for executable plugin code**. The host owns authorization, organization context, persistence, secrets, execution records, audit, and resource policy. The plugin receives only a narrow ABI and explicitly scoped data.
+The selected architectural security posture is **capability-based host mediation plus an out-of-process WASM-compatible execution boundary for executable plugin code**. This is a contract and security-posture decision, not approval of a concrete WASM engine, runtime implementation, component model, host ABI implementation, native sandbox dependency, deployment topology, or executable-plugin enablement policy. The host owns authorization, organization context, persistence, secrets, execution records, audit, and resource policy. The plugin receives only a narrow ABI and explicitly scoped data.
 
 WASM is the preferred executable format because it can support multiple implementation languages while allowing the host to expose a small capability surface rather than a general Node.js or operating-system API. WASM alone is not the entire security model. The selected runtime must enforce memory, execution-time, output-size, recursion, and host-call limits, and must deny filesystem, network, process, environment, and raw host access unless a future capability explicitly and safely defines one.
 
@@ -338,7 +344,20 @@ CI must run manifest validation, contract tests, architecture checks, security t
 
 ## 17. Migration and rollout considerations
 
-No G-005 migration is authorized by this proposal. If approved, implementation should begin with framework-free contracts and validation tests, followed by a non-executable registry model, followed by a test-only runtime adapter, and only then by a controlled executable runtime implementation.
+No G-005 migration is authorized by this proposal. The approval and implementation lifecycle must remain staged:
+
+1. G-005 architecture proposal.
+2. Maintainer approval of the G-005 architecture.
+3. Separate G-005 implementation plan.
+4. Explicit implementation authorization.
+5. Framework-free contract implementation.
+6. Registry and installation implementation.
+7. Test-only runtime adapter.
+8. Security and adversarial verification.
+9. Executable runtime implementation.
+10. Controlled enablement.
+
+**Approval of this G-005 decision package does not by itself authorize executable plugin implementation or production plugin enablement.** The stages must not be collapsed. If approved, implementation should begin with framework-free contracts and validation tests, followed by a non-executable registry model, followed by a test-only runtime adapter, and only then by a controlled executable runtime implementation.
 
 The first rollout should support discovery and manifest review before enablement. It should support one narrowly scoped organization action and one bounded event subscription as a vertical slice. It should not begin with networking, credential use, UI code execution, arbitrary object mutation, or platform-global plugins.
 
@@ -381,6 +400,10 @@ The maintainer should approve G-005 only if all of the following statements are 
 12. No plugin package, migration, runtime adapter, SDK, artifact store, WASM engine, marketplace, or product feature is implemented until this decision is approved and a separate implementation plan is authorized.
 13. The implementation must pass the adversarial verification strategy in this document before executable plugins are enabled.
 14. The design remains runnable and maintainable from GitHub with standard tooling and introduces no Manus runtime dependency.
+15. Approval covers only the architectural contract and security posture. It does not approve a specific WASM engine, runtime, component model, host ABI implementation, native sandbox dependency, deployment topology, or production executable-plugin enablement policy.
+16. A manifest requests capabilities but never grants them; broader capability requests require explicit reapproval, and installations do not inherit newly requested capabilities during upgrade.
+17. Release identity, artifact digest, and manifest are immutable; approval bindings cannot be reused across a changed release or changed binding material; narrower releases cannot regain previously removed capabilities.
+18. The ten-stage approval and implementation lifecycle remains explicit, and approval of this package does not by itself authorize executable plugin implementation or production enablement.
 
 **Decision requested:** Approve, amend, or reject this G-005 proposal. Until approval is recorded, G-005 remains **PROPOSED / AWAITING APPROVAL**.
 
