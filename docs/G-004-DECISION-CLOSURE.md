@@ -10,9 +10,9 @@ G-001 remains **CLOSED / VERIFIED**. G-002 remains **CLOSED / APPROVED** and aut
 
 This revision incorporates the formal pre-implementation audit in [`G-004-PRE-IMPLEMENTATION-AUDIT.md`](G-004-PRE-IMPLEMENTATION-AUDIT.md). **Deviations from G-001, G-002, and G-003: NONE proposed.**
 
-## 2. Decision outcome requested
+## 2. Approved decision and implementation boundary
 
-The maintainer is asked to approve or amend the following G-004 baseline:
+The maintainer approved the following G-004 baseline:
 
 - Framework-free execution contracts in `packages/execution-contracts`.
 - Provider-neutral orchestration in `packages/execution-runtime`.
@@ -24,7 +24,7 @@ The maintainer is asked to approve or amend the following G-004 baseline:
 - Immutable approval binding to action identity, version, canonical input hash, target, resource preconditions, and authorization context.
 - No external broker or scheduler for the initial implementation.
 
-Approval would authorize a separately reviewable implementation phase. It would not authorize G-005 through G-010, product modules, integrations, webhooks, AI providers, plugins, storage, or production deployment decisions.
+The approval authorized the separately reviewable G-004 implementation phase. It does not authorize G-005 through G-010, product modules, integrations, webhooks, AI providers, plugins, storage, or production deployment decisions.
 
 ## 3. Compatibility audit
 
@@ -34,7 +34,7 @@ The revised proposal preserves G-002. Asynchronous work uses explicit principals
 
 The revised proposal preserves G-003. PostgreSQL, Kysely, `pg`, SQL, migration runners, RLS policies, lease queries, and database-specific records remain inside `persistence-postgres` and repository-owned migration infrastructure. Use cases own transaction boundaries. Audit and outbox writes participate in the same transaction as the business-state change through the transaction-aware port defined below.
 
-The repository currently contains no execution runtime. This revision changes only governance documentation and does not create execution packages, migrations, or runtime behavior.
+The repository now contains the approved G-004 execution contracts, provider-neutral runtime orchestration, PostgreSQL persistence adapters, execution migration, worker composition wiring, and corresponding unit and real-PostgreSQL integration tests. This implementation remains limited to G-004 and does not authorize G-005 through G-010.
 
 ## 4. Framework-free transaction-aware persistence boundary
 

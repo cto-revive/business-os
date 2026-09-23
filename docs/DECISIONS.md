@@ -104,6 +104,18 @@ Implementation is authorized only for the approved G-004 execution capability. T
 - **Platform-global policy:** Platform-global records are explicitly classified and accessed through named platform-scope repositories; there is no optional organization filter or general cross-organization query primitive.
 - **Audit ownership:** The platform audit module owns audit persistence, append-oriented controls, organization/platform scope, indexes, and same-transaction writes for security-sensitive changes.
 
+### G-005 — Proposed plugin runtime and isolation architecture
+
+**Gate:** G-005
+**Decision:** **PROPOSED / AWAITING APPROVAL**
+**Proposal date:** 2026-09-23
+**Owner:** Business OS maintainer
+**Proposal document:** [`G-005-DECISION-CLOSURE.md`](G-005-DECISION-CLOSURE.md)
+
+The proposal defines plugins as optional, versioned, manifest-governed extensions with explicit capability grants, organization-bound installation state, immutable release digests, host-mediated invocation, and separate runtime execution state. It recommends a WASM-compatible out-of-process capability sandbox for executable plugin code rather than in-process trusted code. It requires G-004 jobs, leases, fencing, retries, idempotency, approvals, execution records, authorization-epoch revalidation, cancellation, and audit to remain the single durable execution system.
+
+The proposal does not authorize plugin packages, executable runtime code, migrations, SDKs, artifact storage, marketplace functionality, credentials, external networking, product modules, or G-006 work. G-005 remains **PROPOSED / AWAITING APPROVAL** until explicit maintainer approval is recorded. **Deviations: NONE proposed.**
+
 ## Review findings
 
 The architecture contains no unresolved contradiction with the stated product vision. The following tensions are deliberate design constraints that need future detail:
