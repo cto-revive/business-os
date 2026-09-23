@@ -2,7 +2,7 @@
 
 ## Status summary
 
-Business OS has completed the **G-004 implementation and verification** stage and is preparing the **G-005 plugin runtime and isolation decision package**. G-001 and G-002 are closed, and G-003 is closed, approved, implemented, and verified. G-004 is approved, implemented, and verified. G-005 is **PROPOSED / AWAITING APPROVAL**; no plugin runtime or plugin implementation is authorized. The repository contains the approved portable workspace, strict TypeScript project references, delivery-edge process entry points, configuration validation, architecture checks, tests, CI, a portable PostgreSQL persistence foundation, framework-free execution contracts, provider-neutral runtime orchestration, PostgreSQL outbox/queue/lease/idempotency/approval adapters, execution-owned migrations, and real PostgreSQL integration tests. Product functionality, integrations, AI provider adapters, plugin runtime, and production provider implementations remain outside scope.
+Business OS has completed the **G-004 implementation and verification** stage and has approved the **G-005 plugin runtime and isolation architecture**. G-001 and G-002 are closed, and G-003 is closed, approved, implemented, and verified. G-004 is approved, implemented, and verified. G-005 is **ARCHITECTURE APPROVED / IMPLEMENTATION PLAN REQUIRED**; the implementation plan exists, but no plugin runtime or plugin implementation is authorized. The repository contains the approved portable workspace, strict TypeScript project references, delivery-edge process entry points, configuration validation, architecture checks, tests, CI, a portable PostgreSQL persistence foundation, framework-free execution contracts, provider-neutral runtime orchestration, PostgreSQL outbox/queue/lease/idempotency/approval adapters, execution-owned migrations, and real PostgreSQL integration tests. Product functionality, integrations, AI provider adapters, plugin runtime, and production provider implementations remain outside scope.
 
 Documented architecture is not implemented functionality. No component should be represented as available until source code and appropriate tests exist in the repository.
 
@@ -20,7 +20,7 @@ Documented architecture is not implemented functionality. No component should be
 | Database and persistence  | G-003 foundation implemented; only the audit persistence migration exists; product/application persistence is not implemented | `docs/G-003-DECISION-CLOSURE.md`, `packages/persistence-contracts`, `packages/persistence-postgres`, `infrastructure/database/migrations/g003` |
 | API and interfaces        | Minimal delivery-edge health process only; no product API                                                                     | `packages/api-edge`, `docs/ARCHITECTURE.md`                                                                                                    |
 | Integrations and adapters | Contracts are documented; no provider adapter exists                                                                          | `docs/INTEGRATIONS.md`                                                                                                                         |
-| Plugins                   | G-005 decision package proposed / awaiting approval; no runtime or executable plugin exists                                  | `docs/G-005-DECISION-CLOSURE.md`, `docs/PLUGINS.md`                                                                                            |
+| Plugins                   | G-005 architecture approved; implementation plan required; no runtime or executable plugin exists                           | `docs/G-005-DECISION-CLOSURE.md`, `docs/G-005-IMPLEMENTATION-PLAN.md`, `docs/PLUGINS.md`                                                      |
 | AI agents                 | Governance is documented; no agent runtime or model adapter exists                                                            | `docs/AI-AGENTS.md`                                                                                                                            |
 | Automation and jobs       | G-004 approved/implemented/verified; no product automation exists; worker edge remains a composition root | `docs/G-004-DECISION-CLOSURE.md`, `packages/execution-contracts`, `packages/execution-runtime`, `packages/persistence-postgres`, `packages/worker-edge` |
 | Storage and files         | Abstraction is required; no implementation exists                                                                             | `docs/DATABASE.md`, `docs/DEPLOYMENT.md`                                                                                                       |
@@ -45,7 +45,7 @@ Later work includes shared tasks, files, comments, notifications, events, search
 
 ## Dependencies and sequencing
 
-The highest dependency, G-001, is **closed with conditions for the repository runtime foundation**. G-002 is approved as the identity and authorization contract. G-003 is approved and its portable persistence foundation is implemented. G-004 is approved, implemented, and verified. G-005 is proposed and awaiting approval; no later gate is open.
+The highest dependency, G-001, is **closed with conditions for the repository runtime foundation**. G-002 is approved as the identity and authorization contract. G-003 is approved and its portable persistence foundation is implemented. G-004 is approved, implemented, and verified. G-005 architecture is approved and its implementation plan is required; no implementation authorization has been granted and no later gate is open.
 
 Reliable events and background execution depend on G-004 approval and subsequent implementation. Provider adapters depend on G-007. File and storage work depends on G-008. Production delivery depends on G-009. Plugins, AI agents, automation, and application activation depend on the relevant contracts and gates listed in `docs/DECISIONS.md`.
 
@@ -70,11 +70,11 @@ The shared platform boundary could become an overly broad dependency hub if cont
 
 ## Decisions required
 
-G-001 is closed with conditions for Phase 1 only. G-002 is approved as the identity and authorization contract but remains unimplemented. G-003 is approved and its persistence foundation is implemented. G-004 is approved, implemented, and verified. G-005 is proposed and awaiting approval; G-006 through G-010 remain pending.
+G-001 is closed with conditions for Phase 1 only. G-002 is approved as the identity and authorization contract but remains unimplemented. G-003 is approved and its persistence foundation is implemented. G-004 is approved, implemented, and verified. G-005 architecture is approved, its implementation plan is required, and no implementation is authorized; G-006 through G-010 remain pending.
 
 ## Recommended immediate next steps
 
-Preserve the Phase 1, G-003, and G-004 foundations without introducing Manus-specific dependencies. Review the G-005 decision package and do not implement plugins, plugin runtime adapters, migrations, SDKs, product modules, or G-006 through G-010 work until the relevant gate is explicitly approved.
+Preserve the Phase 1, G-003, and G-004 foundations without introducing Manus-specific dependencies. Complete only the separately authorized G-005 implementation-plan review. Do not implement plugins, plugin runtime adapters, migrations, SDKs, product modules, or G-006 through G-010 work until explicit implementation authorization is recorded.
 
 ## References
 

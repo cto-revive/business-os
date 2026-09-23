@@ -89,7 +89,7 @@ Implementation is limited to the approved G-003 persistence foundation. G-004, G
 
 The revised proposal resolves the pre-implementation audit findings. It defines a framework-free transaction-aware persistence capability, canonical serialization and SHA-256 hashing, fencing tokens, distinct durable identities, an explicit queue/job boundary, authorization-epoch and revocation behavior, versioned approval action bindings, resource preconditions, scheduler semantics, retry/clock/idempotency ownership, migration/CI composition, and a complete acceptance matrix. It preserves the G-002 authorization model and G-003 transaction, organization-context, PostgreSQL RLS, and audit boundaries. The approved proposal is now authoritative for G-004 implementation.
 
-Implementation is authorized only for the approved G-004 execution capability. The initial implementation must use the existing PostgreSQL persistence foundation and must not introduce an external broker or scheduler. No exactly-once guarantee is claimed. G-005 through G-010 remain pending, and no product modules, integrations, webhooks, AI providers, plugins, files, application automation, or Manus-specific runtime behavior are authorized. **Deviations: NONE.**
+Implementation is authorized only for the approved G-004 execution capability. The initial implementation must use the existing PostgreSQL persistence foundation and must not introduce an external broker or scheduler. No exactly-once guarantee is claimed. G-005 architecture is approved and its implementation plan is required, but no G-005 implementation is authorized; G-006 through G-010 remain pending, and no product modules, integrations, webhooks, AI providers, plugins, files, application automation, or Manus-specific runtime behavior are authorized. **Deviations: NONE.**
 
 #### G-003 implementation plan
 
@@ -107,14 +107,16 @@ Implementation is authorized only for the approved G-004 execution capability. T
 ### G-005 — Proposed plugin runtime and isolation architecture
 
 **Gate:** G-005
-**Decision:** **PROPOSED / AWAITING APPROVAL**
-**Proposal date:** 2026-09-23
+**Decision:** **ARCHITECTURE APPROVED / IMPLEMENTATION PLAN REQUIRED**
+**Approval date:** 2026-09-23
 **Owner:** Business OS maintainer
 **Proposal document:** [`G-005-DECISION-CLOSURE.md`](G-005-DECISION-CLOSURE.md)
+**Implementation plan:** [`G-005-IMPLEMENTATION-PLAN.md`](G-005-IMPLEMENTATION-PLAN.md)
+**Approved document commit:** `e9e4cb08c47f92f812cad1ebffe2fba0441b8eb6`
 
 The proposal defines plugins as optional, versioned, manifest-governed extensions with explicit capability grants, organization-bound installation state, immutable release digests, host-mediated invocation, and separate runtime execution state. It recommends a WASM-compatible out-of-process capability sandbox for executable plugin code rather than in-process trusted code. It requires G-004 jobs, leases, fencing, retries, idempotency, approvals, execution records, authorization-epoch revalidation, cancellation, and audit to remain the single durable execution system. The proposed WASM posture is an architectural contract and security posture only; it does not approve a specific engine, runtime, component model, host ABI implementation, native sandbox dependency, deployment topology, or production executable-plugin enablement policy.
 
-The proposal does not authorize plugin packages, executable runtime code, migrations, SDKs, artifact storage, marketplace functionality, credentials, external networking, product modules, or G-006 work. G-005 remains **PROPOSED / AWAITING APPROVAL** until explicit maintainer approval is recorded. **Deviations: NONE proposed.**
+The approval is intentionally limited to the G-005 architectural contract and security posture. It does not authorize plugin packages, executable runtime code, migrations, SDKs, artifact storage, marketplace functionality, credentials, external networking, product modules, or G-006 work. A separate implementation plan and explicit implementation authorization are required. **Deviations: NONE.**
 
 ## Review findings
 

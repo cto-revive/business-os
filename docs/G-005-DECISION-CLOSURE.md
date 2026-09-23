@@ -2,14 +2,14 @@
 
 ## 1. Status and authority
 
-**Status: PROPOSED / AWAITING APPROVAL.**
+**Status: ARCHITECTURE APPROVED / IMPLEMENTATION PLAN REQUIRED.**
 
 **Gate:** G-005
-**Proposal date:** 2026-09-23
+**Approval date:** 2026-09-23
 **Owner:** Business OS maintainer
 **Decision required:** Plugin package, manifest, permission, isolation, review, versioning, installation, and lifecycle model.
 
-This document is a decision package for maintainer review. If approved, G-005 approval means approval of the **architectural contract and security posture only**. It does not authorize executable plugin support, plugin packages, plugin migrations, runtime adapters, SDKs, marketplace functionality, or product features. G-005 must remain pending until the maintainer explicitly approves this document or an amended version.
+This document is the approved G-005 architecture decision package. G-005 approval means approval of the **architectural contract and security posture only**. It does not authorize executable plugin support, plugin packages, plugin migrations, runtime adapters, SDKs, marketplace functionality, or product features. A separate implementation plan and explicit implementation authorization are required.
 
 Approval of this package does **not** select or approve a specific WASM engine, WASM runtime implementation, WASM component model, plugin host ABI implementation, native sandbox dependency, production deployment topology, or production executable-plugin enablement policy. Each of those choices requires a later implementation and security review. If the selected runtime cannot demonstrate the required sandbox guarantees, executable untrusted plugins must not be enabled.
 
@@ -405,7 +405,7 @@ The maintainer should approve G-005 only if all of the following statements are 
 17. Release identity, artifact digest, and manifest are immutable; approval bindings cannot be reused across a changed release or changed binding material; narrower releases cannot regain previously removed capabilities.
 18. The ten-stage approval and implementation lifecycle remains explicit, and approval of this package does not by itself authorize executable plugin implementation or production enablement.
 
-**Decision requested:** Approve, amend, or reject this G-005 proposal. Until approval is recorded, G-005 remains **PROPOSED / AWAITING APPROVAL**.
+**Decision recorded:** The maintainer approved the G-005 architectural contract and security posture on 2026-09-23. The approval is intentionally limited; G-005 remains **ARCHITECTURE APPROVED / IMPLEMENTATION PLAN REQUIRED** until the separate implementation plan and explicit implementation authorization are completed.
 
 ## References
 
@@ -418,4 +418,4 @@ The maintainer should approve G-005 only if all of the following statements are 
 [7]: ../AGENTS.md "Business OS Contributor Guidance"
 
 <!-- Author: Manus AI -->
-<!-- Status: Proposed / awaiting maintainer approval. No G-005 implementation is authorized. -->
+<!-- Status: Architecture approved; implementation plan required; no G-005 implementation is authorized. -->

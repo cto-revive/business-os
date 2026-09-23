@@ -4,9 +4,9 @@
 
 **Status: APPROVED — IMPLEMENTED — VERIFIED.**
 
-This document is the approved G-004 architecture and decision closure. Implementation is authorized only within the boundaries and sequence defined here. It does not authorize G-005 through G-010, product modules, integrations, webhooks, AI providers, plugins, storage, or Manus-specific runtime behavior.
+This document is the approved G-004 architecture and decision closure. Implementation is authorized only within the boundaries and sequence defined here. It does not authorize G-005 implementation, product modules, integrations, webhooks, AI providers, plugins, storage, or Manus-specific runtime behavior.
 
-G-001 remains **CLOSED / VERIFIED**. G-002 remains **CLOSED / APPROVED** and authoritative for identity, principal, authorization, delegation, revocation, separation-of-duties, and audit semantics. G-003 remains **CLOSED / APPROVED / IMPLEMENTED / VERIFIED** and authoritative for PostgreSQL, transactions, organization context, authorization epoch propagation, RLS, migrations, and persistence boundaries. G-005 through G-010 remain pending.
+G-001 remains **CLOSED / VERIFIED**. G-002 remains **CLOSED / APPROVED** and authoritative for identity, principal, authorization, delegation, revocation, separation-of-duties, and audit semantics. G-003 remains **CLOSED / APPROVED / IMPLEMENTED / VERIFIED** and authoritative for PostgreSQL, transactions, organization context, authorization epoch propagation, RLS, migrations, and persistence boundaries. G-005 is **ARCHITECTURE APPROVED / IMPLEMENTATION PLAN REQUIRED** with no implementation authorization; G-006 through G-010 remain pending.
 
 This revision incorporates the formal pre-implementation audit in [`G-004-PRE-IMPLEMENTATION-AUDIT.md`](G-004-PRE-IMPLEMENTATION-AUDIT.md). **Deviations from G-001, G-002, and G-003: NONE proposed.**
 
@@ -24,7 +24,7 @@ The maintainer approved the following G-004 baseline:
 - Immutable approval binding to action identity, version, canonical input hash, target, resource preconditions, and authorization context.
 - No external broker or scheduler for the initial implementation.
 
-The approval authorized the separately reviewable G-004 implementation phase. It does not authorize G-005 through G-010, product modules, integrations, webhooks, AI providers, plugins, storage, or production deployment decisions.
+The approval authorized the separately reviewable G-004 implementation phase. It does not authorize G-005 implementation or G-006 through G-010, product modules, integrations, webhooks, AI providers, plugins, storage, or production deployment decisions.
 
 ## 3. Compatibility audit
 
@@ -34,7 +34,7 @@ The revised proposal preserves G-002. Asynchronous work uses explicit principals
 
 The revised proposal preserves G-003. PostgreSQL, Kysely, `pg`, SQL, migration runners, RLS policies, lease queries, and database-specific records remain inside `persistence-postgres` and repository-owned migration infrastructure. Use cases own transaction boundaries. Audit and outbox writes participate in the same transaction as the business-state change through the transaction-aware port defined below.
 
-The repository now contains the approved G-004 execution contracts, provider-neutral runtime orchestration, PostgreSQL persistence adapters, execution migration, worker composition wiring, and corresponding unit and real-PostgreSQL integration tests. This implementation remains limited to G-004 and does not authorize G-005 through G-010.
+The repository now contains the approved G-004 execution contracts, provider-neutral runtime orchestration, PostgreSQL persistence adapters, execution migration, worker composition wiring, and corresponding unit and real-PostgreSQL integration tests. This implementation remains limited to G-004. G-005 architecture is approved for planning only; no G-005 implementation or G-006 through G-010 work is authorized.
 
 ## 4. Framework-free transaction-aware persistence boundary
 
