@@ -6,6 +6,12 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "references": [{ "path": "../runtime-config" }, { "path": "../shared-contracts" }],
+  "references": [
+    { "path": "../runtime-config" },
+    { "path": "../shared-contracts" },
+    { "path": "../persistence-postgres" },
+    { "path": "../platform-runtime" },
+    { "path": "../platform-contracts" }
+  ],
   "include": ["src/**/*.ts"]
 }

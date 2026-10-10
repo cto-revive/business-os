@@ -4,7 +4,7 @@
 
 This repository is the authoritative source of truth for Business OS. All production source code, database migrations, configuration templates, automated tests, and architecture documentation must be committed here. Do not place required business logic, schema changes, or operational configuration solely in a hosted builder, a personal workspace, or an undocumented external setting.
 
-The current repository phase is **G-005 implementation-plan-only**. G-001 and G-002 are closed, and G-003 is closed, approved, implemented, and verified. G-004 is approved, implemented, and verified according to `docs/G-004-DECISION-CLOSURE.md`. G-005 architecture is approved according to `docs/G-005-DECISION-CLOSURE.md`, and `docs/G-005-IMPLEMENTATION-PLAN.md` is required before any separately authorized implementation. Do not implement plugins, plugin runtime adapters, migrations, SDKs, product functionality, or any G-006 through G-010 work.
+The current repository phase is **bounded Product Readiness Home slice implemented; G-005 remains implementation-plan-only**. G-001 is closed for the repository runtime foundation. G-002 is approved as the identity and authorization contract; the implemented local development subset does not select a production provider. G-003 is closed, approved, implemented, and verified. G-004 is approved, implemented, and verified according to `docs/G-004-DECISION-CLOSURE.md`. G-005 architecture is approved according to `docs/G-005-DECISION-CLOSURE.md`; no executable plugin work is authorized. Do not implement plugins, plugin runtime adapters, migrations, SDKs, or any G-006 through G-010 work.
 
 ## Non-negotiable architectural rules
 

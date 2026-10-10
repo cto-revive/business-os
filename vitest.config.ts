@@ -12,6 +12,8 @@ export default defineConfig({
       '@business-os/persistence-postgres': source('./packages/persistence-postgres/src/index.ts'),
       '@business-os/execution-contracts': source('./packages/execution-contracts/src/index.ts'),
       '@business-os/execution-runtime': source('./packages/execution-runtime/src/index.ts'),
+      '@business-os/platform-contracts': source('./packages/platform-contracts/src/index.ts'),
+      '@business-os/platform-runtime': source('./packages/platform-runtime/src/index.ts'),
     },
   },
   test: {

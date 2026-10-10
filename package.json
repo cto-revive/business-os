@@ -27,7 +27,10 @@
     "db:migrate:g004:down": "node-pg-migrate down -d DATABASE_URL -m 'infrastructure/database/migrations/**/*.cjs' --use-glob",
     "build": "tsc --build --pretty false",
     "validate:config": "node tooling/validate-config.mjs",
-    "validate": "pnpm validate:config && pnpm format:check && pnpm lint && pnpm typecheck && pnpm architecture:check && pnpm test && pnpm build"
+    "validate": "pnpm validate:config && pnpm format:check && pnpm lint && pnpm typecheck && pnpm architecture:check && pnpm test && pnpm build",
+    "seed:first-screen": "node tooling/seed-first-screen.mjs",
+    "dev:web": "node apps/web/server.mjs",
+    "test:integration:first-screen": "vitest run tests/integration/platform/first-screen.test.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
@@ -40,6 +43,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-import-x": "^4.17.1",
     "node-pg-migrate": "9.0.0",
+    "pg": "8.23.0",
     "prettier": "^3.4.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"

@@ -16,6 +16,7 @@
   "dependencies": {
     "@business-os/execution-contracts": "workspace:*",
     "@business-os/persistence-contracts": "workspace:*",
+    "@business-os/platform-contracts": "workspace:*",
     "kysely": "0.29.6",
     "pg": "8.23.0",
     "uuid": "14.0.2"

@@ -150,3 +150,17 @@ To add, amend, or supersede a decision, create a new ADR entry with the decision
 [10]: SECURITY.md 'Business OS Security'
 [11]: DEPLOYMENT.md 'Business OS Deployment'
 [12]: REPOSITORY-STRUCTURE.md 'Business OS Repository Structure'
+
+### Product Readiness and First Usable Screen — Authorized bounded milestone
+
+**Decision:** **AUTHORIZED FOR BOUNDED MILESTONE / PRE-IMPLEMENTATION CHECKS REQUIRED**
+**Approval date:** 2026-10-11
+**Owner:** Business OS project owner
+**Decision record:** [`PRODUCT-READINESS-DECISION.md`](PRODUCT-READINESS-DECISION.md)
+**Plan:** [`PRODUCT-READINESS-PLAN.md`](PRODUCT-READINESS-PLAN.md)
+
+The project owner approved the first protected Business OS Home-screen milestone in principle. The authorized scope is limited to provider-neutral identity and session contracts, internal users, organizations, memberships, roles and permissions, organization-scoped persistence and RLS, protected `GET /api/v1/home`, a minimum frontend Home route, PostgreSQL-backed security tests, documented local setup, and a standard-infrastructure staging path where separately authorized authentication decisions permit it.
+
+The approval preserves G-002, G-003, and G-004 boundaries. It does not select a production authentication provider, SDK, external callback model, or production deployment topology. Provider/vendor selection remains deferred to G-007 or an explicit recorded amendment. G-005 executable plugin work and G-006 through G-010 implementation remain out of scope.
+
+The project owner confirmed the frontend architecture (`apps/web`), Home response fields and error contract, initial roles and permission vocabulary, opaque server-side session boundary, and local-only authentication boundary in the final authorization instruction received 2026-10-11. Implementation may proceed only within this bounded milestone after the required pre-implementation checks. Production/staging authentication provider selection remains deferred to G-007 or an explicit recorded amendment.

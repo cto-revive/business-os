@@ -2,7 +2,7 @@
 
 **Business OS** is an AI-native, modular, multi-tenant SaaS platform. Each company operates in an isolated organization workspace and can adopt Business OS applications, plugins, integrations, AI agents, templates, and themes as its needs evolve.
 
-> **Current status: G-003 persistence foundation implementation.** G-001, G-002, and G-003 are closed. This phase adds only the portable G-003 persistence foundation; it contains no authentication provider, product application, durable execution, AI, integrations, plugins, or Manus-specific runtime dependency.
+> **Current status: bounded Business OS Home slice implemented and verified; G-005 implementation-plan-only.** G-001, G-002, G-003, and G-004 are approved and implemented within their documented boundaries. The authorized first-screen milestone now includes local development identity/session behavior, organization membership authorization, PostgreSQL/RLS tenant isolation, a protected Home API, and `apps/web`. Production/staging authentication, plugins, integrations, AI providers, and later-gate work remain out of scope; no Manus runtime dependency is required.
 
 ## Product direction
 
@@ -10,7 +10,7 @@ Business OS will be organized around a shared platform core, domain-focused busi
 
 | Product area       | Initial status | Responsibility                                |
 | ------------------ | -------------: | --------------------------------------------- |
-| Business OS Home   |        PLANNED | Central organization workspace and navigation |
+| Business OS Home   |          ALPHA | Protected local-development workspace Home slice; production auth deferred |
 | Sales & CRM        |        PLANNED | Customer and revenue relationship workflows   |
 | Commerce           |        PLANNED | Commercial transactions and catalog workflows |
 | Marketing & Growth |        PLANNED | Audience, campaign, and growth workflows      |
@@ -66,9 +66,9 @@ The conceptual repository boundaries, module ownership rules, and dependency dir
 
 ## Implementation gate
 
-Before product implementation begins, future work must preserve the architectural boundaries documented here and resolve the relevant implementation gates in [`docs/DECISIONS.md`](docs/DECISIONS.md). G-001 through G-003 are closed; G-004 through G-010 remain pending.
+Future work must preserve the architectural boundaries documented here and resolve the relevant implementation gates in [`docs/DECISIONS.md`](docs/DECISIONS.md). The bounded Product Readiness milestone is authorized and implemented within its recorded scope. G-005 remains architecture-approved and implementation-plan-only; G-006 through G-010 remain pending.
 
-G-001 is closed for the repository runtime foundation. G-002 is approved as the identity and authorization contract. G-003 is approved for its persistence foundation only; it does not authorize authentication providers, product modules, G-004, or any later gate.
+G-001 is closed for the repository runtime foundation. G-002 remains authoritative for identity and authorization semantics; the bounded first-screen implementation uses its local development subset without selecting a production provider. G-003 is approved, implemented, and verified for its persistence foundation. G-004 is approved, implemented, and verified for durable execution within its decision closure. G-005 is architecture-approved and implementation-plan-only; no G-005 runtime, plugin SDK, migration, or executable plugin is authorized.
 
 ## References
 

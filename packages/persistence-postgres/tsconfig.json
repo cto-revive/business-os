@@ -1,6 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": { "rootDir": "src", "outDir": "dist" },
-  "references": [{ "path": "../persistence-contracts" }, { "path": "../execution-contracts" }],
+  "references": [
+    { "path": "../persistence-contracts" },
+    { "path": "../execution-contracts" },
+    { "path": "../platform-contracts" }
+  ],
   "include": ["src/**/*.ts"]
 }

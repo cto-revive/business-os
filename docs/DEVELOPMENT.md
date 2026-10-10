@@ -2,9 +2,9 @@
 
 ## Current status
 
-G-001, G-002, and G-003 are approved. The repository contains the Phase 1 runtime foundation and the G-003 persistence foundation only. G-004 through G-010 remain pending, so this guide intentionally documents no authentication provider, product module, durable execution, AI, plugin, integration, storage, or production deployment workflow.
+G-001, G-002, G-003, and G-004 are approved; G-003 and G-004 are implemented and verified within their documented boundaries. G-005 is architecture-approved and implementation-plan-only; G-006 through G-010 remain pending. The repository contains the Phase 1 runtime foundation, G-003 persistence foundation, and G-004 durable execution foundation. It now contains the bounded first-screen identity/session contracts, local development fixture, protected Home API, and framework-free `apps/web` surface. It still contains no production authentication provider, AI provider, plugin runtime, business integration, storage, or production deployment workflow.
 
-The canonical foundation uses Node.js `22.13.0`, pnpm `11.24.0`, strict TypeScript, pnpm workspaces, TypeScript project references, NestJS at the delivery edge, and Vitest. The exact versions are represented in `package.json` and the committed lockfile.
+The canonical foundation uses Node.js `22.13.0`, pnpm `11.24.0`, strict TypeScript, pnpm workspaces, TypeScript project references, NestJS at the delivery edge, PostgreSQL/Kysely persistence, framework-free G-004 execution contracts/runtime, and Vitest. The exact versions are represented in `package.json` and the committed lockfile.
 
 The foundation packages are deliberately small:
 
@@ -16,9 +16,11 @@ The foundation packages are deliberately small:
 | `@business-os/api-edge`              | API delivery edge       | Minimal NestJS process and `/health` endpoint                                     |
 | `@business-os/worker-edge`           | Worker delivery edge    | Minimal process-startup proof without durable work                                |
 | `@business-os/persistence-contracts` | Platform foundation     | Framework-free organization, platform, audit, and transaction contracts           |
-| `@business-os/persistence-postgres`  | Database infrastructure | Kysely/pg adapter, UUIDv7, transaction boundaries, RLS context, and audit adapter |
+| `@business-os/persistence-postgres`  | Database infrastructure | Kysely/pg adapter, UUIDv7, transaction boundaries, RLS context, audit adapter, and first-screen repositories |
+| `@business-os/platform-contracts`   | Platform foundation     | Identity, membership, session, and Home contracts                                      |
+| `@business-os/platform-runtime`    | Platform application    | Server-side development auth, session, membership, authorization, and Home use cases   |
 
-No package implements product behavior or a later implementation gate.
+The first-screen platform packages implement only the authorized bounded Home slice; no later gate or product domain is implemented.
 
 ## Prerequisites
 
@@ -35,7 +37,7 @@ pnpm install --frozen-lockfile
 
 The repository has no required secret environment variables. The safe `.env.example` remains the reference for future configuration. Phase 1 accepts optional `SERVICE_NAME`, `APP_VERSION`, `PORT`, and `LOG_LEVEL` values; defaults are used when they are absent.
 
-For G-003 integration tests, provide a standard PostgreSQL connection through `DATABASE_URL`. Run migrations with `pnpm db:migrate`; the migration directory is `infrastructure/database/migrations/g003`. The application test role must not own the tables and must receive only the privileges required by its repository adapters. Reset a disposable test database and rerun the migration rather than editing migration history.
+For first-screen integration tests, provide PostgreSQL 16 through `DATABASE_URL`, create a non-owner runtime role, and apply `pnpm db:migrate:g004` (which includes the identity migration). Seed disposable fixtures with `pnpm seed:first-screen`. Grant the runtime role only the table privileges required by the adapters. For G-003 integration tests, provide a standard PostgreSQL connection through `DATABASE_URL`. Run migrations with `pnpm db:migrate`; the migration directory is `infrastructure/database/migrations/g003`. The application test role must not own the tables and must receive only the privileges required by its repository adapters. Reset a disposable test database and rerun the migration rather than editing migration history.
 
 ## Canonical validation commands
 
@@ -54,6 +56,10 @@ The following commands are repository-owned and work without Manus:
 | `pnpm validate`           | Runs configuration, formatting, lint, typecheck, architecture, tests, and build checks                     |
 | `pnpm db:migrate`         | Applies repository-owned G-003 migrations using `DATABASE_URL`                                             |
 | `pnpm db:migrate:down`    | Rolls back the latest G-003 migration in a disposable database                                             |
+| `pnpm db:migrate:g004`     | Applies repository-owned G-004 and first-screen identity migrations using `DATABASE_URL`                 |
+| `pnpm seed:first-screen`   | Seeds deterministic local identity, memberships, and workspace items                              |
+| `pnpm test:integration:first-screen` | Runs PostgreSQL/RLS first-screen security tests; requires `DATABASE_URL`                         |
+| `pnpm db:migrate:g004:down`| Rolls back the latest G-004 execution migration in a disposable database                                  |
 
 `pnpm install:check` is available as a named frozen-install command for CI-equivalent dependency installation. The `dev:api` and `dev:worker` scripts require a prior `pnpm build`.
 
@@ -65,13 +71,19 @@ Build first:
 pnpm build
 ```
 
-Start the minimal API edge:
+Start the API edge with the local runtime role and database:
 
 ```sh
-PORT=3000 pnpm dev:api
+DATABASE_URL=postgresql://business_os_app:business_os_app@127.0.0.1:5432/business_os NODE_ENV=development PORT=3000 pnpm dev:api
 ```
 
-The API exposes only `GET /health` as a process-health proof. It contains no product routes.
+Start the web Home surface:
+
+```sh
+PORT=4173 pnpm dev:web
+```
+
+The API exposes `GET /health`, local development login/session routes, organization switching, and the protected `GET /api/v1/home`. Production authentication remains deferred to G-007.
 
 Start the minimal worker edge:
 
@@ -79,7 +91,7 @@ Start the minimal worker edge:
 pnpm dev:worker
 ```
 
-The worker prints a startup record and exits. It is not a queue consumer or durable worker. G-004 must be resolved before durable worker behavior is added.
+The worker prints a startup record and exits. It is not yet a production queue consumer or durable worker process. The G-004 contracts, runtime orchestration, persistence adapters, and migrations are implemented, but continuous worker operation and product automation remain outside the current product surface.
 
 ## Architecture enforcement
 
@@ -100,11 +112,11 @@ The workflow uses only standard GitHub Actions, PostgreSQL, Node.js, pnpm, and r
 
 ## Later-gate boundary
 
-Do not add product or platform behavior to make the foundation appear complete. G-002 owns identity and authorization semantics. G-003 owns the implemented database, migrations, identifiers, transactions, and tenancy foundation. G-004 still owns durable events, queues, jobs, retries, idempotency, and workers. G-005 through G-010 retain ownership of plugins, AI, integrations, storage, deployment, and entitlements as recorded in `docs/DECISIONS.md`.
+Do not add product or platform behavior to make the foundation appear complete. G-002 owns identity and authorization semantics. G-003 owns the implemented database, migrations, identifiers, transactions, and tenancy foundation. G-004 owns the implemented durable events, queues, jobs, retries, idempotency, approvals, and execution contracts/runtime. G-005 through G-010 retain ownership of plugins, AI, integrations, storage, deployment, and entitlements as recorded in `docs/DECISIONS.md`; G-005 remains plan-only and is not authorized by this guide.
 
-## Remaining guide contents after G-003
+## Remaining guide contents after G-004
 
-The completed guide must document prerequisites, dependency installation, environment-variable setup, local development, database creation and migrations, deterministic seed or test data, unit/integration/contract/end-to-end tests, formatting, linting, type checking, builds, debugging, CI, deployment, and contribution workflow.
+The completed guide must document prerequisites, dependency installation, environment-variable setup, local development, database creation and migrations for G-003 and G-004, deterministic seed or test data, unit/integration/contract/end-to-end tests, formatting, linting, type checking, builds, debugging, CI, deployment, and contribution workflow.
 
 It must identify which commands are safe to run locally, which require external services, how to run tests without Manus, and how to reset local state. It must link each operational command to the repository-owned configuration and source that implements it.
 

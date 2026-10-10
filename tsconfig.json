@@ -9,6 +9,8 @@
     { "path": "./packages/persistence-contracts" },
     { "path": "./packages/persistence-postgres" },
     { "path": "./packages/execution-contracts" },
-    { "path": "./packages/execution-runtime" }
+    { "path": "./packages/execution-runtime" },
+    { "path": "./packages/platform-contracts" },
+    { "path": "./packages/platform-runtime" }
   ]
 }

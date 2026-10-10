@@ -124,6 +124,7 @@ async function setPlatformRlsContext(
   const trusted = assertPlatformContext(context);
   await sql`select set_config('app.organization_id', '', true),
     set_config('app.authorization_epoch', '', true),
+    set_config('app.principal_id', ${trusted.principalId}, true),
     set_config('app.correlation_id', ${trusted.correlationId}, true),
     set_config('app.platform_access', 'true', true)`.execute(db);
 }
@@ -256,3 +257,5 @@ export {
   PostgresIdempotencyRepository,
   PostgresOutboxRepository,
 } from './execution.js';
+
+export { PostgresPlatformRepository } from './platform.js';
