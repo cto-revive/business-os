@@ -5,6 +5,7 @@ import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
+const apiPort = Number(process.env['API_PORT'] ?? 3000);
 const types = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -21,7 +22,7 @@ async function proxyApi(request, response) {
         for await (const chunk of request) chunks.push(chunk);
         return chunks;
       })());
-  const upstream = await fetch(`http://127.0.0.1:3000${request.url ?? '/'}`, {
+  const upstream = await fetch(`http://127.0.0.1:${apiPort}${request.url ?? '/'}`, {
     method: request.method,
     headers: {
       ...(request.headers.cookie ? { cookie: request.headers.cookie } : {}),

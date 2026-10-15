@@ -30,6 +30,8 @@
     "validate": "pnpm validate:config && pnpm format:check && pnpm lint && pnpm typecheck && pnpm architecture:check && pnpm test && pnpm build",
     "seed:first-screen": "node tooling/seed-first-screen.mjs",
     "dev:web": "node apps/web/server.mjs",
+    "start:production": "node tooling/start-production.mjs",
+    "healthcheck": "node tooling/healthcheck.mjs",
     "test:integration:first-screen": "vitest run tests/integration/platform/first-screen.test.ts"
   },
   "devDependencies": {

@@ -37,6 +37,23 @@ Background jobs, schedules, recurring work, webhook consumers, and workers must 
 
 Production deployment must include encrypted transport, access-controlled configuration, application and dependency observability, health checks, database backup, restoration testing, log retention policy, alerting, and incident-response procedures. The project must select recovery objectives, environment promotion rules, CI/CD tooling, container strategy, and infrastructure-as-code approach before production implementation.
 
+## Portable container package
+
+The repository includes a standard `Dockerfile` for the current web and API process roles. It pins Node.js `22.13.0` and pnpm `11.24.0`, installs from the committed lockfile, builds the TypeScript workspace, and starts the API and framework-free web server through `tooling/start-production.mjs`.
+
+The container exposes the web process on `PORT` (default `3000`) and runs the API edge on `API_PORT` (default `3001`). The web server proxies `/api/*` and `/health` to that API port. `DATABASE_URL` is read only at runtime; it must point to a standard PostgreSQL 16-or-later service. The image does not run migrations automatically, so deployments must apply the repository-owned migrations as a release step before routing traffic to the application.
+
+The unauthenticated `GET /health` endpoint returns JSON with `status: "ok"`. `tooling/healthcheck.mjs` validates that response and is wired into the Docker `HEALTHCHECK` instruction. It can also be run directly:
+
+```sh
+docker build -t business-os:local .
+docker run --rm -p 3000:3000 \
+  -e DATABASE_URL=postgresql://business_os_app:change-me@db:5432/business_os \
+  business-os:local
+```
+
+For a clean-clone deployment, apply `pnpm db:migrate:g004` with the deployment database credentials before starting the image. The current production image intentionally does not enable the development login; production identity remains a later implementation gate.
+
 ## References
 
 [1]: README.md "Business OS Repository Overview"
