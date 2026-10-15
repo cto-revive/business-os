@@ -1,3 +1,257 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Business OS Home</title><link rel="stylesheet" href="/styles.css"></head>
-<body><main class="shell"><header class="topbar"><div><p class="eyebrow">Business OS</p><h1>Home</h1></div><button id="logout" class="secondary" hidden>Sign out</button></header><section id="status" class="status" role="status"></section><section id="login" class="card"><h2>Development access</h2><p>Use the deterministic local identity fixture to enter Business OS.</p><button id="login-button">Continue as Alice</button></section><section id="home" hidden><div class="card hero"><div><p class="eyebrow">Active organization</p><h2 id="organization-name"></h2><p id="viewer-summary"></p></div><label>Switch organization<select id="organization-select"></select></label></div><div class="card"><div class="section-heading"><div><p class="eyebrow">Workspace</p><h2>Your starting point</h2></div><span id="item-count" class="count"></span></div><div id="items" class="items"></div></div></section></main><script type="module" src="/app.js"></script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Business OS · Affiliate</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">BO</div>
+          <div>
+            <p class="eyebrow">Business OS</p>
+            <h1>Revenue workspace</h1>
+          </div>
+        </div>
+        <button id="logout" class="secondary" hidden>Sign out</button>
+      </header>
+      <section id="status" class="status" role="status"></section>
+      <section id="login" class="card login-card">
+        <p class="eyebrow">Local preview</p>
+        <h2>Development access</h2>
+        <p>Use the deterministic local identity fixture to explore the internal workspace.</p>
+        <button id="login-button">Continue as Alice</button>
+      </section>
+      <section id="app-shell" hidden>
+        <div class="workspace-bar">
+          <nav class="nav-tabs" aria-label="Workspace sections">
+            <button id="home-nav" class="nav-tab active">Home</button
+            ><button id="affiliate-nav" class="nav-tab">Affiliate</button>
+          </nav>
+          <label class="organization-picker"
+            >Organization<select id="organization-select"></select
+          ></label>
+        </div>
+        <section id="home" class="page">
+          <div class="card hero">
+            <div>
+              <p class="eyebrow">Active organization</p>
+              <h2 id="organization-name"></h2>
+              <p id="viewer-summary"></p>
+            </div>
+            <span class="pill">Internal workspace</span>
+          </div>
+          <div class="card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Workspace</p>
+                <h2>Your starting point</h2>
+              </div>
+              <span id="item-count" class="count"></span>
+            </div>
+            <div id="items" class="items"></div>
+          </div>
+        </section>
+        <section id="affiliate" class="page" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Sales &amp; CRM</p>
+              <h2>Affiliate performance</h2>
+              <p class="muted">
+                Manage partners, attribution, and commissions without leaving your organization
+                workspace.
+              </p>
+            </div>
+            <span id="affiliate-role" class="pill"></span>
+          </div>
+          <div class="metric-grid">
+            <div class="metric-card">
+              <span>Partners</span><strong id="partner-count">0</strong>
+            </div>
+            <div class="metric-card">
+              <span>Active referrals</span><strong id="referral-count">0</strong>
+            </div>
+            <div class="metric-card">
+              <span>Pending commissions</span><strong id="pending-commission-count">0</strong>
+            </div>
+            <div class="metric-card accent">
+              <span>Pending value</span><strong id="pending-commission-value">$0.00</strong>
+            </div>
+          </div>
+          <div id="manager-tools" class="form-grid">
+            <form id="partner-form" class="card tool-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Partner directory</p>
+                  <h3>Add partner</h3>
+                </div>
+              </div>
+              <label>Name<input name="name" required placeholder="Acme Partners" /></label
+              ><label
+                >Email<input
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="hello@acme.example" /></label
+              ><label
+                >Referral code<input
+                  name="code"
+                  required
+                  pattern="[a-z0-9][a-z0-9_-]{2,39}"
+                  placeholder="acme-partner" /></label
+              ><button type="submit">Add partner</button>
+            </form>
+            <form id="rule-form" class="card tool-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Commission rules</p>
+                  <h3>Add rule</h3>
+                </div>
+              </div>
+              <label>Name<input name="name" required placeholder="Standard referral" /></label
+              ><label
+                >Model<select name="model">
+                  <option value="percentage">Percentage of revenue</option>
+                  <option value="fixed">Fixed amount</option>
+                </select></label
+              ><label
+                >Value<input
+                  name="value"
+                  required
+                  inputmode="decimal"
+                  placeholder="10 or 25.00" /></label
+              ><label>Currency<input name="currency" required maxlength="3" value="USD" /></label
+              ><button type="submit">Add rule</button>
+            </form>
+            <form id="link-form" class="card tool-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Attribution</p>
+                  <h3>Create link</h3>
+                </div>
+              </div>
+              <label>Partner<select name="partnerId" id="link-partner" required></select></label
+              ><label>Link code<input name="code" required placeholder="acme-launch" /></label
+              ><label
+                >Destination URL<input
+                  name="destinationUrl"
+                  type="url"
+                  required
+                  placeholder="https://example.com/pricing" /></label
+              ><button type="submit">Create link</button>
+            </form>
+            <form id="referral-form" class="card tool-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Pipeline</p>
+                  <h3>Record referral</h3>
+                </div>
+              </div>
+              <label>Partner<select name="partnerId" id="referral-partner" required></select></label
+              ><label
+                >Commission rule<select name="ruleId" id="referral-rule" required></select></label
+              ><label
+                >Referral link<select name="linkId" id="referral-link">
+                  <option value="">No link</option>
+                </select></label
+              ><label
+                >Referred customer<input
+                  name="referredName"
+                  required
+                  placeholder="Taylor Customer" /></label
+              ><label
+                >Email<input
+                  name="referredEmail"
+                  type="email"
+                  placeholder="taylor@example.com" /></label
+              ><label>Currency<input name="currency" required maxlength="3" value="USD" /></label
+              ><button type="submit">Record referral</button>
+            </form>
+            <form id="conversion-form" class="card tool-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Conversion</p>
+                  <h3>Convert referral</h3>
+                </div>
+              </div>
+              <label
+                >Lead<select name="referralId" id="conversion-referral" required></select></label
+              ><label
+                >Revenue amount<input
+                  name="revenueAmount"
+                  required
+                  inputmode="decimal"
+                  placeholder="125.00" /></label
+              ><button type="submit">Convert and calculate</button>
+            </form>
+            <form id="status-form" class="card tool-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Commission ledger</p>
+                  <h3>Update status</h3>
+                </div>
+              </div>
+              <label
+                >Commission<select
+                  name="commissionId"
+                  id="status-commission"
+                  required
+                ></select></label
+              ><label
+                >Status<select name="status">
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="paid">Paid</option>
+                  <option value="pending">Pending</option>
+                </select></label
+              ><button type="submit">Save status</button>
+            </form>
+          </div>
+          <div class="data-grid">
+            <section class="card data-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Partners</p>
+                  <h3>Partner directory</h3>
+                </div>
+                <button class="text-button" data-refresh>Refresh</button>
+              </div>
+              <div id="partners-table" class="table-wrap"></div>
+            </section>
+            <section class="card data-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Rules</p>
+                  <h3>Commission rules</h3>
+                </div>
+              </div>
+              <div id="rules-table" class="table-wrap"></div>
+            </section>
+            <section class="card data-card wide">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Attribution</p>
+                  <h3>Referrals</h3>
+                </div>
+              </div>
+              <div id="referrals-table" class="table-wrap"></div>
+            </section>
+            <section class="card data-card wide">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Ledger</p>
+                  <h3>Commissions</h3>
+                </div>
+              </div>
+              <div id="commissions-table" class="table-wrap"></div>
+            </section>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

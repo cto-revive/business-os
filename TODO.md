@@ -8,7 +8,7 @@ The existing GitHub repository remains authoritative, the Manus preview runs the
 
 The repository contains a pinned Node.js/pnpm Dockerfile, production API/web supervisor, configurable API proxy port, unauthenticated `/health` probe, Docker health check, and portable deployment documentation. Manus is configured with the repository Dockerfile and `/health` readiness path; publication remains manual.
 
-## Sales & CRM Affiliate MVP database and API — in progress
+## Sales & CRM Affiliate MVP database, API, and internal UI — in progress
 
 - Internal organization users are the first consumer; no external affiliate portal is included.
 - Affiliate partners, referral links, fixed and percentage commission rules, referrals, and commission records are organization-scoped and protected by PostgreSQL RLS.
@@ -16,3 +16,4 @@ The repository contains a pinned Node.js/pnpm Dockerfile, production API/web sup
 - Converting a referral calculates a commission from a fixed or percentage rule and creates a pending commission atomically.
 - API contracts, migration, runtime validation, authorization, and tests must remain portable and repository-owned.
 - External affiliate networks, payment execution, automated payouts, production authentication, and unrelated CRM domains remain out of scope.
+- The internal Affiliate workspace UI is implemented in `apps/web`; production authentication remains blocked only on selecting the OIDC provider/vendor and registering its credentials and callback configuration.
