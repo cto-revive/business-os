@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Business OS</title>
+  <desc id="desc">A blue square mark with three connected workspace nodes.</desc>
+  <rect width="256" height="256" rx="56" fill="#1b5cff"/>
+  <path d="M72 78h54c28 0 46 14 46 36 0 13-7 24-19 30 16 6 25 18 25 34 0 25-20 40-52 40H72V78Zm32 25v30h20c11 0 17-5 17-15 0-10-6-15-17-15h-20Zm0 55v35h24c12 0 19-6 19-18 0-11-7-17-19-17h-24Z" fill="#fff"/>
+  <circle cx="69" cy="78" r="10" fill="#9fb8ff"/>
+  <circle cx="187" cy="78" r="10" fill="#9fb8ff"/>
+  <circle cx="187" cy="178" r="10" fill="#9fb8ff"/>
+  <path d="M79 78h20M177 78h-22M177 178h-20" stroke="#9fb8ff" stroke-width="8" stroke-linecap="round"/>
+</svg>

@@ -29,17 +29,21 @@ function cookieValue(header: string | undefined, name: string): string | undefin
     ?.slice(name.length + 1);
 }
 function setSessionCookie(response: Response, sessionId: string): void {
-  const secure = process.env['NODE_ENV'] === 'development' ? '' : '; Secure';
+  const crossSite = process.env['COOKIE_CROSS_SITE'] === 'true';
+  const secure = crossSite || process.env['NODE_ENV'] !== 'development' ? '; Secure' : '';
+  const sameSite = crossSite ? 'None' : 'Lax';
   response.setHeader(
     'Set-Cookie',
-    `${SESSION_COOKIE}=${sessionId}; Path=/; HttpOnly; SameSite=Lax${secure}`,
+    `${SESSION_COOKIE}=${sessionId}; Path=/; HttpOnly; SameSite=${sameSite}${secure}`,
   );
 }
 function clearSessionCookie(response: Response): void {
-  const secure = process.env['NODE_ENV'] === 'development' ? '' : '; Secure';
+  const crossSite = process.env['COOKIE_CROSS_SITE'] === 'true';
+  const secure = crossSite || process.env['NODE_ENV'] !== 'development' ? '; Secure' : '';
+  const sameSite = crossSite ? 'None' : 'Lax';
   response.setHeader(
     'Set-Cookie',
-    `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Lax${secure}; Max-Age=0`,
+    `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=${sameSite}${secure}; Max-Age=0`,
   );
 }
 function errorResponse(error: unknown): HttpException {
