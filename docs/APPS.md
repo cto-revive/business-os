@@ -11,7 +11,7 @@ Applications have strong domain boundaries. A domain module owns its business ob
 | Application or area | Initial lifecycle | Boundary statement |
 |---|---:|---|
 | Business OS Home | ALPHA | Protected local-development workspace Home slice; production authentication remains deferred |
-| Sales & CRM | PLANNED | Customer relationship and revenue workflows; does not own communication channels |
+| Sales & CRM        | SCAFFOLDED | Affiliate MVP for organization-scoped partner, referral, and commission workflows; does not own communication channels or payment execution |
 | Commerce | PLANNED | Commercial transactions and catalog-related workflows |
 | Marketing & Growth | PLANNED | Audience, campaign, and growth workflows |
 | Operations | PLANNED | Operational planning and execution |

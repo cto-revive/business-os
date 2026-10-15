@@ -2,6 +2,7 @@ import type {
   HomeResponse,
   PlatformRepository,
   SessionRecord,
+  Membership,
 } from '@business-os/platform-contracts';
 export class PlatformAccessError extends Error {
   public constructor(
@@ -52,6 +53,16 @@ export class PlatformRuntime {
     if (membership.authorizationEpoch !== session.authorizationEpoch)
       throw new PlatformAccessError('AUTHORIZATION_STALE', 'Authorization is no longer current');
     return session;
+  }
+  public async getAuthenticatedContext(sessionId: string | undefined): Promise<{
+    readonly session: SessionRecord;
+    readonly membership: Membership;
+  }> {
+    const session = await this.getSession(sessionId);
+    const membership = await this.repository.findMembership(session.userId, session.organizationId);
+    if (!membership || membership.state !== 'active')
+      throw new PlatformAccessError('ORGANIZATION_ACCESS_DENIED', 'Organization access is denied');
+    return { session, membership };
   }
   public async listOrganizations(
     sessionId: string | undefined,

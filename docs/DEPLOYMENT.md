@@ -10,14 +10,14 @@ The repository will eventually contain the source code, dependency definitions, 
 
 The modular monolith may initially be deployed as a small set of source-controlled process roles. The exact topology is not yet selected.
 
-| Component | Responsibility | Portability expectation |
-|---|---|---|
-| Web and API process | Serves organization-facing surfaces and public API contracts | Stateless where practical; configured by environment variables |
-| Worker process | Executes background jobs, event consumers, automation, and agent runs | Uses source-controlled queues and job definitions |
-| Database | Stores platform and application data | Evolves only through repository migrations and has tested backups |
-| Object storage | Stores files and large artifacts | Accessed through a provider abstraction and organization-safe namespace |
-| Cache or queue | Supports performance and asynchronous delivery when needed | Replaceable provider behind documented operational contracts |
-| Edge or ingress | Terminates traffic and routes HTTP requests | Standard reverse-proxy or managed-infrastructure capability |
+| Component           | Responsibility                                                        | Portability expectation                                                 |
+| ------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Web and API process | Serves organization-facing surfaces and public API contracts          | Stateless where practical; configured by environment variables          |
+| Worker process      | Executes background jobs, event consumers, automation, and agent runs | Uses source-controlled queues and job definitions                       |
+| Database            | Stores platform and application data                                  | Evolves only through repository migrations and has tested backups       |
+| Object storage      | Stores files and large artifacts                                      | Accessed through a provider abstraction and organization-safe namespace |
+| Cache or queue      | Supports performance and asynchronous delivery when needed            | Replaceable provider behind documented operational contracts            |
+| Edge or ingress     | Terminates traffic and routes HTTP requests                           | Standard reverse-proxy or managed-infrastructure capability             |
 
 These are architecture roles rather than a final bill of materials. A role can initially share a deployment unit when operationally appropriate, provided its contracts and failure modes remain clear.
 
@@ -56,8 +56,8 @@ For a clean-clone deployment, apply `pnpm db:migrate:g004` with the deployment d
 
 ## References
 
-[1]: README.md "Business OS Repository Overview"
-[2]: ARCHITECTURE.md "Business OS Architecture"
-[3]: DATABASE.md "Business OS Database Architecture"
-[4]: SECURITY.md "Business OS Security"
-[5]: DECISIONS.md "Business OS Architecture Decisions"
+[1]: README.md 'Business OS Repository Overview'
+[2]: ARCHITECTURE.md 'Business OS Architecture'
+[3]: DATABASE.md 'Business OS Database Architecture'
+[4]: SECURITY.md 'Business OS Security'
+[5]: DECISIONS.md 'Business OS Architecture Decisions'

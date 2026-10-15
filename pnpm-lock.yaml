@@ -65,6 +65,12 @@ importers:
       '@business-os/runtime-config':
         specifier: workspace:*
         version: link:../runtime-config
+      '@business-os/sales-crm-contracts':
+        specifier: workspace:*
+        version: link:../sales-crm-contracts
+      '@business-os/sales-crm-runtime':
+        specifier: workspace:*
+        version: link:../sales-crm-runtime
       '@business-os/shared-contracts':
         specifier: workspace:*
         version: link:../shared-contracts
@@ -119,6 +125,9 @@ importers:
       '@business-os/platform-contracts':
         specifier: workspace:*
         version: link:../platform-contracts
+      '@business-os/sales-crm-contracts':
+        specifier: workspace:*
+        version: link:../sales-crm-contracts
       kysely:
         specifier: 0.29.6
         version: 0.29.6
@@ -146,6 +155,21 @@ importers:
       '@business-os/shared-validation':
         specifier: workspace:*
         version: link:../shared-validation
+
+  packages/sales-crm-contracts:
+    dependencies:
+      '@business-os/platform-contracts':
+        specifier: workspace:*
+        version: link:../platform-contracts
+
+  packages/sales-crm-runtime:
+    dependencies:
+      '@business-os/platform-contracts':
+        specifier: workspace:*
+        version: link:../platform-contracts
+      '@business-os/sales-crm-contracts':
+        specifier: workspace:*
+        version: link:../sales-crm-contracts
 
   packages/shared-contracts: {}
 

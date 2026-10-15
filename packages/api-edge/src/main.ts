@@ -15,8 +15,11 @@ import type { Response } from 'express';
 import {
   createPostgresPersistence,
   PostgresPlatformRepository,
+  PostgresAffiliateRepository,
 } from '@business-os/persistence-postgres';
 import { PlatformAccessError, PlatformRuntime } from '@business-os/platform-runtime';
+import { AffiliateRuntime } from '@business-os/sales-crm-runtime';
+import { AffiliateController } from './affiliate-controller.js';
 import { loadRuntimeConfig } from '@business-os/runtime-config';
 import type { ApiErrorBody, HomeResponse } from '@business-os/platform-contracts';
 
@@ -162,14 +165,22 @@ class RuntimeController {
   }
 }
 let runtimeInstance: PlatformRuntime | undefined;
+let affiliateRuntimeInstance: AffiliateRuntime | undefined;
 @Module({
-  controllers: [RuntimeController],
+  controllers: [RuntimeController, AffiliateController],
   providers: [
     {
       provide: PlatformRuntime,
       useFactory: () => {
         if (!runtimeInstance) throw new Error('Platform runtime is not initialized');
         return runtimeInstance;
+      },
+    },
+    {
+      provide: AffiliateRuntime,
+      useFactory: () => {
+        if (!affiliateRuntimeInstance) throw new Error('Affiliate runtime is not initialized');
+        return affiliateRuntimeInstance;
       },
     },
   ],
@@ -182,6 +193,7 @@ export async function createApiApplication() {
       process.env['DATABASE_URL'] ?? 'postgresql://postgres:postgres@127.0.0.1:5432/business_os',
   });
   const repository = new PostgresPlatformRepository(persistence);
+  affiliateRuntimeInstance = new AffiliateRuntime(new PostgresAffiliateRepository(persistence));
   runtimeInstance = new PlatformRuntime(repository);
   const app = await NestFactory.create(RuntimeModule, { bufferLogs: true });
   const corsOrigins = (process.env['CORS_ORIGIN'] ?? 'http://localhost:4173')

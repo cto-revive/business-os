@@ -11,6 +11,8 @@
     { "path": "./packages/execution-contracts" },
     { "path": "./packages/execution-runtime" },
     { "path": "./packages/platform-contracts" },
-    { "path": "./packages/platform-runtime" }
+    { "path": "./packages/platform-runtime" },
+    { "path": "./packages/sales-crm-contracts" },
+    { "path": "./packages/sales-crm-runtime" }
   ]
 }

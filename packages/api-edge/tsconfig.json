@@ -11,7 +11,9 @@
     { "path": "../shared-contracts" },
     { "path": "../persistence-postgres" },
     { "path": "../platform-runtime" },
-    { "path": "../platform-contracts" }
+    { "path": "../platform-contracts" },
+    { "path": "../sales-crm-contracts" },
+    { "path": "../sales-crm-runtime" }
   ],
   "include": ["src/**/*.ts"]
 }

@@ -13,6 +13,8 @@
     "@business-os/persistence-postgres": "workspace:*",
     "@business-os/platform-runtime": "workspace:*",
     "@business-os/runtime-config": "workspace:*",
+    "@business-os/sales-crm-contracts": "workspace:*",
+    "@business-os/sales-crm-runtime": "workspace:*",
     "@business-os/shared-contracts": "workspace:*",
     "@nestjs/common": "^11.0.11",
     "@nestjs/core": "^11.0.11",

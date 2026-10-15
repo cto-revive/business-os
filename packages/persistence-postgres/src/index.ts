@@ -259,3 +259,4 @@ export {
 } from './execution.js';
 
 export { PostgresPlatformRepository } from './platform.js';
+export { PostgresAffiliateRepository } from './affiliate.js';

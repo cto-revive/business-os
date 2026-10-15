@@ -14,6 +14,8 @@ export default defineConfig({
       '@business-os/execution-runtime': source('./packages/execution-runtime/src/index.ts'),
       '@business-os/platform-contracts': source('./packages/platform-contracts/src/index.ts'),
       '@business-os/platform-runtime': source('./packages/platform-runtime/src/index.ts'),
+      '@business-os/sales-crm-contracts': source('./packages/sales-crm-contracts/src/index.ts'),
+      '@business-os/sales-crm-runtime': source('./packages/sales-crm-runtime/src/index.ts'),
     },
   },
   test: {
