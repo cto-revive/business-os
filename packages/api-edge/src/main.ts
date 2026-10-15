@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   Res,
+  Query,
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { Response } from 'express';
@@ -74,6 +75,36 @@ function errorResponse(error: unknown): HttpException {
 @Controller()
 class RuntimeController {
   public constructor(private readonly runtime: PlatformRuntime) {}
+  @Get('/api/v1/auth/providers')
+  authProviders(): { readonly development: boolean; readonly google: boolean } {
+    return {
+      development: process.env['NODE_ENV'] === 'development',
+      google: Boolean(process.env['OIDC_CLIENT_ID'] && process.env['OIDC_CLIENT_SECRET']),
+    };
+  }
+  @Get('/api/v1/auth/google/login')
+  async googleLogin(@Res() response: Response): Promise<void> {
+    try {
+      response.redirect(await this.runtime.beginGoogleLogin());
+    } catch (error) {
+      throw errorResponse(error);
+    }
+  }
+  @Get('/api/v1/auth/google/callback')
+  async googleCallback(
+    @Query('code') code: string | undefined,
+    @Query('state') state: string | undefined,
+    @Res() response: Response,
+  ): Promise<void> {
+    try {
+      const session = await this.runtime.completeGoogleLogin(code, state);
+      setSessionCookie(response, session.sessionId);
+      response.redirect('/');
+    } catch (error) {
+      console.error('Google authentication failed', error);
+      response.redirect('/?auth_error=authentication_failed');
+    }
+  }
   @Post('/api/v1/dev/login')
   async developmentLogin(
     @Body() body: { userId?: string; organizationId?: string },

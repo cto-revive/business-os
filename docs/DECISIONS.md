@@ -20,6 +20,7 @@ This document records the durable architectural decisions that govern Business O
 | ADR-010 | Version-control all database evolution                                                          | Accepted | Schema changes require repository migrations and documented deployment procedures                                                                                                                                           |
 | ADR-011 | Define a stack-neutral conceptual repository structure                                          | Accepted | Organize future apps, platform capabilities, execution, extensions, infrastructure, shared contracts, tests, tooling, and documentation by ownership and dependency direction without selecting implementation technologies |
 | ADR-012 | Adopt the G-002 identity and authorization contract                                             | Accepted | Establishes provider-neutral identity, authentication, session, membership, principal, authorization, delegation, revocation, and audit semantics without implementing runtime infrastructure                               |
+| ADR-013 | Select Google Workspace / Cloud Identity as the initial OIDC provider                         | Accepted | Uses a portable Authorization Code + PKCE adapter; credentials remain deployment configuration, Google sign-in does not grant organization membership, and the provider can be replaced behind the same contract |
 
 ## Implementation gates
 

@@ -4,6 +4,7 @@ import type {
   SessionRecord,
   Membership,
 } from '@business-os/platform-contracts';
+import { GoogleOidcService } from './google-oidc.js';
 export class PlatformAccessError extends Error {
   public constructor(
     public readonly code:
@@ -19,10 +20,22 @@ export class PlatformAccessError extends Error {
   }
 }
 export class PlatformRuntime {
+  private readonly googleOidc: GoogleOidcService;
   public constructor(
     private readonly repository: PlatformRepository,
     private readonly now: () => Date = () => new Date(),
-  ) {}
+  ) {
+    this.googleOidc = new GoogleOidcService(repository, now);
+  }
+  public beginGoogleLogin(): Promise<string> {
+    return this.googleOidc.begin();
+  }
+  public completeGoogleLogin(
+    code: string | undefined,
+    state: string | undefined,
+  ): Promise<SessionRecord> {
+    return this.googleOidc.complete(code, state);
+  }
   public async loginDevelopment(userId: string, organizationId?: string): Promise<SessionRecord> {
     const user = await this.repository.findUser(userId);
     if (!user || user.state !== 'active')

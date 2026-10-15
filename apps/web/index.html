@@ -20,10 +20,13 @@
       </header>
       <section id="status" class="status" role="status"></section>
       <section id="login" class="card login-card">
-        <p class="eyebrow">Local preview</p>
-        <h2>Development access</h2>
-        <p>Use the deterministic local identity fixture to explore the internal workspace.</p>
-        <button id="login-button">Continue as Alice</button>
+        <p class="eyebrow">Business OS access</p>
+        <h2>Sign in to your workspace</h2>
+        <p id="login-copy">Use the configured identity provider to access your organization.</p>
+        <button id="google-login-button" hidden>Continue with Google Workspace</button>
+        <button id="login-button" class="secondary" hidden>
+          Continue as Alice in local preview
+        </button>
       </section>
       <section id="app-shell" hidden>
         <div class="workspace-bar">

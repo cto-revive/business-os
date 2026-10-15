@@ -18,7 +18,7 @@ The foundation packages are deliberately small:
 | `@business-os/persistence-contracts` | Platform foundation     | Framework-free organization, platform, audit, and transaction contracts           |
 | `@business-os/persistence-postgres`  | Database infrastructure | Kysely/pg adapter, UUIDv7, transaction boundaries, RLS context, audit adapter, and first-screen repositories |
 | `@business-os/platform-contracts`   | Platform foundation     | Identity, membership, session, and Home contracts                                      |
-| `@business-os/platform-runtime`    | Platform application    | Server-side development auth, session, membership, authorization, and Home use cases   |
+| `@business-os/platform-runtime`    | Platform application    | Server-side Google OIDC, development auth, opaque sessions, membership, authorization, and Home use cases   |
 
 The first-screen platform packages implement only the authorized bounded Home slice; no later gate or product domain is implemented.
 
@@ -83,7 +83,7 @@ Start the web Home surface:
 PORT=4173 pnpm dev:web
 ```
 
-The API exposes `GET /health`, local development login/session routes, organization switching, and the protected `GET /api/v1/home`. Production authentication remains deferred to G-007.
+The API exposes `GET /health`, provider-aware Google/local login routes, opaque login sessions, organization switching, the protected `GET /api/v1/home`, and the protected Affiliate routes. Configure Google OIDC as described in [`AUTHENTICATION.md`](AUTHENTICATION.md); without provider credentials the production login route returns a configuration error and no development login is available.
 
 Start the minimal worker edge:
 

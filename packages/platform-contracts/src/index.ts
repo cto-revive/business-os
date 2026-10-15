@@ -3,7 +3,15 @@ export type MembershipState = 'active' | 'suspended' | 'revoked';
 export interface UserIdentity {
   readonly userId: string;
   readonly displayName: string;
+  readonly email?: string | undefined;
   readonly state: 'active' | 'disabled';
+}
+export interface OidcLoginState {
+  readonly state: string;
+  readonly codeVerifier: string;
+  readonly nonce: string;
+  readonly redirectUri: string;
+  readonly expiresAt: Date;
 }
 export interface Organization {
   readonly organizationId: string;
@@ -38,6 +46,15 @@ export interface ApiErrorBody {
 }
 export interface PlatformRepository {
   findUser(userId: string): Promise<UserIdentity | null>;
+  findUserByEmail(email: string): Promise<UserIdentity | null>;
+  findExternalIdentity(providerName: string, subject: string): Promise<UserIdentity | null>;
+  linkExternalIdentity(input: {
+    readonly providerName: string;
+    readonly subject: string;
+    readonly userId: string;
+  }): Promise<void>;
+  createOidcLoginState(input: OidcLoginState): Promise<void>;
+  consumeOidcLoginState(state: string): Promise<OidcLoginState | null>;
   findMembership(userId: string, organizationId: string): Promise<Membership | null>;
   listMemberships(userId: string): Promise<readonly Membership[]>;
   findOrganization(organizationId: string): Promise<Organization | null>;

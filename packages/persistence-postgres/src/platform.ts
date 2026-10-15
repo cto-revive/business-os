@@ -9,6 +9,7 @@ import type {
   SessionRecord,
   Role,
   MembershipState,
+  OidcLoginState,
 } from '@business-os/platform-contracts';
 import type { OrganizationContext, PlatformContext } from '@business-os/persistence-contracts';
 import {
@@ -43,6 +44,7 @@ function organizationContext(
 interface UserRow {
   user_id: string;
   display_name: string;
+  email: string | null;
   state: 'active' | 'disabled';
 }
 interface OrganizationRow {
@@ -72,12 +74,95 @@ export class PostgresPlatformRepository implements PlatformRepository {
   public constructor(private readonly persistence: PostgresPersistence) {}
   public async findUser(userId: string): Promise<UserIdentity | null> {
     const result = await withPlatformDb(this.persistence, platformContext(userId), (db) =>
-      sql<UserRow>`select user_id, display_name, state from users where user_id = ${userId}`.execute(
+      sql<UserRow>`select user_id, display_name, email, state from users where user_id = ${userId}`.execute(
         db,
       ),
     );
     const row = result.rows[0];
-    return row ? { userId: row.user_id, displayName: row.display_name, state: row.state } : null;
+    return row
+      ? {
+          userId: row.user_id,
+          displayName: row.display_name,
+          email: row.email ?? undefined,
+          state: row.state,
+        }
+      : null;
+  }
+  public async findUserByEmail(email: string): Promise<UserIdentity | null> {
+    const result = await withPlatformDb(this.persistence, platformContext(), (db) =>
+      sql<UserRow>`select user_id, display_name, email, state from users where lower(email) = lower(${email})`.execute(
+        db,
+      ),
+    );
+    const row = result.rows[0];
+    return row
+      ? {
+          userId: row.user_id,
+          displayName: row.display_name,
+          email: row.email ?? undefined,
+          state: row.state,
+        }
+      : null;
+  }
+  public async findExternalIdentity(
+    providerName: string,
+    subject: string,
+  ): Promise<UserIdentity | null> {
+    const result = await withPlatformDb(this.persistence, platformContext(), (db) =>
+      sql<UserRow>`select u.user_id, u.display_name, u.email, u.state from external_identities e join users u on u.user_id = e.user_id where e.provider_name = ${providerName} and e.subject = ${subject}`.execute(
+        db,
+      ),
+    );
+    const row = result.rows[0];
+    return row
+      ? {
+          userId: row.user_id,
+          displayName: row.display_name,
+          email: row.email ?? undefined,
+          state: row.state,
+        }
+      : null;
+  }
+  public async linkExternalIdentity(input: {
+    readonly providerName: string;
+    readonly subject: string;
+    readonly userId: string;
+  }): Promise<void> {
+    await withPlatformDb(this.persistence, platformContext(input.userId), (db) =>
+      sql`insert into external_identities (provider_name, subject, user_id) values (${input.providerName}, ${input.subject}, ${input.userId}) on conflict (provider_name, subject) do nothing`.execute(
+        db,
+      ),
+    );
+  }
+  public async createOidcLoginState(input: OidcLoginState): Promise<void> {
+    await withPlatformDb(this.persistence, platformContext(), (db) =>
+      sql`insert into oidc_login_states (state, code_verifier, nonce, redirect_uri, expires_at) values (${input.state}, ${input.codeVerifier}, ${input.nonce}, ${input.redirectUri}, ${input.expiresAt})`.execute(
+        db,
+      ),
+    );
+  }
+  public async consumeOidcLoginState(state: string): Promise<OidcLoginState | null> {
+    const result = await withPlatformDb(this.persistence, platformContext(), (db) =>
+      sql<{
+        state: string;
+        code_verifier: string;
+        nonce: string;
+        redirect_uri: string;
+        expires_at: Date;
+      }>`delete from oidc_login_states where state = ${state} returning state, code_verifier, nonce, redirect_uri, expires_at`.execute(
+        db,
+      ),
+    );
+    const row = result.rows[0];
+    return row
+      ? {
+          state: row.state,
+          codeVerifier: row.code_verifier,
+          nonce: row.nonce,
+          redirectUri: row.redirect_uri,
+          expiresAt: new Date(row.expires_at),
+        }
+      : null;
   }
   public async findMembership(userId: string, organizationId: string): Promise<Membership | null> {
     const context = assertOrganizationContext(organizationContext(organizationId, userId));

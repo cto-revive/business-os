@@ -1,4 +1,4 @@
-/* global document, fetch */
+/* global document, fetch, FormData, URLSearchParams, window */
 const API = '';
 let csrfToken;
 let session;
@@ -39,6 +39,20 @@ function showLogin() {
   $('login').hidden = false;
   $('app-shell').hidden = true;
   $('logout').hidden = true;
+}
+async function loadProviders() {
+  try {
+    const providers = await request('/api/v1/auth/providers');
+    $('google-login-button').hidden = !providers.google;
+    $('login-button').hidden = !providers.development;
+    $('login-copy').textContent = providers.google
+      ? 'Use your Google Workspace identity to access your organization.'
+      : providers.development
+        ? 'Use the deterministic local identity fixture to explore the internal workspace.'
+        : 'No authentication provider is configured for this environment.';
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
 }
 function renderOrganizations(organizations, currentId) {
   const select = $('organization-select');
@@ -262,6 +276,9 @@ $('login-button').addEventListener('click', async () => {
     setStatus(error.message, 'error');
   }
 });
+$('google-login-button').addEventListener('click', () => {
+  window.location.href = '/api/v1/auth/google/login';
+});
 $('home-nav').addEventListener('click', () => setPage('home'));
 $('affiliate-nav').addEventListener('click', () => setPage('affiliate'));
 $('organization-select').addEventListener('change', async (event) => {
@@ -333,4 +350,7 @@ $('status-form').addEventListener('submit', async (event) => {
   }
 });
 document.querySelector('[data-refresh]').addEventListener('click', () => void loadAffiliate());
+void loadProviders();
+if (new URLSearchParams(window.location.search).has('auth_error'))
+  setStatus('Sign-in was not completed. Contact your Business OS administrator.', 'error');
 void loadSession();

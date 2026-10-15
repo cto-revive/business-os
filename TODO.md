@@ -16,4 +16,4 @@ The repository contains a pinned Node.js/pnpm Dockerfile, production API/web sup
 - Converting a referral calculates a commission from a fixed or percentage rule and creates a pending commission atomically.
 - API contracts, migration, runtime validation, authorization, and tests must remain portable and repository-owned.
 - External affiliate networks, payment execution, automated payouts, production authentication, and unrelated CRM domains remain out of scope.
-- The internal Affiliate workspace UI is implemented in `apps/web`; production authentication remains blocked only on selecting the OIDC provider/vendor and registering its credentials and callback configuration.
+- The internal Affiliate workspace UI is implemented in `apps/web`; Google Workspace OIDC is implemented behind a portable adapter, while deployment credentials, callback registration, and pre-provisioned user emails remain operational setup.
